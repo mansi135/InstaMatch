@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %} Page1 {% endblock %}
+
+{% block content %}
+
+<h1>checking gep-distances</h1>
+
+<ul> All zipcodes near you </ul>
+    {% for z in zipcodes %}
+      <li> {{ z }} </li>
+    {% endfor %}
+</ul>
+
+{% endblock %}

@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+
+{% block title %}User Registration{% endblock %}
+
+{% block head %}
+<!-- <link rel="stylesheet" href="static/css/styles.css"> -->
+{% endblock %}
+
+{% block content %}
+    <h1>Continue Registration</h1>
+
+
+    <form action="/continue-register" method="POST" enctype=multipart/form-data id="register-form-submit">
+
+        <div>
+            <h3> Personal Information </h3>
+
+            <label>DOB*
+                <input type="date" name="dob" id="date-of-birth" required>
+            </label><br><br>
+            <label>Height in cm*
+                <input type="number" name="height" required>
+            </label><br><br>
+            <label>Gender* <br>
+                <input type="radio" name="gender" value="male" checked> Male<br>
+                <input type="radio" name="gender" value="female"> Female<br>
+                <input type="radio" name="gender" value="other"> Other
+            </label><br><br>
+            <label>Ethnicity*
+                <select name="ethnicity">
+                    {% for ethnicity in ethnicities %}
+                        <option value="{{ ethnicity.ethnicity_id }}">{{ ethnicity.ethnicity_name }}</option>
+                    {% endfor %}
+                </select>
+            </label><br><br>
+            <label>Religion*
+                <select name="religion">
+                    {% for religion in religions %}
+                        <option value="{{ religion.religion_id }}">{{ religion.religion_name }}</option>
+                    {% endfor %}
+                </select>
+            </label><br><br>
+        </div>
+
+        <div>
+            <h3> Contact Info </h3>
+
+            <label> Address
+                <textarea name="address"></textarea>
+            </label><br><br>
+            <label>City*
+                <input type="text" name="city" required>
+            </label><br><br>
+            <label>Zipcode*
+                <input type="number" name="zipcode" required>
+            </label><br><br>
+            <label>PhoneNumber*
+                <input type="tel" name="phone" required>
+            </label><br><br>
+        </div>
+
+        <div>
+            <h3> Professional Info </h3>
+
+            <label> Employer
+                <input type="text" name="employer">
+            </label><br><br>
+            <label>Occupation
+                <input type="text" name="occupation">
+            </label><br><br>
+            <label>Latest Education
+                <input type="text" name="education">
+            </label><br><br>
+        </div>
+
+        <div>
+            <h3> Tell us something about yourself </h3>
+            <textarea name='aboutme'></textarea>
+        </div>
+
+        <div>
+            <h3> Check All your Interests/Hobbies </h3>
+            {% for interest in interests %}
+             <input type="checkbox" name="interests" value="{{ interest.interest_id }}">{{ interest.interest_name }}
+            {% endfor %}
+        </div>
+
+        <div>
+            <h3> Please upload atleast one picture* </h3>
+            <input type="file" name="pic" multiple>
+        </div>
+
+        <div>
+            <input type="hidden" name="user_id" value="{{ user_id }}">
+            <input type="submit" value="SUBMIT">
+        </div>
+
+    </form>
+
+    <!-- Currenty we are in templates directory, we need to go to one level up  -->
+    <script src="../static/js/register.js"></script>
+
+
+{% endblock %}

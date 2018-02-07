@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}User Registration{% endblock %}
+
+{% block head %}
+<!-- <link rel="stylesheet" href="static/css/styles.css"> -->
+{% endblock %}
+
+{% block content %}
+    <h1>Registration</h1>
+
+
+    <!-- should i have multiple forms for multiple categories ?
+    how to embed next in the differnt category ? -->
+    <form action="/register" method="POST">
+        <div>
+            <h3> Please fill the following form </h3>
+
+            <label>Email
+                <input type="email" name="email" required>
+            </label><br><br>
+            <label>Password
+                <input type="password" name="password" required>
+            </label><br><br>
+            <label>First Name
+                <input type="text" name="fname" required>
+            </label><br><br>
+            <label>Last Name
+                <input type="text" name="lname" required>
+            </label><br><br>
+        </div>
+
+        <div>
+            <input type="submit" value="Register User">
+        </div>
+
+    </form>
+{% endblock %}

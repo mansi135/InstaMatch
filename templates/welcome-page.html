@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %} Welcome {% endblock %}
+
+<!-- <style>
+body, html {
+    height: 100%;
+    margin: 0;
+}
+
+.bg {
+    /* The image used */
+    background-image: url("/static/images/Welcome.jpg");
+
+    /* Full height */
+    height: 100%; 
+
+    /* Center and scale the image nicely */
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+</style> -->
+
+{% block content %}
+
+<h1>Welcome to Insta-Match</h1>
+
+<img src="/static/images/Welcome.jpg" align="middle">
+
+<h2> <a href="/register">New User? Register Here</a> </h2>
+
+<h2> <a href="/login">Existing User? Login Here</a> <h2> 
+
+{% endblock %}

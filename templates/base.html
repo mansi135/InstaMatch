@@ -1,0 +1,19 @@
+<!doctype html>
+<html>
+<head>
+    <title>{% block title %}Ratings{% endblock %}</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+    {% block head %} {% endblock %}
+</head>
+<body>
+  
+
+  {% with messages = get_flashed_messages() %}
+      {% for message in messages %}
+          <div class="alert alert-warning">{{ message }}</div>
+      {% endfor %}
+  {% endwith %}
+
+  {% block content %} put your content here {% endblock %}
+</body>
+</html>
