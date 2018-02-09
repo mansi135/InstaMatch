@@ -48,6 +48,7 @@ class PersonalInfo(db.Model):
     __tablename__ = "personal_infos"
 
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), primary_key=True) #one-to-one
+    #dob = db.Column(db.DateTime, nullable=False, default ="") # do this
     dob = db.Column(db.DateTime, nullable=False)
     height = db.Column(db.Integer, nullable=False)
     gender = db.Column(db.String(10), nullable=False)

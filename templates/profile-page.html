@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block title %}My Profile{% endblock %}
+
+{% block head %}
+{% endblock %}
+
+{% block content %}
+    <h1> {{ user.fname }} {{ user.lname }} </h1>
+
+    <br><br>
+    {% for pic in user.pictures %}
+        <img src="/{{ pic.picture_url }}">
+    {% endfor %}
+    <p> {{ user.personal.dob }} </p>
+    <p> {{ user.personal.height }} </p>
+    <p> {{ user.personal.aboutme }} </p>
+    <p> {{ user.contact.street_address}} </p>
+    <p> {{ user.contact.city}} </p>
+    <p> {{ user.contact.zipcode}} </p>
+    <p> {{ user.contact.phone}} </p>
+    <p> {{ user.professional.education}} </p>
+    <p> {{ user.professional.occupation}} </p>
+    <p> {{ user.professional.employer}} </p>
+
+    <button>Edit</button>
+    
+
+{% endblock %}

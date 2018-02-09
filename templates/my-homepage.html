@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+
+{% block title %}My InstaMatch{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="/resources/demos/style.css">
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+      $( function() {
+
+        $( "#slider-range-age" ).slider({
+          range: true,
+          min: 15,
+          max: 80,
+          values: [ 25, 45 ],
+          slide: function( event, ui ) {
+            $( "#age" ).val( ui.values[ 0 ] + "-" + ui.values[ 1 ] );
+          }
+        });
+        $( "#age" ).val( $( "#slider-range-age" ).slider( "values", 0 ) +
+          " - " + $( "#slider-range-age" ).slider( "values", 1 ) );
+
+        $( "#slider-range-height" ).slider({
+          range: true,
+          min: 0,
+          max: 200,
+          values: [ 150, 170 ],
+          slide: function( event, ui ) {
+            $( "#height" ).val( ui.values[ 0 ] + "-" + ui.values[ 1 ] );
+          }
+        });
+        $( "#height" ).val( $( "#slider-range-height" ).slider( "values", 0 ) +
+          " - " + $( "#slider-range-height" ).slider( "values", 1 ) );
+
+      } );
+  </script>
+  <style>
+        .ui-slider .ui-slider-handle {
+
+            cursor: default;
+            height: 1.2em;
+            position: absolute;
+            width: 1.2em;
+            z-index: 2;
+        }
+        .ui-slider {
+            width : 200px;
+        }
+  </style>
+{% endblock %}
+
+{% block content %}
+    <h1> Welcome {{ session['fname'] }} </h1>
+
+    <div> <a href="/users/{{ session['user_id'] }}">See My Profile</a> </div>
+    <br><br>
+
+    <div> <a href="">See Requests I have received</a> </div>
+    <br><br>
+
+    <div> <a href="">See Requests I have sent</a> </div>
+    <br><br>
+
+    <div> <a href="">Start Searching</a> </div>        
+         
+    <form action="/search">
+    <p>
+      <label for="age">Age Range:</label>
+      <input type="text" id="age" name="age" readonly style="border:0; color:#f6931f; font-weight:bold;">
+    </p>
+     
+    <div id="slider-range-age"></div>
+
+    <p>
+      <label for="height">Height Range in cm:</label>
+      <input type="text" id="height" name="height" readonly style="border:0; color:#f6931f; font-weight:bold;">
+    </p>
+     
+    <div id="slider-range-height"></div>    
+    <br>
+
+    <p>
+    <label>Gender<br>
+        <input type="radio" name="gender" value="M" checked> Male<br>
+        <input type="radio" name="gender" value="F"> Female<br>
+        <input type="radio" name="gender" value="O"> Other
+    </label><br><br>
+    </p>
+    <p>
+    <label>Ethnicity
+        <select name="ethnicity">
+            {% for ethnicity in ethnicities %}
+                <option value="{{ ethnicity.ethnicity_id }}">{{ ethnicity.ethnicity_name }}</option>
+            {% endfor %}
+        </select>
+    </label><br><br>
+    </p>
+    <p>
+    <label>Religion
+        <select name="religion">
+            {% for religion in religions %}
+                <option value="{{ religion.religion_id }}">{{ religion.religion_name }}</option>
+            {% endfor %}
+        </select>
+    </label><br><br>    
+    </p> 
+
+    <p>
+        <input type="submit" value="SEARCH">
+    </p>
+    </form>
+
+{% endblock %}

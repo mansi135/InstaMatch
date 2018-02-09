@@ -1,8 +1,10 @@
+East Indian
 South Asian
-Asian 
-White 
-Black 
-Hispanic 
-Arabs 
+White / Caucasian
+Black / African
+Hispanic / Latino
+Native American
+Arabs / Middle Eastern
 Romani
-Chinese Pacific Islander
+Pacific Islander
+Other

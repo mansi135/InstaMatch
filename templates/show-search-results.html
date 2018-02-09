@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title %}Search Results{% endblock %}
+
+{% block head %}
+{% endblock %}
+
+{% block content %}
+
+    <br><br>
+    {% for user in matching_users %}
+        <div>
+            <p> {{ user.fname }} {{ user.lname }} </p>
+            <p> {{ user.personal.height }} </p>
+            <p> {{ user.personal.religion.religion_name }} </p>
+            <p> {{ user.personal.ethnicity.ethnicity_name }} </p>
+            <p> {{ user.contact.phone }} </p>
+        </div>
+    
+    {% endfor %}
+    
+
+{% endblock %}

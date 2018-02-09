@@ -2,20 +2,9 @@ Hindu
 Muslim
 Sikh
 Christian
+Catholic
 Buddhist
-Chinese Traditional
-African Traditional
 Jews
-Jude
-Shinto
-Taoist
-Jain
-Ethnic
-Spiritism
-Tenrikyo
-Cao Dai
-Rastafari
-Cheondoism
-Unitarian
 Atheist
 No-Religion
+Other

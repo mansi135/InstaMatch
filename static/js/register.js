@@ -19,9 +19,9 @@ function calcAge() {
 $(document).ready(function() {
     $("#register-form-submit").on('submit', function(evt) {
         let age = calcAge();
-        if (age < 20 ) {
+        if (age < 15 ) {
             evt.preventDefault();
-            alert('Age cannot be less than 20');
+            alert('Age cannot be less than 15');
         } 
     })
 })

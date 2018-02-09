@@ -22,9 +22,9 @@
                 <input type="number" name="height" required>
             </label><br><br>
             <label>Gender* <br>
-                <input type="radio" name="gender" value="male" checked> Male<br>
-                <input type="radio" name="gender" value="female"> Female<br>
-                <input type="radio" name="gender" value="other"> Other
+                <input type="radio" name="gender" value="M" checked> Male<br>
+                <input type="radio" name="gender" value="F"> Female<br>
+                <input type="radio" name="gender" value="O"> Other
             </label><br><br>
             <label>Ethnicity*
                 <select name="ethnicity">
@@ -91,14 +91,15 @@
         </div>
 
         <div>
-            <input type="hidden" name="user_id" value="{{ user_id }}">
             <input type="submit" value="SUBMIT">
         </div>
 
     </form>
 
-    <!-- Currenty we are in templates directory, we need to go to one level up  -->
-    <script src="../static/js/register.js"></script>
+    <!-- Currenty we are in templates directory, we need to go to one level up ? NOOOOOO -->
+    <!-- All the paths are relative to server.py as root , verify it -->
+    <!-- Always put  -->
+    <script src="/static/js/register.js"></script>
 
 
 {% endblock %}
