@@ -21,22 +21,17 @@
             <p> About me :{{ user.personal.aboutme }} </p>
             <p> Employer : {{ user.professional.employer }} </p>
             <p> Occupation : {{ user.professional.occupation }} </p>
+            <button onclick="clickHHH({{ user.user_id}})"></button>
         </li>
     
       {% endfor %}
     </ul>
     
     <script>
-        function calcAge() {
-            var today = new Date();
-            var birthDate = new Date($('#date-of-birth').val());
-            var age = today.getFullYear() - birthDate.getFullYear();
-            var m = today.getMonth() - birthDate.getMonth();
-            if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-                age = age-1;
-            }
-            return age;
-        }
+    function clickHHH(user_id) {
+        console.log(user_id);
+    }
+
     </script>
 
 {% endblock %}

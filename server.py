@@ -80,6 +80,18 @@ def get_zip_near_me(myzip, miles):
 
         # Select * from Users where zip_code IN (19125,19081,19107.........);
 
+# Using login-decorator
+def login_required(f):
+    @wraps(f)
+    def wrap(*args, **kwargs):
+        if 'logged_in' in session:
+            return f(*args, **kwargs)
+        else:
+            flash('You need to login first')
+            return redirect(url_for('login'))
+    return wrap
+
+
 @app.before_request
 def do_this_before_every_request():
     """maybe do this"""
@@ -92,6 +104,9 @@ def do_this_before_every_request():
     # User.query.options(db.joinedload('personal'))
     #           .options(db.joinedload('contact'))
     #           .options(db.joinedload('professional')).all()
+    if 'logged_in' in session:
+        user_id = session.get('user_id')
+        g.current_user = User.query.get(user_id)
 
 
 
@@ -207,7 +222,7 @@ def handle_continue_registration_form():
                      ethnicity_id=ethnicity_id, religion_id=religion_id, aboutme=aboutme)
         contact = ContactInfo(user_id=user_id, street_address=address, city=city, zipcode=zipcode, phone=phone)
         professional = ProfessionalInfo(user_id=user_id, employer=employer, occupation=occupation, education=education)
-        picture = Picture(user_id=user_id, picture_url=str(file_url))
+        picture = Picture(user_id=user_id, picture_url=str(filename))
 
         for interest_id in interest_ids:
             idi = UserInterest(user_id=user_id, interest_id=interest_id)
@@ -294,7 +309,7 @@ def show_received_requests():
     return render_template("received-requests.html")
 
     
-@app.route('/users/<user_id>')
+@app.route('/users/<int:user_id>')
 def show_profile_page(user_id):
     """Show user-profile page"""
 
@@ -351,6 +366,7 @@ def search():
     #                                     PersonalInfo.height < max_height)
     #                   .all())
 
+    # search by location
     u = User.query.get(session.get('user_id'))
 
     z = get_zip_near_me(u.contact.zipcode, int(distance.split(" ")[0]))
@@ -365,16 +381,13 @@ def search():
                           .all())
 
 
-
+    # Attach real path to all pictures
     for user in matching_users:
         for pic in user.pictures:
             pic.picture_url = os.path.join(app.config['UPLOAD_FOLDER'],pic.picture_url)
 
     
 
-    # search by location
-
-    
 
     # eagerly get all users
     # q = (db.session.query(User).options(db.joinedload('personal'))

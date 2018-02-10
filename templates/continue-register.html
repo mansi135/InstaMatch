@@ -96,10 +96,11 @@
 
     </form>
 
-    <!-- Currenty we are in templates directory, we need to go to one level up ? NOOOOOO -->
+{% block javascript %}
+
     <!-- All the paths are relative to server.py as root , verify it -->
-    <!-- Always put  -->
     <script src="/static/js/register.js"></script>
+{% endblock %}
 
 
 {% endblock %}
