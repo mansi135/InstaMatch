@@ -8,16 +8,34 @@
 {% block content %}
 
     <br><br>
-    {% for user in matching_users %}
-        <div>
+    <ul>
+      {% for user in matching_users %}
+        <li>
+            <p> <img src="/{{ user.pictures[0].picture_url }}" width="200" height="200"> </p>
             <p> {{ user.fname }} {{ user.lname }} </p>
-            <p> {{ user.personal.height }} </p>
+            <p> {{ user.personal.height }}cm </p>
             <p> {{ user.personal.religion.religion_name }} </p>
             <p> {{ user.personal.ethnicity.ethnicity_name }} </p>
             <p> {{ user.contact.phone }} </p>
-        </div>
+            <p> {{ user.personal.aboutme }} </p>
+            <p> {{ user.professional.employer }} </p>
+            <p> {{ user.professional.occupation }} </p>
+        </li>
     
-    {% endfor %}
+      {% endfor %}
+    </ul>
     
+    <script>
+        function calcAge() {
+            var today = new Date();
+            var birthDate = new Date($('#date-of-birth').val());
+            var age = today.getFullYear() - birthDate.getFullYear();
+            var m = today.getMonth() - birthDate.getMonth();
+            if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+                age = age-1;
+            }
+            return age;
+        }
+    </script>
 
 {% endblock %}

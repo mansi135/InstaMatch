@@ -9,9 +9,10 @@
     <h1> {{ user.fname }} {{ user.lname }} </h1>
 
     <br><br>
-    {% for pic in user.pictures %}
+    <!-- {% for pic in user.pictures %}
         <img src="/{{ pic.picture_url }}">
-    {% endfor %}
+    {% endfor %} -->
+    <img src="/{{ pic_url }}">
     <p> {{ user.personal.dob }} </p>
     <p> {{ user.personal.height }} </p>
     <p> {{ user.personal.aboutme }} </p>

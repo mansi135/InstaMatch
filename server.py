@@ -60,6 +60,16 @@ def calc_age(dob):
     # dob_t = datetime.strptime(dob, '%Y-%m-%d')
 
 
+def get_zip_near_me(myzip, miles):
+    """Shows all zipcodes near you"""
+
+    zcdb = ZipCodeDatabase()
+    in_radius = [z.zip for z in zcdb.get_zipcodes_around_radius(myzip, miles)]
+    return in_radius
+    #return render_template("zip.html",zipcodes=in_radius)
+
+
+
 #def some_function_for_timestamp():
 
     # Getting PST time-stamp, will be used later
@@ -161,13 +171,14 @@ def handle_continue_registration_form():
         pic_id = db.session.query(db.func.max(Picture.picture_id)).one()[0]
 
         if pic_id is None:
-            filename = "MyPic_"     # remove My_pic here
+            filename = "MyDbPics"     # remove My_pic here
         else:
-            filename = "MyPic_" + str(pic_id)
+            filename = "MyDbPics" + str(pic_id) + ".jpg"
 
-        file_url = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        #file_url = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        # file_url = os.path.join(app.config['UPLOAD_FOLDER'])
 
-        file.save(file_url)
+        file.save(filename)
         flash('Photo saved')
         #return redirect(url_for('zip'))  # url_for takes the name of function of route
         #return redirect(url_for('uploaded_file', filename=filename))
@@ -295,8 +306,11 @@ def show_profile_page(user_id):
 
     user.personal.dob = user.personal.dob.strftime('%Y-%m-%d')
 
-    # return "dd"
-    return render_template("profile-page.html", user=user)
+    # BOZO - make this loop when user has more than one picture 
+    pic_url = os.path.join(app.config['UPLOAD_FOLDER'],user.pictures[0].picture_url)
+
+    print pic_url
+    return render_template("profile-page.html", user=user, pic_url=pic_url)
 
 
 @app.route('/search')
@@ -307,6 +321,7 @@ def search():
     religion_id = request.args.get('religion')
     ethnicity_id = request.args.get('ethnicity')
     gender = request.args.get('gender')
+    distance = request.args.get('distance')
 
     min_age, max_age = map(int, age.split('-'))
     min_height, max_height = map(int, height.split('-'))
@@ -314,13 +329,33 @@ def search():
     max_dob = datetime.now()-timedelta(days=min_age*365)
     min_dob = datetime.now()-timedelta(days=max_age*365)
 
-    matching_users = (db.session.query(User).join(PersonalInfo)
-                    .filter(PersonalInfo.dob > min_dob, 
-                            PersonalInfo.dob < max_dob, 
-                            PersonalInfo.religion_id==religion_id, 
-                            PersonalInfo.ethnicity_id==ethnicity_id, 
-                            PersonalInfo.gender==gender) 
-                    .all())
+    # Make different types of queries
+    # matching_users = (db.session.query(User).join(PersonalInfo)
+    #                 .filter(PersonalInfo.dob > min_dob, 
+    #                         PersonalInfo.dob < max_dob, 
+    #                         PersonalInfo.religion_id==religion_id, 
+    #                         PersonalInfo.ethnicity_id==ethnicity_id, 
+    #                         PersonalInfo.gender==gender) 
+    #                 .all())
+
+    matching_users = (db.session.query(User).options(db.joinedload('personal'))
+                               .options(db.joinedload('contact')) 
+                               .options(db.joinedload('professional')) 
+                               .options(db.joinedload('interests')) 
+                               .options(db.joinedload('pictures'))
+                               .join(PersonalInfo)
+                               .filter(PersonalInfo.height > min_height,
+                                        PersonalInfo.height < max_height)
+                      .all())
+
+    for user in matching_users:
+        for pic in user.pictures:
+            pic.picture_url = os.path.join(app.config['UPLOAD_FOLDER'],pic.picture_url)
+
+    u = User.query.get(session.get('user_id'))
+    print get_zip_near_me(95134, int(distance.split(" ")[0]))
+
+    # search by location
 
     # eagerly get all users
     # q = (db.session.query(User).options(db.joinedload('personal'))
@@ -336,17 +371,9 @@ def search():
     #                         PersonalInfo.gender==gender) 
     #                 .all())
 
-    print matching_users
     return render_template("show-search-results.html", matching_users=matching_users)
 
 
-@app.route('/zip-codes')
-def zip():
-    """Shows all zipcodes near you"""
-
-    zcdb = ZipCodeDatabase()
-    in_radius = [z.zip for z in zcdb.get_zipcodes_around_radius('95134', 8)]
-    return render_template("zip.html",zipcodes=in_radius)
 
 
 

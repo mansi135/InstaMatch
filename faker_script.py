@@ -1,45 +1,49 @@
 from faker import Faker 
 import random
+from datetime import datetime
 
 fake = Faker()
 
-religions = ['Hindu', 'Muslim', 'Sikh', 'Christian', 'Buddhist', 'Chinese tradi',
-              'African tradi', 'Jews', 'Jude', 'Shinto']
-
-ethnicities = ['South Asian', 'Asian', 'White', 'Black', 'Hispanic', 'Arabs', 'Romani',
-              'Chinese', 'Pacific Islander']
 
 # w overwrites, a appends
 with open('seed_data/user.txt', 'w') as f:
-    for i in range(1,101):
+    for i in range(1,501):
         uid = i
         email = fake.email()
         password = fake.password()
-        fname = fake.first_name()
+        p = fake.profile()
+        fname = p['name'].split(" ")[0]
         lname = fake.last_name()
 
-        dob = fake.profile()['birthdate']
-        height = random.randint(150, 180)
-        gender = fake.profile()['sex']
+        #dob = fake.profile()['birthdate']
         # ethnicity = random.choice(ethnicities)
         # religion = random.choice(religions)
-        ethnicity = random.randint(1, 8)
-        religion = random.randint(1, 20)
+ 
+        year = random.choice(range(1950, 2003))
+        month = random.choice(range(1, 13))
+        day = random.choice(range(1, 29))
+        dob = str(datetime(year, month, day)).split(" ")[0]
 
-        address = fake.catch_phrase()
+        height = random.randint(120, 200)
+        gender = p['sex']
+
+        ethnicity = random.randint(1, 8)
+        religion = random.randint(1, 8)
+
+        address = p['address'].split("\n")[0]
         city = fake.city()
         zipcode = fake.zipcode()
         phone = fake.phone_number()
 
-        emp = fake.company()
-        occ = None
+        emp = p['company']
+        occ = p['job']
         edu = None
         aboutme = fake.catch_phrase()
 
         print >> f, str(uid) + "|" + email + "|" + password + "|" + fname + "|" + lname \
                              + "|" + dob + "|" + str(height) + "|" + gender + "|" + str(ethnicity) + "|" + str(religion) \
                              + "|" + address + "|" + city + "|" + zipcode + "|" + phone \
-                             + "|" + emp + "|" + "|" + "|" + aboutme
+                             + "|" + emp + "|" + occ + "|" + "|" + aboutme
 
 
 

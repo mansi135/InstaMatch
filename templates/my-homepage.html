@@ -13,7 +13,7 @@
         $( "#slider-range-age" ).slider({
           range: true,
           min: 15,
-          max: 80,
+          max: 70,
           values: [ 25, 45 ],
           slide: function( event, ui ) {
             $( "#age" ).val( ui.values[ 0 ] + "-" + ui.values[ 1 ] );
@@ -24,7 +24,7 @@
 
         $( "#slider-range-height" ).slider({
           range: true,
-          min: 0,
+          min: 120,
           max: 200,
           values: [ 150, 170 ],
           slide: function( event, ui ) {
@@ -34,9 +34,19 @@
         $( "#height" ).val( $( "#slider-range-height" ).slider( "values", 0 ) +
           " - " + $( "#slider-range-height" ).slider( "values", 1 ) );
 
+        $( "#slider-distance" ).slider({
+          min: 0,
+          max: 1000,
+          values: [ 50 ],
+          slide: function( event, ui ) {
+            $( "#distance" ).val( ui.values[ 0 ] );
+          }
+        });
+        $( "#distance" ).val( $( "#slider-distance" ).slider( "values", 0 ) + " miles");
+
       } );
   </script>
-  <style>
+  <style>   
         .ui-slider .ui-slider-handle {
 
             cursor: default;
@@ -79,6 +89,14 @@
     </p>
      
     <div id="slider-range-height"></div>    
+
+    <p>
+      <label for="distance">Distance from me:</label>
+      <input type="text" id="distance" name="distance" readonly style="border:0; color:#f6931f; font-weight:bold;">
+    </p>
+     
+    <div id="slider-distance"></div>    
+
     <br>
 
     <p>
@@ -88,28 +106,63 @@
         <input type="radio" name="gender" value="O"> Other
     </label><br><br>
     </p>
+    
     <p>
-    <label>Ethnicity
-        <select name="ethnicity">
-            {% for ethnicity in ethnicities %}
-                <option value="{{ ethnicity.ethnicity_id }}">{{ ethnicity.ethnicity_name }}</option>
+    <label>Ethnicity<br>
+        <input type="radio" name="eth_matter" value=0 checked> Doesn't Matter
+        <input type="radio" name="eth_matter" value=1> Matters to me<br>
+        <div id="show-ethnicities">
+            {% for ethnicity in ethnicities %}    
+                <input type="checkbox" id ="{{ ethnicity.ethnicity_name }}"name="ethnicities" value="{{ ethnicity.ethnicity_id }}">
+                <label for="{{ ethnicity.ethnicity_name }}">{{ ethnicity.ethnicity_name }}</label>   
             {% endfor %}
-        </select>
+        </div>
+   
     </label><br><br>
     </p>
+
     <p>
     <label>Religion
-        <select name="religion">
-            {% for religion in religions %}
-                <option value="{{ religion.religion_id }}">{{ religion.religion_name }}</option>
-            {% endfor %}
-        </select>
+        <input type="radio" name="rel_matter" value=0 checked> Doesn't Matter
+        <input type="radio" name="rel_matter" value=1> Matters to me<br>
+        <div id="show-religions">
+            <select name="religions" multiple>
+                {% for religion in religions %}
+                    <option value="{{ religion.religion_id }}">{{ religion.religion_name }}</option>
+                {% endfor %}
+            </select>
+        </div>
     </label><br><br>    
     </p> 
 
     <p>
         <input type="submit" value="SEARCH">
     </p>
+
     </form>
+
+    <script>
+        $("#show-ethnicities, #show-religions").hide()
+
+        let choices = $('input[name=eth_matter]')
+
+        console.log(choices)
+
+        for(let i=0; i < choices.length; i++) {
+            $(choices[i]).on('click', function() {
+                if($(this).val() === 0) {
+                   $("#show-ethnicities").hide(); 
+                } else {
+                    $("#show-ethnicities").show();
+                }
+            })
+        }
+            
+        
+    </script>
+
+    <!-- {% for ethnicity in ethnicities %}
+        <button role="checkbox" aria-checked="false">{{ ethnicity.ethnicity_name }}</button>
+    {% endfor %} -->
 
 {% endblock %}

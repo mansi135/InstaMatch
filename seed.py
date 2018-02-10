@@ -44,6 +44,16 @@ def load_interests():
     
     db.session.commit()
 
+def load_pictures():
+    """Pre-load interests"""
+
+    Picture.query.delete()
+
+    for i in range(1,501):
+        db.session.add(Picture(user_id=i, picture_url="MyDbPics{}.jpg".format(i)))
+    
+    db.session.commit()
+
 
 def load_users():
     """Load users from user.txt into database."""
@@ -54,13 +64,15 @@ def load_users():
     PersonalInfo.query.delete()
     ContactInfo.query.delete()
     ProfessionalInfo.query.delete()
+    #Picture.query.delete()
 
 
+    i = 1
     # Read user file and insert data
     for row in open("seed_data/user.txt"):
         row = row.rstrip()
         uid, email, password, fname, lname, dob, height, gender, ethnicity, religion,\
-        address, city, zipcode, phone, emp, _, __, aboutme  = row.split("|")
+        address, city, zipcode, phone, emp, occ, __, aboutme  = row.split("|")
 
         dob_t = datetime.strptime(dob, '%Y-%m-%d') # convert this to datetime.date , not datetime.datetime 
 
@@ -76,7 +88,8 @@ def load_users():
 
         contact = ContactInfo(user_id=uid, street_address=address, city=city, zipcode=zipcode, phone=phone)
 
-        professional = ProfessionalInfo(user_id=uid, employer=emp)
+        professional = ProfessionalInfo(user_id=uid, employer=emp, occupation=occ)
+
 
 
         # We need to add to the session or it won't ever be stored
@@ -113,8 +126,9 @@ if __name__ == "__main__":
     db.create_all()
 
     # Import different types of data
-    #load_ethnicitys()
-    #load_religions()
+    load_ethnicitys()
+    load_religions()
     load_interests()
-   # load_users()
+    load_users()
+    load_pictures()
     set_val_user_id()
