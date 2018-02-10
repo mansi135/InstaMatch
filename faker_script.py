@@ -1,6 +1,9 @@
 from faker import Faker 
 import random
 from datetime import datetime
+from barnum import gen_data
+
+
 
 fake = Faker()
 
@@ -32,7 +35,13 @@ with open('seed_data/user.txt', 'w') as f:
 
         address = p['address'].split("\n")[0]
         city = fake.city()
+
+        # while True:
+        #     zipcode = gen_data.create_city_state_zip()[0]
+        #     if len(zipcode) == 5:
+        #         break
         zipcode = fake.zipcode()
+
         phone = fake.phone_number()
 
         emp = p['company']

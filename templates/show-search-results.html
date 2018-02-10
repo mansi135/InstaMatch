@@ -12,14 +12,15 @@
       {% for user in matching_users %}
         <li>
             <p> <img src="/{{ user.pictures[0].picture_url }}" width="200" height="200"> </p>
-            <p> {{ user.fname }} {{ user.lname }} </p>
-            <p> {{ user.personal.height }}cm </p>
-            <p> {{ user.personal.religion.religion_name }} </p>
-            <p> {{ user.personal.ethnicity.ethnicity_name }} </p>
-            <p> {{ user.contact.phone }} </p>
-            <p> {{ user.personal.aboutme }} </p>
-            <p> {{ user.professional.employer }} </p>
-            <p> {{ user.professional.occupation }} </p>
+            <p> Name :{{ user.fname }} {{ user.lname }} </p>
+            <p> Height : {{ user.personal.height }}cm </p>
+            <p> Religion : {{ user.personal.religion.religion_name }} </p>
+            <p> Ethnicity : {{ user.personal.ethnicity.ethnicity_name }} </p>
+            <p> Phone : {{ user.contact.phone }} </p>
+            <p> ZipCode : {{ user.contact.zipcode }} </p>
+            <p> About me :{{ user.personal.aboutme }} </p>
+            <p> Employer : {{ user.professional.employer }} </p>
+            <p> Occupation : {{ user.professional.occupation }} </p>
         </li>
     
       {% endfor %}

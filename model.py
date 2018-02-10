@@ -72,7 +72,7 @@ class ContactInfo(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), primary_key=True) #one-to-one
     street_address = db.Column(db.String(80), nullable=True)
     city = db.Column(db.String(64), nullable=False)
-    zipcode = db.Column(db.Integer, nullable=False)
+    zipcode = db.Column(db.String(10), nullable=False)
     phone = db.Column(db.String(64), nullable=False)
 
 

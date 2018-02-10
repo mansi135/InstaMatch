@@ -330,6 +330,8 @@ def search():
     min_dob = datetime.now()-timedelta(days=max_age*365)
 
     # Make different types of queries
+
+    # Age 
     # matching_users = (db.session.query(User).join(PersonalInfo)
     #                 .filter(PersonalInfo.dob > min_dob, 
     #                         PersonalInfo.dob < max_dob, 
@@ -338,24 +340,41 @@ def search():
     #                         PersonalInfo.gender==gender) 
     #                 .all())
 
+    # Height
+    # matching_users = (db.session.query(User).options(db.joinedload('personal'))
+    #                            .options(db.joinedload('contact')) 
+    #                            .options(db.joinedload('professional')) 
+    #                            .options(db.joinedload('interests')) 
+    #                            .options(db.joinedload('pictures'))
+    #                            .join(PersonalInfo)
+    #                            .filter(PersonalInfo.height > min_height,
+    #                                     PersonalInfo.height < max_height)
+    #                   .all())
+
+    u = User.query.get(session.get('user_id'))
+
+    z = get_zip_near_me(u.contact.zipcode, int(distance.split(" ")[0]))
+    
     matching_users = (db.session.query(User).options(db.joinedload('personal'))
-                               .options(db.joinedload('contact')) 
-                               .options(db.joinedload('professional')) 
-                               .options(db.joinedload('interests')) 
-                               .options(db.joinedload('pictures'))
-                               .join(PersonalInfo)
-                               .filter(PersonalInfo.height > min_height,
-                                        PersonalInfo.height < max_height)
-                      .all())
+                                   .options(db.joinedload('contact')) 
+                                   .options(db.joinedload('professional')) 
+                                   .options(db.joinedload('interests')) 
+                                   .options(db.joinedload('pictures'))
+                                   .join(ContactInfo)
+                                   .filter(ContactInfo.zipcode.in_(z))
+                          .all())
+
+
 
     for user in matching_users:
         for pic in user.pictures:
             pic.picture_url = os.path.join(app.config['UPLOAD_FOLDER'],pic.picture_url)
 
-    u = User.query.get(session.get('user_id'))
-    print get_zip_near_me(95134, int(distance.split(" ")[0]))
+    
 
     # search by location
+
+    
 
     # eagerly get all users
     # q = (db.session.query(User).options(db.joinedload('personal'))
