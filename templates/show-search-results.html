@@ -21,14 +21,15 @@
             <p> About me :{{ user.personal.aboutme }} </p>
             <p> Employer : {{ user.professional.employer }} </p>
             <p> Occupation : {{ user.professional.occupation }} </p>
-            <button onclick="clickHHH({{ user.user_id}})"></button>
+            <!-- Here we are calling a function on click and passing it an argument then and there -->
+            <button onclick="sendRequest({{ user.user_id}})">Send Request</button>  
         </li>
     
       {% endfor %}
     </ul>
     
     <script>
-    function clickHHH(user_id) {
+    function sendRequest(user_id) {
         console.log(user_id);
     }
 

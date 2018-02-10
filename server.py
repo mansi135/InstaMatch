@@ -18,6 +18,7 @@ import os
 from pytz import timezone
 
 from flask import send_from_directory
+from functools import wraps
 
 
 
@@ -88,7 +89,7 @@ def login_required(f):
             return f(*args, **kwargs)
         else:
             flash('You need to login first')
-            return redirect(url_for('login'))
+            return redirect(url_for('show_login_form'))
     return wrap
 
 
@@ -104,9 +105,17 @@ def do_this_before_every_request():
     # User.query.options(db.joinedload('personal'))
     #           .options(db.joinedload('contact'))
     #           .options(db.joinedload('professional')).all()
-    if 'logged_in' in session:
-        user_id = session.get('user_id')
-        g.current_user = User.query.get(user_id)
+    
+    g.user_id = session.get('user_id')
+
+    if g.user_id != None:
+        g.current_user = (User.query.options(db.joinedload('personal'))
+                  .options(db.joinedload('contact')) 
+                  .options(db.joinedload('professional')) 
+                  .options(db.joinedload('interests')) 
+                  .options(db.joinedload('pictures')).get(g.user_id))
+    else:
+        g.current_user = None
 
 
 
@@ -149,10 +158,11 @@ def handle_registration_form():
         flash('WELCOME! You are successfully added to the database.')
         uid = User.query.filter_by(email=email).one().user_id  # should we immediately query the userid?
         session['user_id'] = uid
+        #session['logged_in'] = True
 
         return redirect('/continue-register')
         
-
+# This route should not be visible until initial registrtion has started
 @app.route('/continue-register')
 def display_continue_registration_form():
     """Complete Registration"""
@@ -188,18 +198,18 @@ def handle_continue_registration_form():
         if pic_id is None:
             filename = "MyDbPics"     # remove My_pic here
         else:
-            filename = "MyDbPics" + str(pic_id) + ".jpg"
+            filename = "MyDbPics" + str(pic_id+1) + ".jpg"
 
-        #file_url = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        file_url = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         # file_url = os.path.join(app.config['UPLOAD_FOLDER'])
 
-        file.save(filename)
+        file.save(file_url)
         flash('Photo saved')
         #return redirect(url_for('zip'))  # url_for takes the name of function of route
         #return redirect(url_for('uploaded_file', filename=filename))
 
-        user_id = session.get('user_id')
-
+        #user_id = session.get('user_id')
+        user_id = g.user_id
         dob = request.form.get('dob')
         height = request.form.get('height')
         gender = request.form.get('gender')
@@ -261,32 +271,21 @@ def login_check():
     email = request.form.get('email')
     password = request.form.get('password')
 
-    existing_user = User.query.filter_by(email=email).first()
-
-
-    if not existing_user:
-        flash('Email not found.')
-        print request.url
+    try:
+        existing_user = User.query.filter_by(email=email, password=password).one()
+    except:
+        flash("The email or password you have entered did not match our records. Please try again.", "danger")
         return redirect(request.url)
-    elif existing_user.email == email and existing_user.password != password:
-        flash('The password is incorrect. Please try again.')
-        return redirect(request.url)
-    elif existing_user.email == email and existing_user.password == password:
-        flash("Welcome {} You are successfully logged in.".format(existing_user.fname))
-        # probably bug here
-        session['user_id'] = existing_user.user_id
-        session['fname'] = existing_user.fname
 
-        #return redirect("/{}".format(existing_user.user_id))
-        return redirect('/my-homepage')
-        #return redirect("/")
+    flash("Welcome {} You are successfully logged in.".format(existing_user.fname))
+    session['user_id'] = existing_user.user_id
+    session['logged_in'] = True
+    session['fname'] = existing_user.fname # Not-needed..remove it ?
+    return redirect('/my-homepage')
 
-
-
-#@app.route('/<user_id>') #-dont do it, otherwise we will see things like /2, /3 in url
-                         # hence its recommended to add a username
 
 @app.route('/my-homepage/')
+@login_required
 def individual_home_page():
     """Display user home page"""
 
@@ -297,12 +296,14 @@ def individual_home_page():
 
 
 @app.route('/my-homepage/sent-requests')
+@login_required
 def show_sent_requests():
     """Show sent requests"""
 
     return render_template("sent-requests.html")
 
 @app.route('/my-homepage/received-requests')
+@login_required
 def show_received_requests():
     """Show received requests"""
 
@@ -310,6 +311,7 @@ def show_received_requests():
 
     
 @app.route('/users/<int:user_id>')
+@login_required
 def show_profile_page(user_id):
     """Show user-profile page"""
 
@@ -324,11 +326,11 @@ def show_profile_page(user_id):
     # BOZO - make this loop when user has more than one picture 
     pic_url = os.path.join(app.config['UPLOAD_FOLDER'],user.pictures[0].picture_url)
 
-    print pic_url
     return render_template("profile-page.html", user=user, pic_url=pic_url)
 
 
 @app.route('/search')
+@login_required
 def search():
 
     age = request.args.get('age')
@@ -367,9 +369,10 @@ def search():
     #                   .all())
 
     # search by location
-    u = User.query.get(session.get('user_id'))
 
-    z = get_zip_near_me(u.contact.zipcode, int(distance.split(" ")[0]))
+    #u = User.query.get(session.get('user_id'))
+
+    z = get_zip_near_me(g.current_user.contact.zipcode, int(distance.split(" ")[0]))
     
     matching_users = (db.session.query(User).options(db.joinedload('personal'))
                                    .options(db.joinedload('contact')) 
@@ -378,6 +381,7 @@ def search():
                                    .options(db.joinedload('pictures'))
                                    .join(ContactInfo)
                                    .filter(ContactInfo.zipcode.in_(z))
+                                   .filter(User.user_id != g.user_id)
                           .all())
 
 
