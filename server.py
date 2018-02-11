@@ -20,6 +20,8 @@ from pytz import timezone
 from flask import send_from_directory
 from functools import wraps
 
+import relations
+
 
 
 SECRET_KEY = 'development key'
@@ -285,15 +287,6 @@ def individual_home_page():
 
     return render_template("my-homepage.html", ethnicities=ethnicities, religions=religions)
 
-
-@app.route('/my-homepage/requests-sent')
-@login_required
-def show_sent_requests():
-    """Show sent requests"""
-
-    return render_template("requests-sent.html")
-
-
     
 @app.route('/users/<int:user_id>')
 @login_required
@@ -422,17 +415,23 @@ def send_request():
 def show_received_requests():
     """Show received requests"""
 
-    received_from = RelationManager.query.filter_by(target_userid=g.user_id)
-    # received_from_users = (db.session.query(User).options(db.joinedload('personal'))
-    #                                .options(db.joinedload('contact')) 
-    #                                .options(db.joinedload('professional')) 
-    #                                .options(db.joinedload('interests')) 
-    #                                .options(db.joinedload('pictures'))
-    #                                .filter(ContactInfo.zipcode.in_(z),
-    #                                        User.user_id.in_(??))
-    #                       .all())
+    received_from_list = RelationManager.query.filter_by(target_userid=g.user_id)
+    
+    # fix for pic url
 
-    return render_template("requests-received.html")
+    return render_template("requests-received.html", received_from_list=received_from_list)
+
+
+@app.route('/my-homepage/requests-sent')
+@login_required
+def show_sent_requests():
+    """Show sent requests"""
+
+    sent_to_list = RelationManager.query.filter_by(source_userid=g.user_id)
+
+    # fix for pic url
+
+    return render_template("requests-sent.html", sent_to_list=sent_to_list)
 
 
 if __name__ == '__main__':

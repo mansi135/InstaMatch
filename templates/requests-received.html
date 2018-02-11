@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %}Requests Received{% endblock %}
+
+{% block head %}
+{% endblock %}
+
+{% block content %}
+
+    <br><br>
+    <ul>
+      {% for received in received_from_list %}
+        <li>          
+            <p> <img src="{{ received.source_user.pictures[0].picture_url }})" width="200" height="200"> </p>
+            <p> Name :{{ received.source_user.fname }} {{ received.source_user.lname }} </p>
+            <p> Height : {{ received.source_user.personal.height }}cm </p>
+            <p> Religion : {{ received.source_user.personal.religion.religion_name }} </p>
+            <p> Ethnicity : {{ received.source_user.personal.ethnicity.ethnicity_name }} </p>
+            <p> Status : {{ received.status }} </p>
+        </li>
+    
+      {% endfor %}
+    </ul>
+    
+{% endblock %}

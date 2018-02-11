@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %}Requests Sent{% endblock %}
+
+{% block head %}
+{% endblock %}
+
+{% block content %}
+
+    <br><br>
+    <ul>
+      {% for sent in sent_to_list %}
+        <li>          
+            <p> <img src="{{ sent.target_user.pictures[0].picture_url }})" width="200" height="200"> </p>
+            <p> Name :{{ sent.target_user.fname }} {{ sent.target_user.lname }} </p>
+            <p> Height : {{ sent.target_user.personal.height }}cm </p>
+            <p> Religion : {{ sent.target_user.personal.religion.religion_name }} </p>
+            <p> Ethnicity : {{ sent.target_user.personal.ethnicity.ethnicity_name }} </p>
+            <p> Status : {{ sent.status }} </p>
+        </li>
+    
+      {% endfor %}
+    </ul>
+    
+{% endblock %}
