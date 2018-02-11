@@ -153,6 +153,11 @@ class RelationManager(db.Model):
     target_user = db.relationship("User", backref="relations_t",
                                    primaryjoin="RelationManager.target_userid==User.user_id")
 
+    def __repr__(self):
+        """Provide helpful representation when printed"""
+
+        return "<Source_User={} Target_User={} Status={}>".format(self.source_userid, self.target_userid, self.status)
+
 
 ##############################################################################
 # Helper functions
