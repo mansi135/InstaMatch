@@ -22,17 +22,22 @@
             <p> Employer : {{ user.professional.employer }} </p>
             <p> Occupation : {{ user.professional.occupation }} </p>
             <!-- Here we are calling a function on click and passing it an argument then and there -->
-            <button onclick="sendRequest({{ user.user_id}})">Send Request</button>  
+            <button id="{{ user.user_id }}" onclick="sendRequest({{ user.user_id }})">Send Request</button>  
         </li>
     
       {% endfor %}
     </ul>
     
     <script>
-    function sendRequest(user_id) {
-        console.log(user_id);
-    }
+        function sendRequest(user_id) {
+            console.log(user_id);
+            payload = {'target_userid': user_id, 'timestamp': new Date()}
+            $.post("/send-request.json", payload, showSentRequest);
+        }
 
+        function showSentRequest(result) {
+            $('#' + result.uid).html(result.response).attr("disabled", true)
+        }
     </script>
 
 {% endblock %}

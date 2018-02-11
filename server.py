@@ -1,4 +1,4 @@
-from flask import Flask, redirect, url_for, session, request, render_template, flash, g
+from flask import Flask, redirect, url_for, session, request, render_template, flash, g, jsonify
 from flask_oauth import OAuth
 from flask_debugtoolbar import DebugToolbarExtension
 from jinja2 import StrictUndefined
@@ -295,19 +295,19 @@ def individual_home_page():
     return render_template("my-homepage.html", ethnicities=ethnicities, religions=religions)
 
 
-@app.route('/my-homepage/sent-requests')
+@app.route('/my-homepage/requests-sent')
 @login_required
 def show_sent_requests():
     """Show sent requests"""
 
-    return render_template("sent-requests.html")
+    return render_template("requests-sent.html")
 
-@app.route('/my-homepage/received-requests')
+@app.route('/my-homepage/requests-received')
 @login_required
 def show_received_requests():
     """Show received requests"""
 
-    return render_template("received-requests.html")
+    return render_template("requests-received.html")
 
     
 @app.route('/users/<int:user_id>')
@@ -409,8 +409,21 @@ def search():
 
     return render_template("show-search-results.html", matching_users=matching_users)
 
+# Ajax route
+@app.route('/send-request.json', methods=['POST'])
+@login_required
+def send_request():
 
+    target_userid = request.form.get('target_userid')
+    timestamp = request.form.get('timestamp')
+    timestamp = datetime.strptime(timestamp.split("-")[0], "%a %b %d %Y %H:%M:%S %Z")
+    print timestamp
+    new_connection = RelationManager(source_userid=g.user_id, target_userid=target_userid, 
+                                    timestamp=timestamp, status="Pending")
+    db.session.add(new_connection)
+    db.session.commit()
 
+    return jsonify({'response': 'Requested', 'uid': target_userid})
 
 
 if __name__ == '__main__':
