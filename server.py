@@ -81,7 +81,7 @@ def get_zip_near_me(myzip, miles):
 
         # Select * from Users where zip_code IN (19125,19081,19107.........);
 
-# Using login-decorator
+# Using login-decorator - for login authentication
 def login_required(f):
     @wraps(f)
     def wrap(*args, **kwargs):
@@ -95,17 +95,8 @@ def login_required(f):
 
 @app.before_request
 def do_this_before_every_request():
-    """maybe do this"""
+    """Get info about currently logged-in user"""
 
-    # query for then user
-    # if 'user_id' in session
-    # g.current_user = User.query.get(session.get('user_id'))
-    # emps = User.query.options(db.joinedload('personal')).all()
-
-    # User.query.options(db.joinedload('personal'))
-    #           .options(db.joinedload('contact'))
-    #           .options(db.joinedload('professional')).all()
-    
     g.user_id = session.get('user_id')
 
     if g.user_id != None:
@@ -370,8 +361,6 @@ def search():
 
     received_ids = db.session.query(RelationManager.source_userid).filter_by(target_userid=g.user_id).all()
     sent_ids = db.session.query(RelationManager.target_userid).filter_by(source_userid=g.user_id).all()
-
-    print received_ids
     
     matching_users = (db.session.query(User).options(db.joinedload('personal'))
                                    .options(db.joinedload('contact')) 
