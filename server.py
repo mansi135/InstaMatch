@@ -302,12 +302,6 @@ def show_sent_requests():
 
     return render_template("requests-sent.html")
 
-@app.route('/my-homepage/requests-received')
-@login_required
-def show_received_requests():
-    """Show received requests"""
-
-    return render_template("requests-received.html")
 
     
 @app.route('/users/<int:user_id>')
@@ -373,6 +367,11 @@ def search():
     #u = User.query.get(session.get('user_id'))
 
     z = get_zip_near_me(g.current_user.contact.zipcode, int(distance.split(" ")[0]))
+
+    received_ids = db.session.query(RelationManager.source_userid).filter_by(target_userid=g.user_id).all()
+    sent_ids = db.session.query(RelationManager.target_userid).filter_by(source_userid=g.user_id).all()
+
+    print received_ids
     
     matching_users = (db.session.query(User).options(db.joinedload('personal'))
                                    .options(db.joinedload('contact')) 
@@ -380,8 +379,10 @@ def search():
                                    .options(db.joinedload('interests')) 
                                    .options(db.joinedload('pictures'))
                                    .join(ContactInfo)
-                                   .filter(ContactInfo.zipcode.in_(z))
-                                   .filter(User.user_id != g.user_id)
+                                   .filter(ContactInfo.zipcode.in_(z), 
+                                            User.user_id != g.user_id,
+                                            ~User.user_id.in_(sent_ids),
+                                            ~User.user_id.in_(received_ids))
                           .all())
 
 
@@ -424,6 +425,25 @@ def send_request():
     db.session.commit()
 
     return jsonify({'response': 'Requested', 'uid': target_userid})
+
+
+
+@app.route('/my-homepage/requests-received')
+@login_required
+def show_received_requests():
+    """Show received requests"""
+
+    received_from = RelationManager.query.filter_by(target_userid=g.user_id)
+    # received_from_users = (db.session.query(User).options(db.joinedload('personal'))
+    #                                .options(db.joinedload('contact')) 
+    #                                .options(db.joinedload('professional')) 
+    #                                .options(db.joinedload('interests')) 
+    #                                .options(db.joinedload('pictures'))
+    #                                .filter(ContactInfo.zipcode.in_(z),
+    #                                        User.user_id.in_(??))
+    #                       .all())
+
+    return render_template("requests-received.html")
 
 
 if __name__ == '__main__':
