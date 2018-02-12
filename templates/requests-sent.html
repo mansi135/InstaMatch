@@ -12,6 +12,7 @@
       {% for sent in sent_to_list %}
         <li>          
             <p> <img src="{{ sent.target_user.pictures[0].picture_url }})" width="200" height="200"> </p>
+            <p> UserId :{{ sent.target_user.user_id }} </p>
             <p> Name :{{ sent.target_user.fname }} {{ sent.target_user.lname }} </p>
             <p> Height : {{ sent.target_user.personal.height }}cm </p>
             <p> Religion : {{ sent.target_user.personal.religion.religion_name }} </p>

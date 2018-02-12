@@ -16,6 +16,7 @@
             <button id="p_{{ received.source_userid }}" onclick="acceptPass({{ received.source_userid }}, 'pass')">
             Pass</button> 
             <div id="msg_{{ received.source_userid }}"></div>
+            <p> UserId :{{ received.source_user.user_id }} </p>
             <p> Name :{{ received.source_user.fname }} {{ received.source_user.lname }} </p>
             <p> Height : {{ received.source_user.personal.height }}cm </p>
             <p> Religion : {{ received.source_user.personal.religion.religion_name }} </p>

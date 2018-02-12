@@ -22,6 +22,7 @@ from functools import wraps
 
 import relations
 
+from sqlalchemy import desc
 
 
 SECRET_KEY = 'development key'
@@ -400,7 +401,6 @@ def send_request():
     target_userid = request.form.get('target_userid')
     timestamp = request.form.get('timestamp')
     timestamp = datetime.strptime(timestamp.split("-")[0], "%a %b %d %Y %H:%M:%S %Z")
-    print timestamp
     new_connection = RelationManager(source_userid=g.user_id, target_userid=target_userid, 
                                     timestamp=timestamp, status="Pending")
     db.session.add(new_connection)
@@ -415,7 +415,7 @@ def send_request():
 def show_received_requests():
     """Show received requests"""
 
-    received_from_list = RelationManager.query.filter_by(target_userid=g.user_id)
+    received_from_list = RelationManager.query.filter_by(target_userid=g.user_id).order_by(desc('timestamp')).all()
     
     # fix for pic url
 
@@ -427,7 +427,7 @@ def show_received_requests():
 def show_sent_requests():
     """Show sent requests"""
 
-    sent_to_list = RelationManager.query.filter_by(source_userid=g.user_id)
+    sent_to_list = RelationManager.query.filter_by(source_userid=g.user_id).order_by(desc('timestamp')).all()
 
     # fix for pic url
 
@@ -447,12 +447,14 @@ def accept_or_pass_request():
 
     if action == 'accept':
         c.status = "Accepted"
+        c.timestamp = timestamp
         db.session.commit()
         return jsonify({'response': "Congrats! You have accepted {}'s request".format(c.source_user.fname), 
                         'uid': source_userid, 'status': "Accepted"})
 
     elif action == 'pass':
         c.status = "Passed"
+        c.timestamp = timestamp
         db.session.commit()
         return jsonify({'response': "You passed {}'s request..Continue searching..".format(c.source_user.fname), 
                         'uid': source_userid, 'status': "Passed"})
