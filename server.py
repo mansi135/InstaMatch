@@ -434,6 +434,35 @@ def show_sent_requests():
     return render_template("requests-sent.html", sent_to_list=sent_to_list)
 
 
+# Ajax route
+@app.route('/accept-pass-request.json', methods=['POST'])
+@login_required
+def accept_or_pass_request():
+
+    source_userid = request.form.get('source_userid')
+    timestamp = request.form.get('timestamp')
+    timestamp = datetime.strptime(timestamp.split("-")[0], "%a %b %d %Y %H:%M:%S %Z")
+    action = request.form.get('action')
+    c = RelationManager.query.filter_by(source_userid=source_userid, target_userid=g.user_id).one()
+
+    if action == 'accept':
+        c.status = "Accepted"
+        db.session.commit()
+        return jsonify({'response': "Congrats! You have accepted {}'s request".format(c.source_user.fname), 
+                        'uid': source_userid, 'status': "Accepted"})
+
+    elif action == 'pass':
+        c.status = "Passed"
+        db.session.commit()
+        return jsonify({'response': "You passed {}'s request..Continue searching..".format(c.source_user.fname), 
+                        'uid': source_userid, 'status': "Passed"})
+
+
+
+
+
+
+
 if __name__ == '__main__':
     # app.run()
     app.debug = True

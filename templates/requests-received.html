@@ -12,14 +12,60 @@
       {% for received in received_from_list %}
         <li>          
             <p> <img src="{{ received.source_user.pictures[0].picture_url }})" width="200" height="200"> </p>
+            <button id="a_{{ received.source_userid }}" onclick="acceptPass({{ received.source_userid }}, 'accept')">Accept</button>
+            <button id="p_{{ received.source_userid }}" onclick="acceptPass({{ received.source_userid }}, 'pass')">
+            Pass</button> 
+            <div id="msg_{{ received.source_userid }}"></div>
             <p> Name :{{ received.source_user.fname }} {{ received.source_user.lname }} </p>
             <p> Height : {{ received.source_user.personal.height }}cm </p>
             <p> Religion : {{ received.source_user.personal.religion.religion_name }} </p>
             <p> Ethnicity : {{ received.source_user.personal.ethnicity.ethnicity_name }} </p>
-            <p> Status : {{ received.status }} </p>
+            <p> Status : <span id="status_{{ received.source_userid }}" data-id="{{ received.source_userid }}">
+            {{ received.status }}</span> </p>
         </li>
     
       {% endfor %}
     </ul>
     
+{% endblock %}
+
+{% block javascript %} 
+    
+    <script>
+
+        function checkStatus() {        
+            s = $('span');
+
+            for (let i = 0; i < s.length-1; i++) {
+                id = $(s[i]).data('id');
+                console.log($(s[i]).html());
+                if ($(s[i]).html().indexOf("Pending") > 0) {
+                    console.log('here');
+                    $('#a_' + id).show();
+                    $('#p_' + id).show();
+                } else {
+                    $('#a_' + id).hide();
+                    $('#p_' + id).hide();
+                }
+            }
+        }
+
+        function acceptPass(user_id, action) {
+            payload = {'source_userid': user_id, 'timestamp': new Date(), 'action': action}
+            $.post("/accept-pass-request.json", payload, showResponse);
+        }
+
+        function showResponse(result) {
+            $('#a_' + result.uid).hide()
+            $('#p_' + result.uid).hide()
+            $('#msg_' + result.uid).html(result.response)
+            $('#status_' + result.uid).html(result.status)
+        }
+
+        $(document).ready(function() {         
+            checkStatus();
+        });
+
+    </script>
+
 {% endblock %}
