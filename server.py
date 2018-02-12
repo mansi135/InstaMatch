@@ -418,7 +418,7 @@ def show_received_requests():
 
     received_from_list = RelationManager.query.filter_by(target_userid=g.user_id).order_by(desc('timestamp')).all()
     
-    # fix for pic loop
+    # fix for pic loop ? May be not- coz in results I show only 1-pic
 
     return render_template("requests-received.html", received_from_list=received_from_list, UPLOAD_FOLDER=UPLOAD_FOLDER)
 
