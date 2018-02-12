@@ -11,7 +11,7 @@
     <ul>
       {% for received in received_from_list %}
         <li>          
-            <p> <img src="{{ received.source_user.pictures[0].picture_url }})" width="200" height="200"> </p>
+            <p> <img src="/{{ UPLOAD_FOLDER }}{{ received.source_user.pictures[0].picture_url }}" width="200" height="200"> </p>
             <button id="a_{{ received.source_userid }}" onclick="acceptPass({{ received.source_userid }}, 'accept')">Accept</button>
             <button id="p_{{ received.source_userid }}" onclick="acceptPass({{ received.source_userid }}, 'pass')">
             Pass</button> 

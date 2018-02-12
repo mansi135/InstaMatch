@@ -356,23 +356,24 @@ def search():
     received_ids = db.session.query(RelationManager.source_userid).filter_by(target_userid=g.user_id).all()
     sent_ids = db.session.query(RelationManager.target_userid).filter_by(source_userid=g.user_id).all()
     
-    matching_users = (db.session.query(User).options(db.joinedload('personal'))
+    matching_users = (db.session.query(User, db.func.concat(UPLOAD_FOLDER,Picture.picture_url))
+                                   .options(db.joinedload('personal'))
                                    .options(db.joinedload('contact')) 
                                    .options(db.joinedload('professional')) 
                                    .options(db.joinedload('interests')) 
                                    .options(db.joinedload('pictures'))
                                    .join(ContactInfo)
+                                   .join(Picture)
                                    .filter(ContactInfo.zipcode.in_(z), 
                                             User.user_id != g.user_id,
                                             ~User.user_id.in_(sent_ids),
                                             ~User.user_id.in_(received_ids))
                           .all())
 
-
     # Attach real path to all pictures
-    for user in matching_users:
-        for pic in user.pictures:
-            pic.picture_url = os.path.join(app.config['UPLOAD_FOLDER'],pic.picture_url)
+    # for user in matching_users:
+    #     for pic in user.pictures:
+    #         pic.picture_url = os.path.join(app.config['UPLOAD_FOLDER'],pic.picture_url)
 
     
 
@@ -417,9 +418,9 @@ def show_received_requests():
 
     received_from_list = RelationManager.query.filter_by(target_userid=g.user_id).order_by(desc('timestamp')).all()
     
-    # fix for pic url
+    # fix for pic loop
 
-    return render_template("requests-received.html", received_from_list=received_from_list)
+    return render_template("requests-received.html", received_from_list=received_from_list, UPLOAD_FOLDER=UPLOAD_FOLDER)
 
 
 @app.route('/my-homepage/requests-sent')
@@ -428,10 +429,10 @@ def show_sent_requests():
     """Show sent requests"""
 
     sent_to_list = RelationManager.query.filter_by(source_userid=g.user_id).order_by(desc('timestamp')).all()
-
-    # fix for pic url
-
-    return render_template("requests-sent.html", sent_to_list=sent_to_list)
+      
+    # fix for pic loop
+   
+    return render_template("requests-sent.html", sent_to_list=sent_to_list, UPLOAD_FOLDER=UPLOAD_FOLDER)
 
 
 # Ajax route

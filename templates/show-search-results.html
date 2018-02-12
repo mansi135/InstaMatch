@@ -9,9 +9,9 @@
 
     <br><br>
     <ul>
-      {% for user in matching_users %}
+      {% for user, pic_url in matching_users %}
         <li>
-            <p> <img src="/{{ user.pictures[0].picture_url }}" width="200" height="200"> </p>
+            <p> <img src="/{{ pic_url }}" width="200" height="200"> </p>
             <p> Name :{{ user.fname }} {{ user.lname }} </p>
             <p> Height : {{ user.personal.height }}cm </p>
             <p> Religion : {{ user.personal.religion.religion_name }} </p>
