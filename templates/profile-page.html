@@ -13,7 +13,8 @@
         <img src="/{{ pic.picture_url }}">
     {% endfor %} -->
     <img src="/{{ pic_url }}">
-    <p> {{ user.personal.dob }} </p>
+    <p id="dob">{{ user.personal.dob }}</p>
+    <p id="age"> {{ user.personal.dob }} </p>
     <p> {{ user.personal.height }} </p>
     <p> {{ user.personal.aboutme }} </p>
     <p> {{ user.contact.street_address}} </p>
@@ -26,5 +27,27 @@
 
     <button>Edit</button>
     
+
+{% endblock %}
+
+{% block javascript %}
+    <script>
+    
+    function calcAge(dob) {
+
+        var today = new Date();
+        var birthDate = new Date(dob);
+        var age = today.getFullYear() - birthDate.getFullYear();
+        var m = today.getMonth() - birthDate.getMonth();
+        if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+            age = age-1;
+        }
+        return age;
+    }
+    
+    $(document).ready(function() {         
+            $('#age').html(calcAge($('#dob').html()))
+    });
+    </script>
 
 {% endblock %}
