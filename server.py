@@ -459,7 +459,15 @@ def accept_or_pass_request():
 
 
 
+@app.route('/logout')
+def logout():
+    """Logout User"""
 
+    #del session['user_id']
+    session.clear()
+    flash("You were logged out.")
+
+    return redirect("/")
 
 
 
