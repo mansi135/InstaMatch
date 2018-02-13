@@ -147,6 +147,8 @@ class RelationManager(db.Model):
     target_userid = db.Column(db.ForeignKey('users.user_id'), nullable=False) 
     timestamp = db.Column(db.DateTime, nullable=False) 
     status = db.Column(db.String(20), nullable=False)
+    seen_by_source = db.Column(db.String(20))
+    seen_by_target = db.Column(db.String(20))
 
     source_user = db.relationship("User", backref="relations_s", 
                                    primaryjoin="RelationManager.source_userid==User.user_id") 

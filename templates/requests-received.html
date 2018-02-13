@@ -38,12 +38,12 @@
             s = $('span');  // give meaningful variable names
             // dont use all spans, put a class, it can take car of off-byone
             //may b change it to callback style-line15, better way to make it accept/pass class
+            //we can have as many data attributes as we want, it makes it like dictionary
 
             for (let i = 0; i < s.length-1; i++) {
                 id = $(s[i]).data('id');
                 console.log($(s[i]).html());
                 if ($(s[i]).html().indexOf("Pending") >= 0) {
-                    console.log('here');
                     $('#a_' + id).show();  // change a_ and p_ to accept n pass
                     $('#p_' + id).show();
                 } else {

@@ -278,6 +278,7 @@ def login_check():
     return redirect('/my-homepage')
 
 
+
 @app.route('/my-homepage/')
 @login_required
 def individual_home_page():
@@ -285,8 +286,12 @@ def individual_home_page():
 
     ethnicities = Ethnicity.query.all()
     religions = Religion.query.all()
+    new_requests = RelationManager.query.filter_by(target_userid=g.user_id, seen_by_target='not-seen').count()
+    new_responses = RelationManager.query.filter_by(source_userid=g.user_id, seen_by_source='not-seen').count()
 
-    return render_template("my-homepage.html", ethnicities=ethnicities, religions=religions)
+    return render_template("my-homepage.html", ethnicities=ethnicities, religions=religions,
+                                               new_requests=new_requests, new_responses=new_responses)
+
 
     
 @app.route('/users/<int:user_id>')
@@ -403,7 +408,7 @@ def send_request():
     timestamp = request.form.get('timestamp')
     timestamp = datetime.strptime(timestamp.split("-")[0], "%a %b %d %Y %H:%M:%S %Z")
     new_connection = RelationManager(source_userid=g.user_id, target_userid=target_userid, 
-                                    timestamp=timestamp, status="Pending")
+                                    timestamp=timestamp, status="Pending", seen_by_target='not-seen')
     db.session.add(new_connection)
     db.session.commit()
 
@@ -413,8 +418,16 @@ def send_request():
 
 @app.route('/my-homepage/requests-received')
 @login_required
-def show_received_requests():
+def show_received_requests_and_update_target_seen():
     """Show received requests"""
+
+    # Update target_seen in database
+    new_requests = RelationManager.query.filter_by(target_userid=g.user_id, seen_by_target='not-seen').all()
+
+    for new_request in new_requests:
+        new_request.seen_by_target = 'seen'
+    db.session.commit()
+
 
     received_from_list = RelationManager.query.filter_by(target_userid=g.user_id).order_by(desc('timestamp')).all()
     
@@ -425,8 +438,15 @@ def show_received_requests():
 
 @app.route('/my-homepage/requests-sent')
 @login_required
-def show_sent_requests():
+def show_sent_requests_and_update_source_seen():
     """Show sent requests"""
+    
+    new_responses = RelationManager.query.filter_by(source_userid=g.user_id, seen_by_source='not-seen').all()
+
+    for new_response in new_responses:
+        new_response.seen_by_source = 'seen'
+    db.session.commit()
+
 
     sent_to_list = RelationManager.query.filter_by(source_userid=g.user_id).order_by(desc('timestamp')).all()
       
@@ -449,6 +469,7 @@ def accept_or_pass_request():
     if action == 'accept':
         c.status = "Accepted"
         c.timestamp = timestamp
+        c.seen_by_source = 'not-seen'
         db.session.commit()
         return jsonify({'response': "Congrats! You have accepted {}'s request".format(c.source_user.fname), 
                         'uid': source_userid, 'status': "Accepted"})
@@ -456,10 +477,10 @@ def accept_or_pass_request():
     elif action == 'pass':
         c.status = "Passed"
         c.timestamp = timestamp
+        c.seen_by_source = 'not-seen'
         db.session.commit()
         return jsonify({'response': "You passed {}'s request..Continue searching..".format(c.source_user.fname), 
                         'uid': source_userid, 'status': "Passed"})
-
 
 
 @app.route('/logout')
