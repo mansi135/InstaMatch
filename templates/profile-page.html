@@ -12,18 +12,48 @@
     <!-- {% for pic in user.pictures %}
         <img src="/{{ pic.picture_url }}">
     {% endfor %} -->
-    <img src="/{{ pic_url }}">
-    <p id="dob">{{ user.personal.dob }}</p>
-    <p id="age"> {{ user.personal.dob }} </p>
-    <p> {{ user.personal.height }} </p>
-    <p> {{ user.personal.aboutme }} </p>
-    <p> {{ user.contact.street_address}} </p>
-    <p> {{ user.contact.city}} </p>
-    <p> {{ user.contact.zipcode}} </p>
-    <p> {{ user.contact.phone}} </p>
-    <p> {{ user.professional.education}} </p>
-    <p> {{ user.professional.occupation}} </p>
-    <p> {{ user.professional.employer}} </p>
+    <div id="personal">
+        <img src="/{{ pic_url }}">
+        <h3>Personal Info</h3>
+        <ul>
+            <li> Gender : {{ user.personal.gender }} </li>
+            <li id="dob">Date of Birth : {{ user.personal.dob }}</li>
+            <li id="age"></li>
+            <li> Height : {{ user.personal.height }} cm</li>
+            <li> About {{ user.fname }} : {{ user.personal.aboutme }} </li>
+            <li> Ethnicity : {{ user.personal.ethnicity.ethnicity_name }} </li>
+            <li> Religion : {{ user.personal.religion.religion_name }} </li>
+        </ul>      
+    </div>
+
+    <div id="contact-info">
+        <h3>Contact Info</h3>
+        <ul>
+            <li> Address : {{ user.contact.street_address }} </li>
+            <li> City : {{ user.contact.city }} </li>
+            <li> Zipcode : {{ user.contact.zipcode }} </li>
+            <li> Phone Number : {{ user.contact.phone }} </li>
+            <li> Email : {{ user.email }}</li>
+        </ul>
+    </div>
+    
+    <div id="professional">
+        <h3>Professional Info</h3>
+        <ul>
+            <li> Education : {{ user.professional.education}} </li>
+            <li> Occupation : {{ user.professional.occupation}} </li>
+            <li> Employer : {{ user.professional.employer}} </li>
+        </ul>
+        
+    </div>
+
+    <div id="interests">
+        <h3>Interests</h3>
+            <ul>
+            {% for interest in user.interests %}
+                <li> interest </li>
+            {% endfor %}
+    </div>
 
     <button>Edit</button>
     
@@ -45,8 +75,15 @@
         return age;
     }
     
-    $(document).ready(function() {         
-            $('#age').html(calcAge($('#dob').html()))
+    $(document).ready(function() { 
+
+        let age = calcAge($('#dob').html()) + ' years old';  
+        $('#age').html(age);
+        if('{{ user_type }}' !== 'self') {
+            $('#contact-info').hide();
+        } else {
+            $('#contact-info').show();
+        }
     });
     </script>
 

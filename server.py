@@ -1,4 +1,4 @@
-from flask import Flask, redirect, url_for, session, request, render_template, flash, g, jsonify
+from flask import Flask, redirect, url_for, session, request, render_template, flash, g, jsonify, send_from_directory
 from flask_oauth import OAuth
 from flask_debugtoolbar import DebugToolbarExtension
 from jinja2 import StrictUndefined
@@ -7,22 +7,21 @@ from model import *
 
 import facebook
 import requests
-import json
+import json, os
 
 from pyzipcode import ZipCodeDatabase
 from datetime import datetime, date, timedelta
-
-from werkzeug.utils import secure_filename
-import os
+from pprint import pprint
 
 from pytz import timezone
 
-from flask import send_from_directory
 from functools import wraps
 
 import relations
 
 from sqlalchemy import desc
+
+import googlemaps
 
 
 SECRET_KEY = 'development key'
@@ -33,6 +32,10 @@ app.debug = DEBUG
 app.secret_key = SECRET_KEY
 
 app.jinja_env.undefined = StrictUndefined
+
+
+GOOGLE_MAPS_API_KEY = os.environ['GOOGLE_MAPS_API_KEY']
+gmaps = googlemaps.Client(key=GOOGLE_MAPS_API_KEY)
 
 # I added the following config otherwise, everytime the redirect was giving warning
 # Dont put this in app.config in model.py (db connect) because that has sql alchemy related params only
@@ -289,6 +292,7 @@ def individual_home_page():
     new_requests = RelationManager.query.filter_by(target_userid=g.user_id, seen_by_target='not-seen').count()
     new_responses = RelationManager.query.filter_by(source_userid=g.user_id, seen_by_source='not-seen').count()
 
+
     return render_template("my-homepage.html", ethnicities=ethnicities, religions=religions,
                                                new_requests=new_requests, new_responses=new_responses)
 
@@ -298,6 +302,17 @@ def individual_home_page():
 @login_required
 def show_profile_page(user_id):
     """Show user-profile page"""
+
+    user_type = request.args.get('type')
+    status = request.args.get('status')
+
+    print user_type, status
+
+    if user_id == g.user_id:
+        user_type = 'self'
+        status = None
+
+    print user_type, status
 
     user = User.query.options(db.joinedload('personal')) \
                   .options(db.joinedload('contact')) \
@@ -310,7 +325,7 @@ def show_profile_page(user_id):
     # BOZO - make this loop when user has more than one picture 
     pic_url = os.path.join(app.config['UPLOAD_FOLDER'],user.pictures[0].picture_url)
 
-    return render_template("profile-page.html", user=user, pic_url=pic_url)
+    return render_template("profile-page.html", user=user, pic_url=pic_url, user_type=user_type, status=status)
 
 
 @app.route('/search')
@@ -481,6 +496,41 @@ def accept_or_pass_request():
         db.session.commit()
         return jsonify({'response': "You passed {}'s request..Continue searching..".format(c.source_user.fname), 
                         'uid': source_userid, 'status': "Passed"})
+
+
+@app.route('/accepted-members')
+@login_required
+def show_map():
+
+    # geocode_result = gmaps.geocode('1600 Amphitheatre Parkway, Mountain View, CA')
+    sent_accepted = (RelationManager.query.filter_by(source_userid=g.user_id, status='Accepted')
+                                         .order_by(desc('timestamp')).all())
+    received_accepted = (RelationManager.query.filter_by(target_userid=g.user_id, status='Accepted')
+                                         .order_by(desc('timestamp')).all())
+    
+    zip1 = []
+
+    for a in sent_accepted:
+        zip1.append(a.target_user.contact.zipcode)
+
+    for a in received_accepted:
+        zip1.append(a.source_user.contact.zipcode)
+
+    zip1.append(g.current_user.contact.zipcode)
+
+    print zip1
+
+    lat_lng = []
+
+    for z in zip1:
+        geocode_result = gmaps.geocode(z)
+        lat_lng.append(geocode_result[0]['geometry']['location'])
+    # pprint(geocode_result)
+    print lat_lng
+
+
+    return render_template("accepted-members.html", GOOGLE_MAPS_API_KEY=GOOGLE_MAPS_API_KEY, lat_lng=lat_lng,
+                                       sent_accepted=sent_accepted, received_accepted=received_accepted)
 
 
 @app.route('/logout')

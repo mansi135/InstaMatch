@@ -159,14 +159,13 @@
 
         function checkNotifications() {
             if ({{ new_requests }} > 0) {
+                console.log({{ new_requests }})
                 new_string = '<b>(' + {{ new_requests }} + 'new requests)</b>'
                 $('#received').html(new_string);
-                {{ new_requests }} = 0 // We need this so that if page is reloaded , it doesn't show new response
             }
             if ({{ new_responses }} > 0) {
                 new_string = '<b>(' + {{ new_responses }} + 'new responses)</b>'
                 $('#sent').html(new_string);
-                {{ new_responses }} = 0
             }
         }
             
