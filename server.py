@@ -306,13 +306,9 @@ def show_profile_page(user_id):
     user_type = request.args.get('type')
     status = request.args.get('status')
 
-    print user_type, status
-
     if user_id == g.user_id:
         user_type = 'self'
         status = None
-
-    print user_type, status
 
     user = User.query.options(db.joinedload('personal')) \
                   .options(db.joinedload('contact')) \
@@ -518,17 +514,12 @@ def show_map():
 
     zip1.append(g.current_user.contact.zipcode)
 
-    print zip1
-
     lat_lng = []
 
     for z in zip1:
         geocode_result = gmaps.geocode(z)
         lat_lng.append(geocode_result[0]['geometry']['location'])
     # pprint(geocode_result)
-    print lat_lng
-    sent_accepted.extend(received_accepted)
-    print 
 
     return render_template("requests-accepted.html", GOOGLE_MAPS_API_KEY=GOOGLE_MAPS_API_KEY, lat_lng=lat_lng,
                                     UPLOAD_FOLDER=UPLOAD_FOLDER, sent_accepted=sent_accepted, received_accepted=received_accepted)
