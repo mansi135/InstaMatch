@@ -3,3 +3,4 @@ env
 static/profile_pictures/
 .DS_Store
 static/.DS_Store
+secrets.sh

@@ -498,7 +498,7 @@ def accept_or_pass_request():
                         'uid': source_userid, 'status': "Passed"})
 
 
-@app.route('/accepted-members')
+@app.route('/my-homepage/requests-accepted')
 @login_required
 def show_map():
 
@@ -527,10 +527,11 @@ def show_map():
         lat_lng.append(geocode_result[0]['geometry']['location'])
     # pprint(geocode_result)
     print lat_lng
+    sent_accepted.extend(received_accepted)
+    print 
 
-
-    return render_template("accepted-members.html", GOOGLE_MAPS_API_KEY=GOOGLE_MAPS_API_KEY, lat_lng=lat_lng,
-                                       sent_accepted=sent_accepted, received_accepted=received_accepted)
+    return render_template("requests-accepted.html", GOOGLE_MAPS_API_KEY=GOOGLE_MAPS_API_KEY, lat_lng=lat_lng,
+                                    UPLOAD_FOLDER=UPLOAD_FOLDER, sent_accepted=sent_accepted, received_accepted=received_accepted)
 
 
 @app.route('/logout')
