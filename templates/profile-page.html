@@ -79,11 +79,40 @@
 
         let age = calcAge($('#dob').html()) + ' years old';  
         $('#age').html(age);
-        if('{{ user_type }}' !== 'self') {
-            $('#contact-info').hide();
-        } else {
-            $('#contact-info').show();
-        }
+
+        // if(' user_type ' !== 'self') {
+        //     $('#contact-info').hide();
+        // } else {
+        //     $('#contact-info').show();
+        // }
+
+        // status is status of any user wrt current_user
+        // contact_type is the type of connection of current_user with contacted-user
+        // if status === Accepted
+        //     show status
+        //     show contact-info
+        //     show message-button
+        // if status === Pending
+        //     show status
+        //     hide contact-info
+        //     if contact_type === 'source'
+        //         show accept-btn
+        //         show pass-btn
+        //     if contact_type === 'target'
+        //         <Do nothing>
+        // if status === Passed
+        //     show status
+        //     hide contact-info
+        // if status === new
+        //     hide status
+        //     hide contact-info
+        //     show send-request-btn
+        //     show mark-fav-btn
+        // if status === none (self)
+        //     hide status
+        //     show contact-info
+        //     show edit-button
+
     });
     </script>
 

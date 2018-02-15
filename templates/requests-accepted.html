@@ -51,7 +51,7 @@
 
                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#message-Modal" data-fname="{{ received.source_user.fname }}" data-userid="{{ received.source_userid }}" data-type="source">Message</button>
 
-                <button>Show Contact Info</button> 
+                <button type="button" class="btn btn-primary">Show Contact Info</button> 
                 <p> UserId :{{ received.source_userid }} </p>
                 <p> Name :{{ received.source_user.fname }} {{ received.source_user.lname }} </p>
                 <p> Height : {{ received.source_user.personal.height }}cm </p>
@@ -66,10 +66,10 @@
             <a href="/users/{{ sent.target_userid }}?type='target'&status={{ sent.status }}">     
                 <p> <img src="/{{ UPLOAD_FOLDER }}{{ sent.target_user.pictures[0].picture_url }}" width="200" height="200"> </p></a>
 
-                <button type="button" class="btn btn-primary gggg" data-toggle="modal" data-target="#message-Modal" data-fname="{{ sent.target_user.fname }}" data-userid="{{ sent.target_userid }}" data-type="target">Message</button>
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#message-Modal" data-fname="{{ sent.target_user.fname }}" data-userid="{{ sent.target_userid }}" data-type="target">Message</button>
 
             
-                <button>Send a Message</button>
+                <button type="button" class="btn btn-primary">Show Contact Info</button>
                 <p> UserId :{{ sent.target_userid }} </p>
                 <p> Name :{{ sent.target_user.fname }} {{ sent.target_user.lname }} </p>
                 <p> Height : {{ sent.target_user.personal.height }}cm </p>
@@ -124,12 +124,12 @@
     </script>
     <script>
         $('#message-Modal').on('show.bs.modal', function (event) {
-          $('.send').attr("disabled", false)
+          $('.send').attr("disabled", false);
           $('.send').off('click');
          
           var button = $(event.relatedTarget); // Button that triggered the modal
           var recipient = button.data('fname');
-          var uid = button.data('userid');
+          var to_id = button.data('userid');
 
           
 
@@ -137,13 +137,13 @@
 
         function callBck(evt) {
             evt.preventDefault();
-            console.log(uid);
             console.log($('#message-text').val());
             console.log(button.data('type'));
             // payload = {$('#blah').val(), text-vcale}
-            $.post("/send-message", {'text': $('#message-text').val(), 'uid': uid }, function(response) {
+            let payload = {'text': $('#message-text').val(), 'to_id': to_id, 'timestamp': new Date()};
+            $.post("/send-message", payload, function(response) {
                 console.log(response);
-                $('.send').attr("disabled", true)
+                $('.send').hide()
             });
          }
 

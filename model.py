@@ -147,8 +147,8 @@ class RelationManager(db.Model):
     target_userid = db.Column(db.ForeignKey('users.user_id'), nullable=False) 
     timestamp = db.Column(db.DateTime, nullable=False) 
     status = db.Column(db.String(20), nullable=False)
-    seen_by_source = db.Column(db.String(20))
-    seen_by_target = db.Column(db.String(20))
+    seen_by_source = db.Column(db.String(20), default='NULL')
+    seen_by_target = db.Column(db.String(20), default='NULL')
 
     source_user = db.relationship("User", backref="relations_s", 
                                    primaryjoin="RelationManager.source_userid==User.user_id") 
@@ -160,6 +160,31 @@ class RelationManager(db.Model):
 
         return "<Source_User={} Target_User={} Status={}>".format(self.source_userid, self.target_userid, self.status)
 
+
+
+class Message(db.Model):
+    """Messages"""
+
+    __tablename__ = "messages"
+
+    message_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    from_id = db.Column(db.ForeignKey('users.user_id'), nullable=False)  
+    to_id = db.Column(db.ForeignKey('users.user_id'), nullable=False) 
+    message = db.Column(db.String(1000))
+    timestamp = db.Column(db.DateTime, nullable=False) 
+    seen = db.Column(db.Boolean, nullable=False)
+
+    
+
+    from_user = db.relationship("User", backref="messages_s", 
+                                   primaryjoin="Message.from_id==User.user_id") 
+    to_user = db.relationship("User", backref="messages_t",
+                                   primaryjoin="Message.to_id==User.user_id")
+
+    def __repr__(self):
+        """Provide helpful representation when printed"""
+
+        return "<Source_User={} Target_User={} Status={}>".format(self.source_userid, self.target_userid, self.status)
 
 ##############################################################################
 # Helper functions

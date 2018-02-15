@@ -291,10 +291,11 @@ def individual_home_page():
     religions = Religion.query.all()
     new_requests = RelationManager.query.filter_by(target_userid=g.user_id, seen_by_target='not-seen').count()
     new_responses = RelationManager.query.filter_by(source_userid=g.user_id, seen_by_source='not-seen').count()
-
+    new_messages = Message.query.filter_by(to_id=g.user_id,seen=False).count()
 
     return render_template("my-homepage.html", ethnicities=ethnicities, religions=religions,
-                                               new_requests=new_requests, new_responses=new_responses)
+                                               new_requests=new_requests, new_responses=new_responses,
+                                               new_messages=new_messages)
 
 
     
@@ -303,11 +304,10 @@ def individual_home_page():
 def show_profile_page(user_id):
     """Show user-profile page"""
 
-    user_type = request.args.get('type')
+    contact_type = request.args.get('type')
     status = request.args.get('status')
 
     if user_id == g.user_id:
-        user_type = 'self'
         status = None
 
     user = User.query.options(db.joinedload('personal')) \
@@ -321,7 +321,7 @@ def show_profile_page(user_id):
     # BOZO - make this loop when user has more than one picture 
     pic_url = os.path.join(app.config['UPLOAD_FOLDER'],user.pictures[0].picture_url)
 
-    return render_template("profile-page.html", user=user, pic_url=pic_url, user_type=user_type, status=status)
+    return render_template("profile-page.html", user=user, pic_url=pic_url, contacttype=contact_type, status=status)
 
 
 @app.route('/search')
@@ -525,16 +525,42 @@ def show_map():
                                     UPLOAD_FOLDER=UPLOAD_FOLDER, sent_accepted=sent_accepted, received_accepted=received_accepted)
 
 
+#AJAX route
 @app.route('/send-message', methods=['POST'])
 @login_required
 def send_message():
 
-    idbbb = request.form.get('text')
-    name = request.form.get('uid')
+    
+    to_id = request.form.get('to_id')
+    message = request.form.get('text')
+    timestamp = request.form.get('timestamp')
 
-    print idbbb, name 
+    timestamp = datetime.strptime(timestamp.split("-")[0], "%a %b %d %Y %H:%M:%S %Z")
+    new_message = Message(from_id=g.user_id, to_id=to_id, message=message,
+                                    timestamp=timestamp, seen=False)
+    db.session.add(new_message)
+    db.session.commit()
 
     return "OK"
+
+@app.route('/my-homepage/messages')
+@login_required
+def show_messages():
+
+    new_messages = Message.query.filter_by(to_id=g.user_id, seen=False).all()
+
+    for new_message in new_messages:
+        new_message.seen = True
+    db.session.commit()
+
+
+    messages_list = Message.query.filter_by(to_id=g.user_id).order_by(desc('timestamp')).all()
+      
+    # fix for pic loop
+   
+    return render_template("messages.html", messages_list=messages_list)
+
+
 
 
 @app.route('/logout')

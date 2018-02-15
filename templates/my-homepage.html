@@ -74,6 +74,9 @@
     <div> <a href="/my-homepage/requests-sent" class="sent">Requests I have sent<span id="sent"></span></a> </div>
     <br><br>
 
+    <div> <a href="/my-homepage/messages" class="msg">Messages<span id="msg"></span></a> </div>
+    <br><br>
+
     <div> <a href="/my-homepage/requests-accepted" class="accepted">Requests Accepted</a> </div>
     <br><br>
 
@@ -158,6 +161,11 @@
                 new_string = '<b>(' + {{ new_responses }} + 'new responses)</b>'
                 $('#sent').html(new_string);
             }
+            if ({{ new_messages }} > 0) {
+                new_string = '<b>(' + {{ new_messages }} + 'new responses)</b>'
+                $('#msg').html(new_string);
+            }
+
         }
             
         
@@ -172,6 +180,10 @@
 
             $('.sent').on('click', function() {
                 $('#sent').html('');
+            })
+
+            $('.msg').on('click', function() {
+                $('#msg').html('');
             })
 
 
