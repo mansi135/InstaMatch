@@ -9,23 +9,52 @@
         height: 400px;
       }
     </style>
+
 {% endblock %}
+
 
 {% block content %}
 
     <h3>Accepted Members</h3>
     <div id="map"></div>
 
+    <!-- Same Modal Window in the entire page -->
+    <div class="modal fade" id="message-Modal" tabindex="-1" role="dialog">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="messageModalLabel">New message</h4>
+          </div>
+          <div class="modal-body">
+            <form>
+              <div class="form-group">
+                <label for="message-text" class="control-label">Message:</label>
+                <textarea class="form-control" id="message-text"></textarea>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary send">Send message</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
     <ul>
       {% for received in received_accepted %}
         <li> 
             <a href="/users/{{ received.source_userid }}?type='source'&status={{ received.status }}">     
                 <p> <img src="/{{ UPLOAD_FOLDER }}{{ received.source_user.pictures[0].picture_url }}" width="200" height="200"> </p></a>
+
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#message-Modal" data-fname="{{ received.source_user.fname }}" data-userid="{{ received.source_userid }}" data-type="source">Message</button>
+
+                <button>Show Contact Info</button> 
                 <p> UserId :{{ received.source_userid }} </p>
                 <p> Name :{{ received.source_user.fname }} {{ received.source_user.lname }} </p>
                 <p> Height : {{ received.source_user.personal.height }}cm </p>
-                <p> Religion : {{ received.source_user.personal.religion.religion_name }} </p>
-                <p> Ethnicity : {{ received.source_user.personal.ethnicity.ethnicity_name }} </p>
                 <p> Status : {{ received.status }}</p>
         </li>
       {% endfor %}
@@ -36,11 +65,14 @@
         <li> 
             <a href="/users/{{ sent.target_userid }}?type='target'&status={{ sent.status }}">     
                 <p> <img src="/{{ UPLOAD_FOLDER }}{{ sent.target_user.pictures[0].picture_url }}" width="200" height="200"> </p></a>
+
+                <button type="button" class="btn btn-primary gggg" data-toggle="modal" data-target="#message-Modal" data-fname="{{ sent.target_user.fname }}" data-userid="{{ sent.target_userid }}" data-type="target">Message</button>
+
+            
+                <button>Send a Message</button>
                 <p> UserId :{{ sent.target_userid }} </p>
                 <p> Name :{{ sent.target_user.fname }} {{ sent.target_user.lname }} </p>
                 <p> Height : {{ sent.target_user.personal.height }}cm </p>
-                <p> Religion : {{ sent.target_user.personal.religion.religion_name }} </p>
-                <p> Ethnicity : {{ sent.target_user.personal.ethnicity.ethnicity_name }} </p>
                 <p> Status : {{ sent.status }}</p>
         </li>
       {% endfor %}
@@ -52,45 +84,97 @@
 
 {% block javascript %}
     <script>
-        
         function initMap() {
-            let mylocation = {lat: {{ lat_lng[-1]['lat'] }}, lng: {{ lat_lng[-1]['lng'] }} };
+            let mylocation = {lat: {{ lat_lng[-1]['lat'] }}, lng: {{ lat_lng[-1]['lng']}}};
             let map = new google.maps.Map(document.getElementById('map'), {
               zoom: 5,
               center: mylocation
             });
 
             {% for l in lat_lng %}
-                var icon = {
-                    url: "/static/images/me.png", // url
-                    scaledSize: new google.maps.Size(25, 25), // scaled size
-                    origin: new google.maps.Point(0,0), // origin
-                    anchor: new google.maps.Point(0, 0) // anchor
-                };
+                // var icon = {
+                //     url: "/static/images/me.png", // url
+                //     scaledSize: new google.maps.Size(25, 25), // scaled size
+                //     origin: new google.maps.Point(0,0), // origin
+                //     anchor: new google.maps.Point(0, 0) // anchor
+                // };
                 
-                  var goldStar = {
-                      path: 'M 125,5 155,90 245,90 175,145 200,230 125,180 50,230 75,145 5,90 95,90 z',
-                      fillColor: 'yellow',
-                      fillOpacity: 0.8,
-                      scale: 1,
-                      strokeColor: 'gold',
-                      strokeWeight: 5
-                    };
+                //   var goldStar = {
+                //       path: 'M 125,5 155,90 245,90 175,145 200,230 125,180 50,230 75,145 5,90 95,90 z',
+                //       fillColor: 'yellow',
+                //       fillOpacity: 0.8,
+                //       scale: 1,
+                //       strokeColor: 'gold',
+                //       strokeWeight: 5
+                //     };
                 var m = {lat: {{ l['lat'] }}, lng: {{ l['lng'] }} };
                 var marker = new google.maps.Marker({
                   position: m,
                   map: map,
-                  //icon: goldStar
+                 // icon: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png'
                 }); 
             {% endfor %}
                 var image = 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png';
                 var marker = new google.maps.Marker({
                   position: mylocation,
                   map: map,
-                  icon: image
+                  icon: 'http://maps.google.com/mapfiles/ms/icons/green-dot.png'
                 });
-          }
+        }
     </script>
+    <script>
+        $('#message-Modal').on('show.bs.modal', function (event) {
+          $('.send').attr("disabled", false)
+          $('.send').off('click');
+         
+          var button = $(event.relatedTarget); // Button that triggered the modal
+          var recipient = button.data('fname');
+          var uid = button.data('userid');
+
+          
+
+          $('.send').on('click', callBck);
+
+        function callBck(evt) {
+            evt.preventDefault();
+            console.log(uid);
+            console.log($('#message-text').val());
+            console.log(button.data('type'));
+            // payload = {$('#blah').val(), text-vcale}
+            $.post("/send-message", {'text': $('#message-text').val(), 'uid': uid }, function(response) {
+                console.log(response);
+                $('.send').attr("disabled", true)
+            });
+         }
+
+         
+
+          var modal = $(this);
+
+          // modal.data = {'source_userid': button.data('userid'), 'blah': button.data('source_name')};
+
+          modal.find('.modal-title').text('New message to ' + recipient);
+          modal.find('.modal-body input').val(recipient);
+        })
+
+        // $('.modal').data = {'source_userid': button.data('userid'), 'blah': button.data('source_name')};
+        //$('.send').on('click', callBck);
+
+         // function callBck(evt) {
+         //    evt.preventDefault();
+         //    console.log('here');
+         //    console.log(evt.target);
+         //    console.log($('.gggg').data('userid'));
+         //    // payload = {$('#blah').val(), text-vcale}
+         //    // $.post("/send-message", modal.data, function(response) {
+         //    //     console.log(response);
+         //    // });
+         // }
+
+        
+
+    </script>
+    
     <script async defer
         src="https://maps.googleapis.com/maps/api/js?key={{ GOOGLE_MAPS_API_KEY }}&callback=initMap">
     </script>

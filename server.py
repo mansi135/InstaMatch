@@ -525,6 +525,18 @@ def show_map():
                                     UPLOAD_FOLDER=UPLOAD_FOLDER, sent_accepted=sent_accepted, received_accepted=received_accepted)
 
 
+@app.route('/send-message', methods=['POST'])
+@login_required
+def send_message():
+
+    idbbb = request.form.get('text')
+    name = request.form.get('uid')
+
+    print idbbb, name 
+
+    return "OK"
+
+
 @app.route('/logout')
 def logout():
     """Logout User"""

@@ -113,8 +113,8 @@
     
     <p>
     <label>Ethnicity<br>
-        <input type="radio" name="eth_matter" value=0 checked> Doesn't Matter
-        <input type="radio" name="eth_matter" value=1> Matters to me<br>
+        <input type="radio" id="eth_d_matter" name="eth" value=0 checked> Doesn't Matter
+        <input type="radio" id="eth_matter" name="eth" value=1> Matters to me<br>
         <div id="show-ethnicities">
             {% for ethnicity in ethnicities %}    
                 <input type="checkbox" id ="{{ ethnicity.ethnicity_name }}"name="ethnicities" value="{{ ethnicity.ethnicity_id }}">
@@ -146,19 +146,7 @@
     </form>
 
     <script>
-        $("#show-ethnicities, #show-religions").hide()
-
-        let choices = $('input[name=eth_matter]')
-
-        for(let i=0; i < choices.length; i++) {
-            $(choices[i]).on('click', function() {
-                if($(this).val() === 0) {
-                   $("#show-ethnicities").hide(); 
-                } else {
-                    $("#show-ethnicities").show();
-                }
-            })
-        }
+        
 
         function checkNotifications() {
             if ({{ new_requests }} > 0) {
@@ -184,6 +172,28 @@
 
             $('.sent').on('click', function() {
                 $('#sent').html('');
+            })
+
+
+            $("#show-ethnicities, #show-religions").hide()
+
+            // let choices = $('input[name=eth_matter]')
+
+            // for(let i=0; i < choices.length; i++) {
+            //     $(choices[i]).on('click', function() {
+            //         if($(this).val() === 0) {
+            //            $("#show-ethnicities").hide(); 
+            //         } else {
+            //             $("#show-ethnicities").show();
+            //         }
+            //     })
+            // }
+
+            $('#eth_d_matter').on('click', function() {
+                $("#show-ethnicities").hide();
+            })
+            $('#eth_matter').on('click', function() {
+                $("#show-ethnicities").show();
             })
 
         });

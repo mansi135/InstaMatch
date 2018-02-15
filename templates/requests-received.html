@@ -56,7 +56,8 @@
         }
 
         function acceptPass(user_id, action) {
-            payload = {'source_userid': user_id, 'timestamp': new Date(), 'action': action}
+            let payload = {'source_userid': user_id, 'timestamp': new Date(), 'action': action}
+            // should i do evt.preventdefault here ?
             $.post("/accept-pass-request.json", payload, showResponse);
         }
 
