@@ -3,35 +3,31 @@
 {% block title %}My Messages{% endblock %}
 
 {% block head %}
+    <style>
+        div {
+            margin: 50px;
+        }
+    </style>
 {% endblock %}
 
 {% block content %}
 
-    <br><br>
-    <ul>
+    
       {% for message in messages_list %}
-        <li>          
-            FROM : {{ message.from_user.fname }} Message : {{ message.message }}
-        </li>
+        <div>          
+            <b>FROM</b> : {{ message.from_user.fname }} <br>
+            <b>Message</b> : {{ message.message }}  <br> 
+            <span class="time-ago"></span>
+            <p class="stamp"> {{ message.timestamp }}</p>
+        </div>
     
       {% endfor %}
-    </ul>
+    
     
 {% endblock %}
 
 {% block javascript %} 
     
-    <script>
-
-        function checkStatus() {        
-            
-        }
-
-
-        $(document).ready(function() {         
-            //checkStatus();
-        });
-
-    </script>
+    <script src="/static/js/checkTimeAgo.js"></script>
 
 {% endblock %}

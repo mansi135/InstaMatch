@@ -56,6 +56,8 @@
                 <p> Name :{{ received.source_user.fname }} {{ received.source_user.lname }} </p>
                 <p> Height : {{ received.source_user.personal.height }}cm </p>
                 <p> Status : {{ received.status }}</p>
+                <p class="stamp"> {{ received.timestamp }}</p>
+                <p> Received : <span class="time-ago"></span></p>
         </li>
       {% endfor %}
     </ul>
@@ -74,6 +76,8 @@
                 <p> Name :{{ sent.target_user.fname }} {{ sent.target_user.lname }} </p>
                 <p> Height : {{ sent.target_user.personal.height }}cm </p>
                 <p> Status : {{ sent.status }}</p>
+                <p class="stamp"> {{ sent.timestamp }}</p>
+                <p> Sent : <span class="time-ago"></span></p>
         </li>
       {% endfor %}
     </ul>
@@ -174,6 +178,8 @@
         
 
     </script>
+    <script src="/static/js/checkTimeAgo.js"></script>
+
     
     <script async defer
         src="https://maps.googleapis.com/maps/api/js?key={{ GOOGLE_MAPS_API_KEY }}&callback=initMap">

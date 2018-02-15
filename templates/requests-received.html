@@ -6,6 +6,7 @@
 {% endblock %}
 
 {% block content %}
+    
 
     <br><br>
     <ul>
@@ -23,8 +24,9 @@
             <p> Height : {{ received.source_user.personal.height }}cm </p>
             <p> Religion : {{ received.source_user.personal.religion.religion_name }} </p>
             <p> Ethnicity : {{ received.source_user.personal.ethnicity.ethnicity_name }} </p>
-            <p> Status : <span id="status_{{ received.source_userid }}" data-id="{{ received.source_userid }}">
-            {{ received.status }}</span> </p>
+            <p> Status : <span id="status_{{ received.source_userid }}" data-id="{{ received.source_userid }}">{{ received.status }}</span> </p>
+            <p class="stamp"> {{ received.timestamp }}</p>
+            <p> Received : <span class="time-ago"></span></p>
         </li>
     
       {% endfor %}
@@ -44,7 +46,7 @@
 
             for (let i = 0; i < s.length-1; i++) {
                 id = $(s[i]).data('id');
-                console.log($(s[i]).html());
+                //console.log($(s[i]).html());
                 if ($(s[i]).html().indexOf("Pending") >= 0) {
                     $('#a_' + id).show();  // change a_ and p_ to accept n pass
                     $('#p_' + id).show();
@@ -54,6 +56,8 @@
                 }
             }
         }
+
+
 
         function acceptPass(user_id, action) {
             let payload = {'source_userid': user_id, 'timestamp': new Date(), 'action': action}
@@ -73,5 +77,8 @@
         });
 
     </script>
+
+    <script src="/static/js/checkTimeAgo.js"></script>
+
 
 {% endblock %}

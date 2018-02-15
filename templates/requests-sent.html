@@ -19,8 +19,16 @@
             <p> Religion : {{ sent.target_user.personal.religion.religion_name }} </p>
             <p> Ethnicity : {{ sent.target_user.personal.ethnicity.ethnicity_name }} </p>
             <p> Status : {{ sent.status }} </p>
+            <p class="stamp"> {{ sent.timestamp }}</p>
+            <p> Sent : <span class="time-ago"></span></p>
         </li>   
       {% endfor %}
     </ul>
     
+{% endblock %}
+
+{% block javascript %} 
+    
+    <script src="/static/js/checkTimeAgo.js"></script>
+
 {% endblock %}
