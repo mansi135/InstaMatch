@@ -51,13 +51,17 @@
 
                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#message-Modal" data-fname="{{ received.source_user.fname }}" data-userid="{{ received.source_userid }}" data-type="source">Message</button>
 
-                <button type="button" class="btn btn-primary">Show Contact Info</button> 
                 <p> UserId :{{ received.source_userid }} </p>
                 <p> Name :{{ received.source_user.fname }} {{ received.source_user.lname }} </p>
                 <p> Height : {{ received.source_user.personal.height }}cm </p>
                 <p> Status : {{ received.status }}</p>
                 <p class="stamp"> {{ received.timestamp }}</p>
                 <p> Received : <span class="time-ago"></span></p>
+                <a href="#" data-toggle="hover" 
+                data-content="
+                        Phone Number : {{ received.source_user.contact.phone }} 
+                        Email : {{ received.source_user.email }}">
+                Show Contact </a>
         </li>
       {% endfor %}
     </ul>
@@ -70,14 +74,17 @@
 
                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#message-Modal" data-fname="{{ sent.target_user.fname }}" data-userid="{{ sent.target_userid }}" data-type="target">Message</button>
 
-            
-                <button type="button" class="btn btn-primary">Show Contact Info</button>
                 <p> UserId :{{ sent.target_userid }} </p>
                 <p> Name :{{ sent.target_user.fname }} {{ sent.target_user.lname }} </p>
                 <p> Height : {{ sent.target_user.personal.height }}cm </p>
                 <p> Status : {{ sent.status }}</p>
                 <p class="stamp"> {{ sent.timestamp }}</p>
                 <p> Sent : <span class="time-ago"></span></p>
+                <a href="#" data-toggle="hover" 
+                data-content="
+                        Phone Number : {{ source.target_user.contact.phone }} 
+                        Email : {{ source.target_user.email }}">
+                Show Contact </a>
         </li>
       {% endfor %}
     </ul>
@@ -174,12 +181,13 @@
          //    //     console.log(response);
          //    // });
          // }
-
-        
-
     </script>
     <script src="/static/js/checkTimeAgo.js"></script>
-
+    <script>
+        $(document).ready(function(){
+            $('[data-toggle="hover"]').popover({ trigger : "hover"});  
+        });
+    </script>
     
     <script async defer
         src="https://maps.googleapis.com/maps/api/js?key={{ GOOGLE_MAPS_API_KEY }}&callback=initMap">
