@@ -522,7 +522,8 @@ def show_map():
     # pprint(geocode_result)
 
     return render_template("requests-accepted.html", GOOGLE_MAPS_API_KEY=GOOGLE_MAPS_API_KEY, lat_lng=lat_lng,
-                                    UPLOAD_FOLDER=UPLOAD_FOLDER, sent_accepted=sent_accepted, received_accepted=received_accepted)
+                                    UPLOAD_FOLDER=UPLOAD_FOLDER, sent_accepted=sent_accepted, received_accepted=received_accepted,
+                                    current_user=g.current_user)
 
 
 #AJAX route

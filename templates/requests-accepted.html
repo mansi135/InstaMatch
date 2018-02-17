@@ -4,10 +4,16 @@
 
 {% block head %}
     <style>
-      #map {
-        width: 50%;
-        height: 400px;
-      }
+        .user {
+            float: left;
+        }
+        .gmap {
+            float: left;
+            overflow: hidden;
+        }
+        .side-by-side {
+            display: inline-block;
+        }
     </style>
 
 {% endblock %}
@@ -15,10 +21,9 @@
 
 {% block content %}
 
-    <h3>Accepted Members</h3>
-    <div id="map"></div>
+    <h3>    Accepted Members</h3>
 
-    <!-- Same Modal Window in the entire page -->
+    <!-- One Modal Window in the entire page -->
     <div class="modal fade" id="message-Modal" tabindex="-1" role="dialog">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -43,96 +48,115 @@
     </div>
 
 
-    <ul>
-      {% for received in received_accepted %}
-        <li> 
-            <a href="/users/{{ received.source_userid }}?type='source'&status={{ received.status }}">     
-                <p> <img src="/{{ UPLOAD_FOLDER }}{{ received.source_user.pictures[0].picture_url }}" width="200" height="200"> </p></a>
+    <!-- Half page for users and half page for maps -->
+    <!-- <div class="row">    -->
+        <!-- <div class="col-lg-6" panel panel-default> -->
+        <div class="side-by-side" style="overflow:scroll; height: 600px; width: 700px;">
+            <ul>
+              {% for sent in sent_accepted %}
+                <li> 
+                    <a href="/users/{{ sent.target_userid }}?type='target'&status={{ sent.status }}">     
+                        <p> <img src="/{{ UPLOAD_FOLDER }}{{ sent.target_user.pictures[0].picture_url }}" width="200" height="200" class="marker"> </p></a>
 
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#message-Modal" data-fname="{{ received.source_user.fname }}" data-userid="{{ received.source_userid }}" data-type="source">Message</button>
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#message-Modal" data-fname="{{ sent.target_user.fname }}" data-userid="{{ sent.target_userid }}" data-type="target">Message</button>
 
-                <p> UserId :{{ received.source_userid }} </p>
-                <p> Name :{{ received.source_user.fname }} {{ received.source_user.lname }} </p>
-                <p> Height : {{ received.source_user.personal.height }}cm </p>
-                <p> Status : {{ received.status }}</p>
-                <p class="stamp"> {{ received.timestamp }}</p>
-                <p> Received : <span class="time-ago"></span></p>
-                <a href="#" data-toggle="hover" 
-                data-content="
-                        Phone Number : {{ received.source_user.contact.phone }} 
-                        Email : {{ received.source_user.email }}">
-                Show Contact </a>
-        </li>
-      {% endfor %}
-    </ul>
+                        <p> UserId :{{ sent.target_userid }} </p>
+                        <p> Name :{{ sent.target_user.fname }} {{ sent.target_user.lname }} </p>
+                        <p> Height : {{ sent.target_user.personal.height }}cm </p>
+                        <p> Status : {{ sent.status }}</p>
+                        <p class="stamp"> {{ sent.timestamp }}</p>
+                        <p> Sent : <span class="time-ago"></span></p>
+                        <a href="#" data-toggle="hover" 
+                        data-content="
+                                Phone Number : {{ sent.target_user.contact.phone }} 
+                                Email : {{ sent.target_user.email }}">
+                        Show Contact </a>
+                </li>
+              {% endfor %}
+            </ul>
+            <ul>
+              {% for received in received_accepted %}
+                <li> 
+                    <a href="/users/{{ received.source_userid }}?type='source'&status={{ received.status }}">     
+                        <p> <img src="/{{ UPLOAD_FOLDER }}{{ received.source_user.pictures[0].picture_url }}" width="200" height="200" class="marker"> </p></a>
 
-    <ul>
-      {% for sent in sent_accepted %}
-        <li> 
-            <a href="/users/{{ sent.target_userid }}?type='target'&status={{ sent.status }}">     
-                <p> <img src="/{{ UPLOAD_FOLDER }}{{ sent.target_user.pictures[0].picture_url }}" width="200" height="200"> </p></a>
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#message-Modal" data-fname="{{ received.source_user.fname }}" data-userid="{{ received.source_userid }}" data-type="source">Message</button>
 
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#message-Modal" data-fname="{{ sent.target_user.fname }}" data-userid="{{ sent.target_userid }}" data-type="target">Message</button>
-
-                <p> UserId :{{ sent.target_userid }} </p>
-                <p> Name :{{ sent.target_user.fname }} {{ sent.target_user.lname }} </p>
-                <p> Height : {{ sent.target_user.personal.height }}cm </p>
-                <p> Status : {{ sent.status }}</p>
-                <p class="stamp"> {{ sent.timestamp }}</p>
-                <p> Sent : <span class="time-ago"></span></p>
-                <a href="#" data-toggle="hover" 
-                data-content="
-                        Phone Number : {{ source.target_user.contact.phone }} 
-                        Email : {{ source.target_user.email }}">
-                Show Contact </a>
-        </li>
-      {% endfor %}
-    </ul>
-
+                        <p> UserId :{{ received.source_userid }} </p>
+                        <p> Name :{{ received.source_user.fname }} {{ received.source_user.lname }} </p>
+                        <p> Height : {{ received.source_user.personal.height }}cm </p>
+                        <p> Status : {{ received.status }}</p>
+                        <p class="stamp"> {{ received.timestamp }}</p>
+                        <p> Received : <span class="time-ago"></span></p>
+                        <a href="#" data-toggle="hover" 
+                        data-content="
+                                Phone Number : {{ received.source_user.contact.phone }} 
+                                Email : {{ received.source_user.email }}">
+                        Show Contact </a>
+                </li>
+              {% endfor %}
+            </ul>       
+        </div>
+        <!-- <div class="col-lg-6"> -->
+        
+        <div class="side-by-side">
+            <div id="map" style="height:600px; width:650px; float: right;">
+            </div>     
+        </div>
+    <!-- </div> -->
 
 
 {% endblock %}
 
 {% block javascript %}
-    <script>
-        function initMap() {
-            let mylocation = {lat: {{ lat_lng[-1]['lat'] }}, lng: {{ lat_lng[-1]['lng']}}};
-            let map = new google.maps.Map(document.getElementById('map'), {
-              zoom: 5,
-              center: mylocation
-            });
 
-            {% for l in lat_lng %}
-                // var icon = {
-                //     url: "/static/images/me.png", // url
-                //     scaledSize: new google.maps.Size(25, 25), // scaled size
-                //     origin: new google.maps.Point(0,0), // origin
-                //     anchor: new google.maps.Point(0, 0) // anchor
-                // };
-                
-                //   var goldStar = {
-                //       path: 'M 125,5 155,90 245,90 175,145 200,230 125,180 50,230 75,145 5,90 95,90 z',
-                //       fillColor: 'yellow',
-                //       fillOpacity: 0.8,
-                //       scale: 1,
-                //       strokeColor: 'gold',
-                //       strokeWeight: 5
-                //     };
-                var m = {lat: {{ l['lat'] }}, lng: {{ l['lng'] }} };
-                var marker = new google.maps.Marker({
-                  position: m,
-                  map: map,
-                 // icon: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png'
-                }); 
-            {% endfor %}
-                var image = 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png';
-                var marker = new google.maps.Marker({
-                  position: mylocation,
-                  map: map,
-                  icon: 'http://maps.google.com/mapfiles/ms/icons/green-dot.png'
-                });
-        }
+    <script async defer
+        src="https://maps.googleapis.com/maps/api/js?key={{ GOOGLE_MAPS_API_KEY }}&callback=initMap">
     </script>
+
+    <script>
+        var zips = [];
+        {% for a in sent_accepted %}
+            zips.push( '{{ a.target_user.contact.zipcode }}' );
+        {% endfor %}
+
+        {% for a in received_accepted %}
+            zips.push( '{{ a.source_user.contact.zipcode }}' );
+        {% endfor %}
+        
+        var my_zip = '{{ current_user.contact.zipcode }}';
+
+        var markers = [];
+
+        
+        
+        $(document).ready(function(){       
+
+            initMap();
+            get_geo_codes();
+            console.log(markers);
+
+            $('.marker').hover(
+                function() {
+                    let index = $('.marker').index(this)    // $('.marker') will give a list 
+                    markers[index].setAnimation(google.maps.Animation.BOUNCE);
+                    console.log(markers[index]);
+                },
+                function() {
+                    let index = $('.marker').index(this)    // $('.marker') will give a list 
+                    markers[index].setAnimation(null); 
+                    console.log(markers[index]); 
+                }
+            );
+
+        });
+
+      </script> 
+
+      
+      <script src="/static/js/gmaps.js"></script>
+     
+
     <script>
         $('#message-Modal').on('show.bs.modal', function (event) {
           $('.send').attr("disabled", false);
@@ -140,9 +164,7 @@
          
           var button = $(event.relatedTarget); // Button that triggered the modal
           var recipient = button.data('fname');
-          var to_id = button.data('userid');
-
-          
+          var to_id = button.data('userid');         
 
           $('.send').on('click', callBck);
 
@@ -158,38 +180,21 @@
             });
          }
 
-         
-
           var modal = $(this);
-
-          // modal.data = {'source_userid': button.data('userid'), 'blah': button.data('source_name')};
 
           modal.find('.modal-title').text('New message to ' + recipient);
           modal.find('.modal-body input').val(recipient);
         })
-
-        // $('.modal').data = {'source_userid': button.data('userid'), 'blah': button.data('source_name')};
-        //$('.send').on('click', callBck);
-
-         // function callBck(evt) {
-         //    evt.preventDefault();
-         //    console.log('here');
-         //    console.log(evt.target);
-         //    console.log($('.gggg').data('userid'));
-         //    // payload = {$('#blah').val(), text-vcale}
-         //    // $.post("/send-message", modal.data, function(response) {
-         //    //     console.log(response);
-         //    // });
-         // }
+    
     </script>
+
     <script src="/static/js/checkTimeAgo.js"></script>
+
     <script>
         $(document).ready(function(){
             $('[data-toggle="hover"]').popover({ trigger : "hover"});  
         });
     </script>
     
-    <script async defer
-        src="https://maps.googleapis.com/maps/api/js?key={{ GOOGLE_MAPS_API_KEY }}&callback=initMap">
-    </script>
+    
 {% endblock %}
