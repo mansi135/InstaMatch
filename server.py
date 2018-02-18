@@ -19,10 +19,11 @@ from functools import wraps
 
 import relations
 
-from sqlalchemy import desc
+from sqlalchemy import desc, case
 
 import googlemaps
 
+from helper import *
 
 SECRET_KEY = 'development key'
 DEBUG = True
@@ -86,6 +87,10 @@ def get_zip_near_me(myzip, miles):
         #print str(datetime.now(ca))
 
         # Select * from Users where zip_code IN (19125,19081,19107.........);
+
+
+
+
 
 # Using login-decorator - for login authentication
 def login_required(f):
@@ -504,24 +509,24 @@ def show_map():
     received_accepted = (RelationManager.query.filter_by(target_userid=g.user_id, status='Accepted')
                                          .order_by(desc('timestamp')).all())
     
-    zip1 = []
+    # zip1 = []
 
-    for a in sent_accepted:
-        zip1.append(a.target_user.contact.zipcode)
+    # for a in sent_accepted:
+    #     zip1.append(a.target_user.contact.zipcode)
 
-    for a in received_accepted:
-        zip1.append(a.source_user.contact.zipcode)
+    # for a in received_accepted:
+    #     zip1.append(a.source_user.contact.zipcode)
 
-    zip1.append(g.current_user.contact.zipcode)
+    # zip1.append(g.current_user.contact.zipcode)
 
-    lat_lng = []
+    # lat_lng = []
 
-    for z in zip1:
-        geocode_result = gmaps.geocode(z)
-        lat_lng.append(geocode_result[0]['geometry']['location'])
+    # for z in zip1:
+    #     geocode_result = gmaps.geocode(z)
+    #     lat_lng.append(geocode_result[0]['geometry']['location'])
     # pprint(geocode_result)
 
-    return render_template("requests-accepted.html", GOOGLE_MAPS_API_KEY=GOOGLE_MAPS_API_KEY, lat_lng=lat_lng,
+    return render_template("requests-accepted.html", GOOGLE_MAPS_API_KEY=GOOGLE_MAPS_API_KEY, 
                                     UPLOAD_FOLDER=UPLOAD_FOLDER, sent_accepted=sent_accepted, received_accepted=received_accepted,
                                     current_user=g.current_user)
 
@@ -555,11 +560,19 @@ def show_messages():
     db.session.commit()
 
 
+    latest_messages = get_latest_messages(db, g.user_id);
+    user_list = []
+
+    for message in latest_messages:     # returns a tuple of (id, msg, timestamp)
+        user_list.append((User.query.get(message[0]), message))
+
+
     messages_list = Message.query.filter_by(to_id=g.user_id).order_by(desc('timestamp')).all()
       
+
     # fix for pic loop
    
-    return render_template("messages.html", messages_list=messages_list)
+    return render_template("messages.html", messages_list=messages_list, user_list=user_list, UPLOAD_FOLDER=UPLOAD_FOLDER)
 
 
 

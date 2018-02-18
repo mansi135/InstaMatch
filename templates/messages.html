@@ -7,6 +7,15 @@
         div {
             margin: 50px;
         }
+        .side-by-side {
+            float: left;
+        }
+        .cl {
+            clear: left;
+        }
+        img {
+            border-radius: 50%;
+        }
     </style>
 {% endblock %}
 
@@ -22,7 +31,23 @@
         </div>
     
       {% endfor %}
-    
+
+    <ul>
+      {% for user, message in user_list %}
+        <li>
+          <div class="side-by-side">
+            <img src="/{{ UPLOAD_FOLDER }}{{ user.pictures[0].picture_url }}" width="200" height="200">
+          </div>
+          <div class="side-by-side">
+            <p> {{ user.fname }} {{ user.lname }} </p>
+            <p> {{ message[1] }} <span class="time-ago"></span></p> 
+            <p class="stamp"> {{ message[2] }} </p>
+          </div>
+          <div class="cl">
+          </div>
+        </li>
+      {% endfor %}
+    </ul>
     
 {% endblock %}
 
