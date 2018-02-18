@@ -5,11 +5,6 @@
           href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="/static/css/welcome-page.css">
     <title>InstaMatch..The perfect Match..</title>
-    <style>
-        #login {
-            margin: 20px;
-        }
-    </style>
 </head>
 
 <body>
@@ -51,28 +46,7 @@
 
 <script src="http://code.jquery.com/jquery.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-<script>
-    
-    $(document).ready(function() {
-    
-        $("#login").on("submit", function(evt) {
-            evt.preventDefault();
-            let email = $("#email").val();
-            let password = $("#password").val();
-            $.post("/login", {"email": email, "password": password},
-                function(response) {
-                    if (response.status === 'OK') {
-                        window.location.assign("/my-homepage");
-                    } else {
-                        alert(response.msg);
-                        window.location.assign("/");    // equivalent of redirect in flask is window.location
-                    }  
-                });
-            });
-    });
-
-</script>
-
+<script src="/static/js/loginModal.js"></script>
 
 
 <footer>

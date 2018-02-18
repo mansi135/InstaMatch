@@ -1,0 +1,19 @@
+.nav, .navbar, .navbar-default, .navbar-default {
+  background-color: blue;
+  color: white;
+  border-radius: 0px;
+}
+
+.navbar-default .navbar-brand {
+  color: #151515;
+}
+
+.navbar-default .navbar-nav>li>a {
+  color: white;
+}
+
+footer {
+    text-align: center;
+    bottom: 0;
+    width: 100%;  /* required because fixed position */
+}
