@@ -527,8 +527,8 @@ def show_map():
     # pprint(geocode_result)
 
     return render_template("requests-accepted.html", GOOGLE_MAPS_API_KEY=GOOGLE_MAPS_API_KEY, 
-                                    UPLOAD_FOLDER=UPLOAD_FOLDER, sent_accepted=sent_accepted, received_accepted=received_accepted,
-                                    current_user=g.current_user)
+                                    UPLOAD_FOLDER=UPLOAD_FOLDER, sent_accepted=sent_accepted, 
+                                    received_accepted=received_accepted, current_user=g.current_user)
 
 
 #AJAX route
@@ -567,13 +567,27 @@ def show_messages():
         user_list.append((User.query.get(message[0]), message))
 
 
-    messages_list = Message.query.filter_by(to_id=g.user_id).order_by(desc('timestamp')).all()
-      
+    # messages_list = Message.query.filter_by(to_id=g.user_id).order_by(desc('timestamp')).all()
 
     # fix for pic loop
    
-    return render_template("messages.html", messages_list=messages_list, user_list=user_list, UPLOAD_FOLDER=UPLOAD_FOLDER)
+    return render_template("messages.html", user_list=user_list, UPLOAD_FOLDER=UPLOAD_FOLDER)
 
+
+@app.route('/retrieve-messages.json')
+@login_required
+def retrieve_msg_history():
+
+    uid = request.args.get('uid')
+    fname = request.args.get('fname')
+
+    history = (db.session.query(case([(Message.from_id == g.user_id, 'You')], else_=fname), Message.message)
+                .filter(((Message.from_id == g.user_id) & (Message.to_id == uid)) |((Message.to_id == g.user_id) & (Message.from_id == uid)))
+                .order_by(desc(Message.timestamp)).all())
+
+    print history
+
+    return jsonify({'data' : history})
 
 
 

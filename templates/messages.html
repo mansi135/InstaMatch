@@ -21,17 +21,6 @@
 
 {% block content %}
 
-    
-      {% for message in messages_list %}
-        <div>          
-            <b>FROM</b> : {{ message.from_user.fname }} <br>
-            <b>Message</b> : {{ message.message }}  <br> 
-            <span class="time-ago"></span>
-            <p class="stamp"> {{ message.timestamp }}</p>
-        </div>
-    
-      {% endfor %}
-
     <ul>
       {% for user, message in user_list %}
         <li>
@@ -40,7 +29,9 @@
           </div>
           <div class="side-by-side">
             <p> {{ user.fname }} {{ user.lname }} </p>
-            <p> {{ message[1] }} <span class="time-ago"></span></p> 
+            <p> <a href="#" class="messages" id="history_{{ user.user_id }}" data-toggle="popover" data-trigger="focus" data-id="{{ user.user_id }}" data-fname="{{ user.fname }}">
+            {{ message[1] }}</a> </p> 
+            <p><span class="time-ago"></span></p>
             <p class="stamp"> {{ message[2] }} </p>
           </div>
           <div class="cl">
@@ -48,11 +39,87 @@
         </li>
       {% endfor %}
     </ul>
+
+    <!-- <div id="check" class="modal hide" role="dialog"></div> -->
     
 {% endblock %}
 
 {% block javascript %} 
     
     <script src="/static/js/checkTimeAgo.js"></script>
+    <script>
+        $(document).ready(function() {
+
+            messages = $('.messages');
+
+        // for (let i = 0; i < messages.length; i++) {
+        //     let id = $(messages[i]).data('id');
+        //     $('#history_' + id).popover({ 'html': true, 
+        //                                   'content': function(){
+        //                                    return newFunc($(this).data('id'), $(this).data('fname'));
+        //                                   }
+        //                                });
+        // }
+
+        // function newFunc(id, name) {
+        //     var rr;
+        //     $.get('/retrieve-messages.json', {'uid': id, 'fname': name}, function(response) {
+        //         console.log(response.data);
+        //         rr = response.data;
+        //     })
+        //     setTimeout(function() {return id + "mary god" + name + "   " + rr;}, 3000);
+        // }
+
+
+
+
+        // for (let i = 0; i < messages.length; i++) {
+        //     let id = $(messages[i]).data('id');
+        //     $('#history_' + id).on('click', function() {
+        //         $.get('/retrieve-messages.json', 
+        //             {'uid': $(this).data('id'), 'fname': $(this).data('fname')}, 
+        //             function(response) {
+        //                  console.log(response.data);
+        //                 $('#check').html(response.data).modal('show');
+        //             })
+        //     })        
+        // }
+
+        
+                         
+                        // $.get('/retrieve-messages.json', {'uid': $(this).data('id'), 'fname': $(this).data('fname')}, function(response) { 
+                        //         console.log(response.data);
+                        //         return response.data;
+                        //     });
+                    //$(this).data('popover',null).popover({content: 'Cannot proceed with Save while Editing a'});
+                    // console.log($(this).popover);
+                    // $(this).popover();
+                    //var popover = $(this).attr('data-content',response.data).data('bs.popover');
+                    //popover.setContent();
+                    // popover.$tip.addClass(popover.options.placement);
+                    
+                   // $(this).attr('data-content',response.data);
+                   // $('[data-toggle="popover"]').popover('show');
+                    //$(this).popover({content: 'Cannot proceed with Save while Editing a row.'});
+                     //$(this).popover();
+                    // $(this).popover();
+                
+            
+            
+
+            // $('.history').on('click', function(e) {
+
+            //     $.get('/retrieve-messages.json', {'uid': $(this).data('id'), 'fname': $(this).data('fname')}, function(response) {
+            //         $('.history').attr('data-content',response.data);
+            //         //$(this).popover({content: 'Cannot proceed with Save while Editing a row.'});
+            //          //$(this).popover();
+            //         // $(this).popover();
+            //     });
+            // });
+
+
+        })
+
+    </script>
 
 {% endblock %}
