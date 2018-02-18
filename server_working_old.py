@@ -259,6 +259,13 @@ def uploaded_file(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'],filename)
 
 
+@app.route('/login')
+def show_login_form():
+    """Show login form"""
+
+    return render_template("login-form.html")
+
+
 @app.route('/login', methods=['POST'])
 def login_check():
     """Login check"""
@@ -266,19 +273,20 @@ def login_check():
     email = request.form.get('email')
     password = request.form.get('password')
 
+    print email, password
+
     try:
         existing_user = User.query.filter_by(email=email, password=password).one()
     except:
       #  flash("The email or password you have entered did not match our records. Please try again.", "danger")
       #  return redirect(request.url)
-        return jsonify({'msg': "Email or Password is incorrect. Please try again!",'status': "NotOK"})
+        return jsonify("Email or Password is incorrect. Please try again!")
 
     flash("Welcome {} You are successfully logged in.".format(existing_user.fname))
     session['user_id'] = existing_user.user_id
     session['logged_in'] = True
     session['fname'] = existing_user.fname # Not-needed..remove it ?
-    return jsonify({'msg': "Welcome {} You are successfully logged in.".format(existing_user.fname), 'status': "OK"})
-    # return redirect('/my-homepage')
+    return redirect('/my-homepage')
 
 
 

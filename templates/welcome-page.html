@@ -1,35 +1,83 @@
-{% extends 'base.html' %}
+<html>
 
-{% block title %} Welcome {% endblock %}
+<head>
+    <link rel="stylesheet"
+          href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="/static/css/welcome-page.css">
+    <title>InstaMatch..The perfect Match..</title>
+    <style>
+        #login {
+            margin: 20px;
+        }
+    </style>
+</head>
 
-<!-- <style>
-body, html {
-    height: 100%;
-    margin: 0;
-}
+<body>
 
-.bg {
-    /* The image used */
-    background-image: url("/static/images/Welcome.jpg");
+<div class="site-wrapper">
+    <div class="site-wrapper-inner">
 
-    /* Full height */
-    height: 100%; 
+        <img src="/static/images/logo.jpg" style="border-radius: 50%;" width="100px" height="100px">
 
-    /* Center and scale the image nicely */
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
-}
-</style> -->
+        <h1>InstaMatch</h1>
 
-{% block content %}
+        <p class="lead">A Match Making App for You.</p>
 
-<h1>Welcome to Insta-Match</h1>
+        <a href="/register" class="btn btn-lg btn-primary">Register</a>
 
-<img src="/static/images/Welcome.jpg" align="middle">
+        <a href="#" data-toggle="modal" data-target=".bs-example-modal-sm" class="btn btn-lg btn-primary" id="login-btn">Login</a>
 
-<h2> <a href="/register">New User? Register Here</a> </h2>
+    </div>
+</div>
 
-<h2> <a href="/login">Existing User? Login Here</a> <h2> 
+<!-- Login Window -->
+<div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" id="login-modal" aria-labelledby="mySmallModalLabel">
+      <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+              <form action="/login" method="POST" id="login">
+                  <div class="form-group">
+                    <label class="sr-only" for="exampleInputEmail3">Email address</label>
+                    <input type="email" class="form-control" id="email" placeholder="Email">
+                  </div>
+                  <div class="form-group">
+                    <label class="sr-only" for="exampleInputPassword3">Password</label>
+                    <input type="password" class="form-control" id="password" placeholder="Password">
+                  </div>
+                  <button type="submit" class="btn btn-default" id="login-modal-submit">Log in</button>
+                </form>
+            </div>
+      </div>
+ </div>
 
-{% endblock %}
+<script src="http://code.jquery.com/jquery.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script>
+    
+    $(document).ready(function() {
+    
+        $("#login").on("submit", function(evt) {
+            evt.preventDefault();
+            let email = $("#email").val();
+            let password = $("#password").val();
+            $.post("/login", {"email": email, "password": password},
+                function(response) {
+                    if (response.status === 'OK') {
+                        window.location.assign("/my-homepage");
+                    } else {
+                        alert(response.msg);
+                        window.location.assign("/");    // equivalent of redirect in flask is window.location
+                    }  
+                });
+            });
+    });
+
+</script>
+
+
+
+<footer>
+    <p>Copyright InstaMatch 2018. All rights reserved.</p>
+</footer>
+
+</body>
+</html>
