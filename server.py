@@ -9,11 +9,8 @@ import facebook
 import requests
 import json, os
 
-from pyzipcode import ZipCodeDatabase
 from datetime import datetime, date, timedelta
 from pprint import pprint
-
-from pytz import timezone
 
 from functools import wraps
 
@@ -66,30 +63,6 @@ def calc_age(dob):
     age = today.year - dob.year - ((today.month, today.day) < (dob.month, dob.day))
     return age
     # dob_t = datetime.strptime(dob, '%Y-%m-%d')
-
-
-def get_zip_near_me(myzip, miles):
-    """Shows all zipcodes near you"""
-
-    zcdb = ZipCodeDatabase()
-    in_radius = [z.zip for z in zcdb.get_zipcodes_around_radius(myzip, miles)]
-    return in_radius
-    #return render_template("zip.html",zipcodes=in_radius)
-
-
-
-#def some_function_for_timestamp():
-
-    # Getting PST time-stamp, will be used later
-        #ca = timezone('US/Pacific')
-
-        #print datetime.now(ca).strftime('%Y-%m-%d %H:%M:%S')
-        #print str(datetime.now(ca))
-
-        # Select * from Users where zip_code IN (19125,19081,19107.........);
-
-
-
 
 
 # Using login-decorator - for login authentication
@@ -580,9 +553,13 @@ def retrieve_msg_history():
                 .filter(((Message.from_id == g.user_id) & (Message.to_id == uid)) |((Message.to_id == g.user_id) & (Message.from_id == uid)))
                 .order_by(desc(Message.timestamp)).all())
 
-    print history
+    string = ""
 
-    return jsonify({'data' : history})
+    for sender, msg in history:
+        string += "<b>" + sender + "</b>: " + msg + "<br>"
+
+    return jsonify({'data' : string})
+    # return string
 
 
 

@@ -1,6 +1,9 @@
+from pyzipcode import ZipCodeDatabase
+from pytz import timezone
+
 
 def get_latest_messages(db, user_id):
-    """Given a GitHub account name, print info about the matching student."""
+    """Given a user_id, return all messages to and from him to every-other user."""
 
     QUERY = """
         WITH 
@@ -18,3 +21,26 @@ def get_latest_messages(db, user_id):
     row = db_cursor.fetchall()
 
     return row
+
+
+
+def get_zip_near_me(myzip, miles):
+    """Shows all zipcodes near you"""
+
+    zcdb = ZipCodeDatabase()
+    in_radius = [z.zip for z in zcdb.get_zipcodes_around_radius(myzip, miles)]
+    return in_radius
+    #return render_template("zip.html",zipcodes=in_radius)
+
+
+
+#def some_function_for_timestamp():
+
+    # Getting PST time-stamp, will be used later
+        #ca = timezone('US/Pacific')
+
+        #print datetime.now(ca).strftime('%Y-%m-%d %H:%M:%S')
+        #print str(datetime.now(ca))
+
+        # Select * from Users where zip_code IN (19125,19081,19107.........);
+

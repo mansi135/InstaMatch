@@ -61,80 +61,84 @@
 {% endblock %}
 
 {% block content %}
-    <h1> Welcome {{ session['fname'] }} </h1>
-
-
-    <div> <a href="">Start Searching</a> </div>        
-         
-    <form action="/search">
-    <p>
-      <label for="age">Age Range:</label>
-      <input type="text" id="age" name="age" readonly style="border:0; color:#f6931f; font-weight:bold;">
-    </p>
-     
-    <div id="slider-range-age"></div>
-
-    <p>
-      <label for="height">Height Range in cm:</label>
-      <input type="text" id="height" name="height" readonly style="border:0; color:#f6931f; font-weight:bold;">
-    </p>
-     
-    <div id="slider-range-height"></div>    
-
-    <p>
-      <label for="distance">Distance from me:</label>
-      <input type="text" id="distance" name="distance" readonly style="border:0; color:#f6931f; font-weight:bold;">
-    </p>
-     
-    <div id="slider-distance"></div>    
-
-    <br>
-
-    <p>
-    <label>Gender<br>
-        <input type="radio" name="gender" value="M" checked> Male<br>
-        <input type="radio" name="gender" value="F"> Female<br>
-        <input type="radio" name="gender" value="O"> Other
-    </label><br><br>
-    </p>
     
-    <p>
-    <label>Ethnicity<br>
-        <input type="radio" id="eth_d_matter" name="eth" value=0 checked> Doesn't Matter
-        <input type="radio" id="eth_matter" name="eth" value=1> Matters to me<br>
-        <div id="show-ethnicities">
-            {% for ethnicity in ethnicities %}    
-                <input type="checkbox" id ="{{ ethnicity.ethnicity_name }}"name="ethnicities" value="{{ ethnicity.ethnicity_id }}">
-                <label for="{{ ethnicity.ethnicity_name }}">{{ ethnicity.ethnicity_name }}</label>   
-            {% endfor %}
+
+     <div class="container-fluid" id="search-users">
+       <div class="row">
+            <h2 class="text-center"> Welcome {{ session['fname'] }} </h2>
+       </div>
+       <div class="row">
+         <div class="col-lg-2" id="filters"> 
+            <form action="/search">
+                <p>
+                  <label for="age">Age Range:</label>
+                  <input type="text" id="age" name="age" readonly style="border:0; color:#f6931f; font-weight:bold;">
+                </p> 
+                <div id="slider-range-age"></div>
+                <br>
+                <p>
+                  <label for="height">Height Range in cm:</label>
+                  <input type="text" id="height" name="height" readonly style="border:0; color:#f6931f; font-weight:bold;">
+                </p>
+                <div id="slider-range-height"></div>    
+                <br>
+                <p>
+                  <label for="distance">Distance from me:</label>
+                  <input type="text" id="distance" name="distance" readonly style="border:0; color:#f6931f; font-weight:bold;">
+                </p>
+                <div id="slider-distance"></div>    
+
+                <p>
+                <label>Gender<br>
+                    <input type="radio" name="gender" value="M" checked> Male<br>
+                    <input type="radio" name="gender" value="F"> Female<br>
+                    <input type="radio" name="gender" value="O"> Other
+                </label><br><br>
+                </p>
+    
+                <p>
+                <label>Ethnicity<br>
+                    <input type="radio" id="eth_d_matter" name="eth" value=0 checked> Doesn't Matter
+                    <input type="radio" id="eth_matter" name="eth" value=1> Matters<br>
+                    <div id="show-ethnicities">
+                        <select name="ethnicities" multiple>
+                            {% for ethnicity in ethnicities %}
+                                <option value="{{ ethnicity.ethnicity_id }}">{{ ethnicity.ethnicity_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </label>
+                </p>
+
+                <p>
+                <label>Religion<br>
+                    <input type="radio" id="rel_d_matter" name="rel" value=0 checked> Doesn't Matter
+                    <input type="radio" id="rel_matter" name="rel" value=1> Matters<br>
+                    <div id="show-religions">
+                        <select name="religions" multiple>
+                            {% for religion in religions %}
+                                <option value="{{ religion.religion_id }}">{{ religion.religion_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </label>  
+                </p> 
+
+                <p>
+                    <input type="submit" value="SEARCH">
+                </p>
+
+            </form>
+
+          </div>
         </div>
-   
-    </label><br><br>
-    </p>
+    </div>
 
-    <p>
-    <label>Religion
-        <input type="radio" name="rel_matter" value=0 checked> Doesn't Matter
-        <input type="radio" name="rel_matter" value=1> Matters to me<br>
-        <div id="show-religions">
-            <select name="religions" multiple>
-                {% for religion in religions %}
-                    <option value="{{ religion.religion_id }}">{{ religion.religion_name }}</option>
-                {% endfor %}
-            </select>
-        </div>
-    </label><br><br>    
-    </p> 
+    
+{% endblock %}
+{% block javascript %}
 
-    <p>
-        <input type="submit" value="SEARCH">
-    </p>
-
-    </form>
-
-    <script>
-        
-
+    <script>   
         function checkNotifications() {
             let notifications = {{ new_requests }} + {{ new_responses }};
             if( notifications > 0) {
@@ -153,56 +157,8 @@
                 let new_string = '<b>(' + {{ new_messages }} + ')</b>';
                 $('#msg').html(new_string);
             }
-
         }
-            
-        
-
-        $(document).ready(function() {         
-            
-
-            checkNotifications();
-            
-            $('.received').on('click', function() {
-                $('#received').html('');
-            })
-
-            $('.sent').on('click', function() {
-                $('#sent').html('');
-            })
-
-            $('.msg').on('click', function() {
-                $('#msg').html('');
-            })
-
-
-            $("#show-ethnicities, #show-religions").hide()
-
-            // let choices = $('input[name=eth_matter]')
-
-            // for(let i=0; i < choices.length; i++) {
-            //     $(choices[i]).on('click', function() {
-            //         if($(this).val() === 0) {
-            //            $("#show-ethnicities").hide(); 
-            //         } else {
-            //             $("#show-ethnicities").show();
-            //         }
-            //     })
-            // }
-
-            $('#eth_d_matter').on('click', function() {
-                $("#show-ethnicities").hide();
-            })
-            $('#eth_matter').on('click', function() {
-                $("#show-ethnicities").show();
-            })
-
-        });
-
     </script>
-
-    <!-- {% for ethnicity in ethnicities %}
-        <button role="checkbox" aria-checked="false">{{ ethnicity.ethnicity_name }}</button>
-    {% endfor %} -->
+    <script src="/static/js/my-homepage.js"></script>
 
 {% endblock %}
