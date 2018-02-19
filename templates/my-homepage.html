@@ -4,7 +4,6 @@
 
 {% block head %}
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-    <link rel="stylesheet" href="/resources/demos/style.css">
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script>
@@ -64,21 +63,6 @@
 {% block content %}
     <h1> Welcome {{ session['fname'] }} </h1>
 
-    <div> <a href="/users/{{ session['user_id'] }}">See My Profile</a> </div>
-    <br><br>
-
-    <div> <a href="/my-homepage/requests-received" class="received">Requests I have received<span id="received"></span>
-    </a> </div>
-    <br><br>
-
-    <div> <a href="/my-homepage/requests-sent" class="sent">Requests I have sent<span id="sent"></span></a> </div>
-    <br><br>
-
-    <div> <a href="/my-homepage/messages" class="msg">Messages<span id="msg"></span></a> </div>
-    <br><br>
-
-    <div> <a href="/my-homepage/requests-accepted" class="accepted">Requests Accepted</a> </div>
-    <br><br>
 
     <div> <a href="">Start Searching</a> </div>        
          
@@ -152,17 +136,21 @@
         
 
         function checkNotifications() {
+            let notifications = {{ new_requests }} + {{ new_responses }};
+            if( notifications > 0) {
+                let new_string = '<b>(' + notifications + ')</b>';
+                $('#notification').html(new_string);
+            }
             if ({{ new_requests }} > 0) {
-                console.log({{ new_requests }})
-                new_string = '<b>(' + {{ new_requests }} + 'new requests)</b>'
+                let new_string = '<b>(' + {{ new_requests }} + 'new requests)</b>';
                 $('#received').html(new_string);
             }
             if ({{ new_responses }} > 0) {
-                new_string = '<b>(' + {{ new_responses }} + 'new responses)</b>'
+                let new_string = '<b>(' + {{ new_responses }} + 'new responses)</b>';
                 $('#sent').html(new_string);
             }
             if ({{ new_messages }} > 0) {
-                new_string = '<b>(' + {{ new_messages }} + 'new responses)</b>'
+                let new_string = '<b>(' + {{ new_messages }} + ')</b>';
                 $('#msg').html(new_string);
             }
 
@@ -172,6 +160,7 @@
 
         $(document).ready(function() {         
             
+
             checkNotifications();
             
             $('.received').on('click', function() {
