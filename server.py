@@ -266,6 +266,10 @@ def individual_home_page():
     new_responses = RelationManager.query.filter_by(source_userid=g.user_id, seen_by_source='not-seen').count()
     new_messages = Message.query.filter_by(to_id=g.user_id,seen=False).count()
 
+    session['new_requests'] = new_requests
+    session['new_responses'] = new_responses
+    session['new_messages'] = new_messages
+
     return render_template("my-homepage.html", ethnicities=ethnicities, religions=religions,
                                                new_requests=new_requests, new_responses=new_responses,
                                                new_messages=new_messages)
@@ -295,6 +299,36 @@ def show_profile_page(user_id):
     pic_url = os.path.join(app.config['UPLOAD_FOLDER'],user.pictures[0].picture_url)
 
     return render_template("profile-page.html", user=user, pic_url=pic_url, contacttype=contact_type, status=status)
+
+
+
+@app.route('/potential-matches.json')
+@login_required
+def match():
+
+    distance = request.args.get('distance')
+    print distance
+    z = get_zip_near_me(g.current_user.contact.zipcode, distance)
+    received_ids = db.session.query(RelationManager.source_userid).filter_by(target_userid=g.user_id).all()
+    sent_ids = db.session.query(RelationManager.target_userid).filter_by(source_userid=g.user_id).all()
+    
+    matching_users = (db.session.query(User, db.func.concat(UPLOAD_FOLDER,Picture.picture_url))
+                                   .options(db.joinedload('personal'))
+                                   .options(db.joinedload('contact')) 
+                                   .options(db.joinedload('professional')) 
+                                   .options(db.joinedload('interests')) 
+                                   .options(db.joinedload('pictures'))
+                                   .join(ContactInfo)
+                                   .join(Picture)
+                                   .filter(ContactInfo.zipcode.in_(z), 
+                                            User.user_id != g.user_id,
+                                            ~User.user_id.in_(sent_ids),
+                                            ~User.user_id.in_(received_ids))
+                          .all())
+    matches = {}
+    for match in matching_users:
+        matches[match.userid]
+    return jsonify({'matching_users': matching_users})
 
 
 @app.route('/search')
@@ -382,6 +416,7 @@ def search():
     #                 .all())
 
     return render_template("show-search-results.html", matching_users=matching_users)
+
 
 # Ajax route
 @app.route('/send-request.json', methods=['POST'])

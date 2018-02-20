@@ -69,7 +69,8 @@
        </div>
        <div class="row">
          <div class="col-lg-2" id="filters"> 
-            <form action="/search">
+            <!-- <form action="/search" id="search-form"> -->
+            <form action="/potential-matches.json" id="search-form">
                 <p>
                   <label for="age">Age Range:</label>
                   <input type="text" id="age" name="age" readonly style="border:0; color:#f6931f; font-weight:bold;">
@@ -125,12 +126,15 @@
                 </p> 
 
                 <p>
-                    <input type="submit" value="SEARCH">
+                    <input type="submit" class="btn btn-default" value="SEARCH">
                 </p>
 
             </form>
 
-          </div>
+          </div>  <!-- Filters Column -->
+          <div class="col-lg-10" id="users-summary">
+
+          </div> <!-- Pictures Column -->
         </div>
     </div>
 

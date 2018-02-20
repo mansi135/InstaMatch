@@ -10,6 +10,7 @@
     <br><br>
     <ul>
       {% for user, pic_url in matching_users %}
+      <div class="col-md-4">
         <li>
             <p> <img src="/{{ pic_url }}" width="200" height="200"> </p>
             <p> Name :{{ user.fname }} {{ user.lname }} </p>
@@ -24,6 +25,7 @@
             <!-- Here we are calling a function on click and passing it an argument then and there -->
             <button id="{{ user.user_id }}" onclick="sendRequest({{ user.user_id }})">Send Request</button>  
         </li>
+    </div>
       {% endfor %}
     </ul>
     

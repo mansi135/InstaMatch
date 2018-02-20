@@ -3,32 +3,39 @@
 {% block title %}Requests Received{% endblock %}
 
 {% block head %}
+    <style>
+        .bold {
+            border: 10px solid red;
+            border-radius: 10%;
+        }
+    </style>
 {% endblock %}
 
 {% block content %}
     
 
-    <br><br>
-    <ul>
+    <ul class="load-received">
       {% for received in received_from_list %}
+      <div class="col-lg-4">
         <li>          
             <!-- <a href="/users/{{ received.source_userid }}" data-type="target" data-status="{{ received.status }}"> -->
+            <span class="new"></span>
             <a href="/users/{{ received.source_userid }}?type='source'&status={{ received.status }}">
                 <img src="/{{ UPLOAD_FOLDER }}{{ received.source_user.pictures[0].picture_url }}" width="200" height="200"></a>
-            <button id="a_{{ received.source_userid }}" onclick="acceptPass({{ received.source_userid }}, 'accept')">Accept</button>
+            <p><button id="a_{{ received.source_userid }}" onclick="acceptPass({{ received.source_userid }}, 'accept')">Accept</button>
             <button id="p_{{ received.source_userid }}" onclick="acceptPass({{ received.source_userid }}, 'pass')">
-            Pass</button> 
+            Pass</button> </p>
             <div id="msg_{{ received.source_userid }}"></div>
             <p> UserId :{{ received.source_userid }} </p>
             <p> Name :{{ received.source_user.fname }} {{ received.source_user.lname }} </p>
             <p> Height : {{ received.source_user.personal.height }}cm </p>
             <p> Religion : {{ received.source_user.personal.religion.religion_name }} </p>
             <p> Ethnicity : {{ received.source_user.personal.ethnicity.ethnicity_name }} </p>
-            <p> Status : <span id="status_{{ received.source_userid }}" data-id="{{ received.source_userid }}">{{ received.status }}</span> </p>
+            <p> Status : <span class="status" id="status_{{ received.source_userid }}" data-id="{{ received.source_userid }}">{{ received.status }}</span> </p>
             <p class="stamp"> {{ received.timestamp }}</p>
             <p> Received : <span class="time-ago"></span></p>
         </li>
-    
+    </div>
       {% endfor %}
     </ul>
     
@@ -39,12 +46,11 @@
     <script>
 
         function checkStatus() {        
-            s = $('span');  // give meaningful variable names
-            // dont use all spans, put a class, it can take car of off-byone
+            s = $('.status');  
             //may b change it to callback style-line15, better way to make it accept/pass class
             //we can have as many data attributes as we want, it makes it like dictionary
 
-            for (let i = 0; i < s.length-1; i++) {
+            for (let i = 0; i < s.length; i++) {
                 id = $(s[i]).data('id');
                 //console.log($(s[i]).html());
                 if ($(s[i]).html().indexOf("Pending") >= 0) {
@@ -71,8 +77,27 @@
             $('#status_' + result.uid).html(result.status)
         }
 
-        $(document).ready(function() {         
-            checkStatus();
+        $(document).ready(function() {
+
+            checkStatus(); 
+            
+            let ne = {{ session['new_requests'] }};
+            // var element = $(".load-received li:lt(" + ne + ") img"); 
+            
+            // if (element.length === 0) {
+            //     console.log(element);
+            //     element.addClass("bold"); 
+            //     setTimeout(remove, 3000);  
+            // }
+             
+            $(".load-received li:lt(" + ne + ") img").addClass("bold");
+            setTimeout(remove, 3000);
+            function remove(){
+                $(".load-received li:lt(" + ne + ") img").removeClass("bold");
+            }
+
+
+            
         });
 
     </script>
