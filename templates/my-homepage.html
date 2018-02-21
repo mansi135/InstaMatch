@@ -13,7 +13,7 @@
           range: true,
           min: 15,
           max: 70,
-          values: [ 25, 45 ],
+          values: [ {{ filter_criteria.min_age }} , {{ filter_criteria.max_age }} ],
           slide: function( event, ui ) {
             $( "#age" ).val( ui.values[ 0 ] + "-" + ui.values[ 1 ] );
           }
@@ -25,7 +25,7 @@
           range: true,
           min: 120,
           max: 200,
-          values: [ 150, 170 ],
+          values: [ {{ filter_criteria.min_height }}, {{ filter_criteria.max_height }} ],
           slide: function( event, ui ) {
             $( "#height" ).val( ui.values[ 0 ] + "-" + ui.values[ 1 ] );
           }
@@ -36,7 +36,7 @@
         $( "#slider-distance" ).slider({
           min: 0,
           max: 1000,
-          values: [ 50 ],
+          values: [ 1000 ],
           slide: function( event, ui ) {
             $( "#distance" ).val( ui.values[ 0 ] );
           }
@@ -91,9 +91,9 @@
 
                 <p>
                 <label>Gender<br>
-                    <input type="radio" name="gender" value="M" checked> Male<br>
-                    <input type="radio" name="gender" value="F"> Female<br>
-                    <input type="radio" name="gender" value="O"> Other
+                    <input type="radio" id="male" name="gender" value="M" checked> Male<br>
+                    <input type="radio" id="female" name="gender" value="F"> Female<br>
+                    <input type="radio" id="other" name="gender" value="O"> Other
                 </label><br><br>
                 </p>
     
@@ -132,17 +132,27 @@
             </form>
 
           </div>  <!-- Filters Column -->
-          <div class="col-lg-10" id="users-summary">
+          <div class="col-lg-10" id="render-users">
 
           </div> <!-- Pictures Column -->
-        </div>
+        </div> <!--row-->
     </div>
 
     
 {% endblock %}
 {% block javascript %}
 
-    <script>   
+    <script>  
+
+        $(document).ready(function() {
+            if ('{{ filter_criteria.gender }}' === 'M') {
+                $('#male').prop("checked", true);
+            } else {
+                $('#female').prop("checked", true);
+            }
+        }); 
+
+        // may be change these new_requests etc to session since now we have them in session
         function checkNotifications() {
             let notifications = {{ new_requests }} + {{ new_responses }};
             if( notifications > 0) {
@@ -163,6 +173,7 @@
             }
         }
     </script>
+
     <script src="/static/js/my-homepage.js"></script>
 
 {% endblock %}

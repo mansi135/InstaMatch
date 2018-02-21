@@ -57,14 +57,6 @@ def allowed_file(filename):
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-def calc_age(dob):
-
-    today = date.today()
-    age = today.year - dob.year - ((today.month, today.day) < (dob.month, dob.day))
-    return age
-    # dob_t = datetime.strptime(dob, '%Y-%m-%d')
-
-
 # Using login-decorator - for login authentication
 def login_required(f):
     @wraps(f)
@@ -262,6 +254,8 @@ def individual_home_page():
 
     ethnicities = Ethnicity.query.all()
     religions = Religion.query.all()
+
+    # Possible function - get new notifications
     new_requests = RelationManager.query.filter_by(target_userid=g.user_id, seen_by_target='not-seen').count()
     new_responses = RelationManager.query.filter_by(source_userid=g.user_id, seen_by_source='not-seen').count()
     new_messages = Message.query.filter_by(to_id=g.user_id,seen=False).count()
@@ -270,10 +264,80 @@ def individual_home_page():
     session['new_responses'] = new_responses
     session['new_messages'] = new_messages
 
+    my_age = calc_age(g.current_user.personal.dob)
+    my_height = g.current_user.personal.height
+    my_gender = g.current_user.personal.gender
+
+
+    filter_criteria_for_female = {'min_age': my_age - 3,
+                        'max_age': my_age + 15,
+                        'min_height': my_height + 10,
+                        'max_height': my_height + 80,
+                        'gender': 'M' }
+
+    filter_criteria_for_male = {'min_age': my_age - 30,
+                        'max_age': my_age + 3,
+                        'min_height': my_height - 20,
+                        'max_height': my_height + 10,
+                        'gender': 'F' }
+
+    if my_gender == 'F':
+        filter_criteria = filter_criteria_for_female
+    else:
+        filter_criteria = filter_criteria_for_male
+  
     return render_template("my-homepage.html", ethnicities=ethnicities, religions=religions,
                                                new_requests=new_requests, new_responses=new_responses,
-                                               new_messages=new_messages)
+                                               new_messages=new_messages, filter_criteria=filter_criteria)
 
+
+
+@app.route('/potential-matches.json')
+@login_required
+def match():
+
+
+    age = request.args.get('age')
+    height = request.args.get('height')
+    distance = request.args.get('distance')
+    gender = request.args.get('gender')
+    ethnicity_id = request.args.get('ethnicity')
+    religion_id = request.args.get('religion')
+
+    min_age, max_age = map(int, age.split('-'))
+    min_height, max_height = map(int, height.split('-'))
+
+    max_dob, min_dob = get_dob_range_from_age(min_age, max_age)
+
+    z = get_zip_near_me(g.current_user.contact.zipcode, distance)
+
+
+    received_ids = db.session.query(RelationManager.source_userid).filter_by(target_userid=g.user_id).all()
+    sent_ids = db.session.query(RelationManager.target_userid).filter_by(source_userid=g.user_id).all()
+    
+    #, db.func.concat(UPLOAD_FOLDER,Picture.picture_url)
+    matching_users = (db.session.query(User)
+                                   .options(db.joinedload('personal'))
+                                   .options(db.joinedload('contact')) 
+                                   .options(db.joinedload('professional')) 
+                                   .options(db.joinedload('interests')) 
+                                   .options(db.joinedload('pictures'))
+                                   .join(ContactInfo)
+                                   .join(Picture)
+                                   .join(PersonalInfo)
+                                   .filter(ContactInfo.zipcode.in_(z), 
+                                            User.user_id != g.user_id,
+                                            ~User.user_id.in_(sent_ids),
+                                            ~User.user_id.in_(received_ids))
+                                   .filter(PersonalInfo.height > min_height, PersonalInfo.height < max_height,
+                                            PersonalInfo.dob > min_dob, PersonalInfo.dob < max_dob,
+                                            PersonalInfo.gender == gender)
+                          .all())
+
+
+    matched_users = get_users_info(matching_users, UPLOAD_FOLDER)
+   # pprint (matched_users)
+    return jsonify(matched_users)
 
     
 @app.route('/users/<int:user_id>')
@@ -293,6 +357,7 @@ def show_profile_page(user_id):
                   .options(db.joinedload('interests')) \
                   .options(db.joinedload('pictures')).get(user_id)
 
+    # When we make function to get each user info, may be calculate age here itself
     user.personal.dob = user.personal.dob.strftime('%Y-%m-%d')
 
     # BOZO - make this loop when user has more than one picture 
@@ -302,33 +367,7 @@ def show_profile_page(user_id):
 
 
 
-@app.route('/potential-matches.json')
-@login_required
-def match():
 
-    distance = request.args.get('distance')
-    print distance
-    z = get_zip_near_me(g.current_user.contact.zipcode, distance)
-    received_ids = db.session.query(RelationManager.source_userid).filter_by(target_userid=g.user_id).all()
-    sent_ids = db.session.query(RelationManager.target_userid).filter_by(source_userid=g.user_id).all()
-    
-    matching_users = (db.session.query(User, db.func.concat(UPLOAD_FOLDER,Picture.picture_url))
-                                   .options(db.joinedload('personal'))
-                                   .options(db.joinedload('contact')) 
-                                   .options(db.joinedload('professional')) 
-                                   .options(db.joinedload('interests')) 
-                                   .options(db.joinedload('pictures'))
-                                   .join(ContactInfo)
-                                   .join(Picture)
-                                   .filter(ContactInfo.zipcode.in_(z), 
-                                            User.user_id != g.user_id,
-                                            ~User.user_id.in_(sent_ids),
-                                            ~User.user_id.in_(received_ids))
-                          .all())
-    matches = {}
-    for match in matching_users:
-        matches[match.userid]
-    return jsonify({'matching_users': matching_users})
 
 
 @app.route('/search')
