@@ -52,7 +52,7 @@ $(document).ready(function() {
             //Do this at the end
             $.get('/potential-matches.json',filter, showUsers);
 
-        });
+});
 
 
 
@@ -68,7 +68,8 @@ function showUsers(users){
 
 
     $('<div class="col-lg-3 user-summary"><div style="text-align: center" class="well"><h4>' + user.fname + '</h4><img src=/' + user.pic_url + ' width="150" height="150"> \
-        <div>' + user.age + ', ' + user.contact.city + '</div><a class="btn btn-primary">SendRequest</a></div></div>').appendTo('#render-users');
+        <div>' + user.age + ', ' + user.contact.city + '</div><button class="btn btn-primary" id='+ user_id +' onclick="sendRequest(' + user_id + ')">SendRequest</button> \
+        </div></div>').appendTo('#render-users');
 
   }
 //  $('.image').on('click',showDetails);
@@ -76,3 +77,15 @@ function showUsers(users){
   //$('.addbutton').on('click',addMovieToWatchList);
 
 }
+
+
+function sendRequest(user_id) {
+    console.log(user_id);
+    payload = {'target_userid': user_id, 'timestamp': new Date()}
+    $.post("/send-request.json", payload, showSentRequest);
+}
+
+function showSentRequest(result) {
+    $('#' + result.uid).html(result.response).attr("disabled", true)
+}
+
