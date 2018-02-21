@@ -1,6 +1,6 @@
 from pyzipcode import ZipCodeDatabase
 from pytz import timezone
-
+from datetime import datetime, date, timedelta
 
 def get_latest_messages(db, user_id):
     """Given a user_id, return all messages to and from him to every-other user."""
@@ -43,4 +43,59 @@ def get_zip_near_me(myzip, miles):
         #print str(datetime.now(ca))
 
         # Select * from Users where zip_code IN (19125,19081,19107.........);
+
+
+def get_dob_range_from_age(min_age, max_age):
+    """Get min and max dobs for DB query"""
+
+    max_dob = datetime.now()-timedelta(days=min_age*365)
+    min_dob = datetime.now()-timedelta(days=max_age*365)
+
+    return max_dob, min_dob
+
+
+
+def calc_age(dob):
+    """ convert db dob to age"""
+
+    today = date.today()
+    age = today.year - dob.year - ((today.month, today.day) < (dob.month, dob.day))
+    return age
+    # dob_t = datetime.strptime(dob, '%Y-%m-%d')
+
+
+def get_users_info(users, folder):
+    """ convert sql-alchemy objects to python objects"""
+
+    matching_users = {}
+
+    for user in users:
+        matching_users[user.user_id] = {'fname': user.fname, 
+                                          'lname': user.lname,
+                                           'dob': user.personal.dob,
+                                           'age': calc_age(user.personal.dob),
+                                           'height': user.personal.height,
+                                           'gender': user.personal.gender,
+                                           'ethnicity': user.personal.ethnicity.ethnicity_name,
+                                           'religion': user.personal.religion.religion_name,
+                                           'about me': user.personal.aboutme,
+                                           'contact': {'email': user.email,
+                                                       'city': user.contact.city,
+                                                       'zipcode': user.contact.zipcode,
+                                                       'phone': user.contact.phone
+                                                       },
+                                            'professional': { 'employer': user.professional.employer,
+                                                              'occupation': user.professional.occupation,
+                                                              'education': user.professional.education,
+
+                                                            },
+                                            'pic_url': folder + user.pictures[0].picture_url,
+                                            'interests': [interest for interest in user.interests]
+
+                                            }
+
+    return matching_users;
+
+
+
 
