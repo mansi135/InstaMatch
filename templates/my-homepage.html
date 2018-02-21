@@ -57,6 +57,7 @@
         .ui-slider {
             width : 200px;
         }
+        
   </style>
 {% endblock %}
 
@@ -65,7 +66,15 @@
 
      <div class="container-fluid" id="search-users">
        <div class="row">
-            <h2 class="text-center"> Welcome {{ session['fname'] }} </h2>
+            <div class="col-lg-2">
+                <br>
+                <span class="glyphicon glyphicon-filter"></span> 
+                <b> Filters </b>
+            </div>
+            <div class="col-lg-10" style="text-align: center">
+                <h3> Top Matches for {{ session['fname'] }} </h3>
+            </div>
+            
        </div>
        <div class="row">
          <div class="col-lg-2" id="filters"> 

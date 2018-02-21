@@ -58,7 +58,6 @@ $(document).ready(function() {
 
 function showUsers(users){
 
-    console.log(users);
   $('#render-users').empty();
 
   for (let user_id in users) {
@@ -68,8 +67,8 @@ function showUsers(users){
     //   <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></div></div>').appendTo('#users-summary');
 
 
-    $('<div class="col-sm-6 col-md-6 col-lg-4 user-summary"><div class="well"><h6>' + user.fname + '</h6><img src=/' + user.pic_url + ' width="150" height="150"> \
-        <a class="btn btn-primary">SendRequest</a></div></div>').appendTo('#render-users');
+    $('<div class="col-lg-3 user-summary"><div style="text-align: center" class="well"><h4>' + user.fname + '</h4><img src=/' + user.pic_url + ' width="150" height="150"> \
+        <div>' + user.age + ', ' + user.contact.city + '</div><a class="btn btn-primary">SendRequest</a></div></div>').appendTo('#render-users');
 
   }
 //  $('.image').on('click',showDetails);
