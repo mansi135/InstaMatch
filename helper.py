@@ -69,27 +69,27 @@ def get_users_info(users, folder):
 
     matching_users = {}
 
-    for user in users:
+    for user, personal, contact, picture in users:
         matching_users[user.user_id] = {'fname': user.fname, 
                                           'lname': user.lname,
-                                           'dob': user.personal.dob,
-                                           'age': calc_age(user.personal.dob),
-                                           'height': user.personal.height,
-                                           'gender': user.personal.gender,
-                                           'ethnicity': user.personal.ethnicity.ethnicity_name,
-                                           'religion': user.personal.religion.religion_name,
-                                           'about me': user.personal.aboutme,
+                                           'dob': personal.dob,
+                                           'age': calc_age(personal.dob),
+                                           'height': personal.height,
+                                           'gender': personal.gender,
+                                           'ethnicity': personal.ethnicity.ethnicity_name,
+                                           'religion': personal.religion.religion_name,
+                                           'about me': personal.aboutme,
                                            'contact': {'email': user.email,
-                                                       'city': user.contact.city,
-                                                       'zipcode': user.contact.zipcode,
-                                                       'phone': user.contact.phone
+                                                       'city': contact.city,
+                                                       'zipcode': contact.zipcode,
+                                                       'phone': contact.phone
                                                        },
                                             'professional': { 'employer': user.professional.employer,
                                                               'occupation': user.professional.occupation,
                                                               'education': user.professional.education,
 
                                                             },
-                                            'pic_url': folder + user.pictures[0].picture_url,
+                                            'pic_url': folder + picture.picture_url,
                                             'interests': [interest for interest in user.interests]
 
                                             }

@@ -316,12 +316,14 @@ def match():
     sent_ids = db.session.query(RelationManager.target_userid).filter_by(source_userid=g.user_id).all()
     
     #, db.func.concat(UPLOAD_FOLDER,Picture.picture_url)
-    matching_users = (db.session.query(User)
-                                   .options(db.joinedload('personal'))
-                                   .options(db.joinedload('contact')) 
+    matching_users = (db.session.query(User, PersonalInfo, ContactInfo, Picture)
+                                   # .options(db.joinedload('personal'))
+                                   # .options(db.joinedload('contact')) 
                                    .options(db.joinedload('professional')) 
                                    .options(db.joinedload('interests')) 
-                                   .options(db.joinedload('pictures'))
+                                  # .options(db.joinedload('ethnicity'))
+                                  # .options(db.joinedload('religion'))
+                                   # .options(db.joinedload('pictures'))
                                    .join(ContactInfo)
                                    .join(Picture)
                                    .join(PersonalInfo)
@@ -336,7 +338,7 @@ def match():
 
 
     matched_users = get_users_info(matching_users, UPLOAD_FOLDER)
-   # pprint (matched_users)
+    pprint (matched_users)
     return jsonify(matched_users)
 
     
