@@ -3,17 +3,12 @@
 {% block title %}Requests Sent{% endblock %}
 
 {% block head %}
-    <style>
-        .bold {
-            border: 10px solid red;
-            border-radius: 10%;
-        }
-    </style>
+    
 {% endblock %}
 
 {% block content %}
 
-    <ul class="load-sent">
+    <!-- <ul class="load-sent">
       {% for sent in sent_to_list %}
       <div class="col-lg-4">
         <li>          
@@ -30,7 +25,39 @@
         </li>   
       </div>
       {% endfor %}
-    </ul>
+    </ul> -->
+
+
+    <div class="container">
+        <h3>{{ session['fname'] }}, You requested them..</h3>
+
+        <div id="user-list" class="row">
+          {% for sent in sent_to_list %}
+              <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4 user-summary">
+
+                  <div class="well" style="border-radius: 10%; text-align: center;">
+                      
+                      <p class="latest"><span class="glyphicon glyphicon-star"></span><b>New</b><p>
+                     
+                      <h3>{{ sent.target_user.fname }}</h3>
+                      
+                      <a href="/users/{{ sent.target_userid }}?type='target'&status={{ sent.status }}">
+                      <img src="/{{ UPLOAD_FOLDER }}{{ sent.target_user.pictures[0].picture_url }}" width="200" height="200"></a>
+
+                      <div><span class="dob">{{ sent.target_user.personal.dob }}</span>, 
+                      {{ sent.target_user.contact.city }}</div>
+                     
+                      <p> Status : <span class="status" id="status_{{ sent.target_userid }}" data-id="{{ sent.target_userid }}">{{ sent.status }}</span> </p>
+                      <p class="stamp"> {{ sent.timestamp }}</p>
+                      <p> sent : <span class="time-ago"></span></p>
+ 
+                  </div>
+
+              </div>
+          {% endfor %}
+        </div>
+    </div>
+
     
 {% endblock %}
 
@@ -38,11 +65,22 @@
     <script>
         $(document).ready(function() {
             let ne = {{ session['new_responses'] }};
-            $(".load-sent li:lt(" + ne + ") img").addClass("bold");
-            setTimeout(remove, 3000);
-            function remove(){
-                $(".load-sent li:lt(" + ne + ") img").removeClass("bold");
+            // $(".load-sent li:lt(" + ne + ") img").addClass("bold");
+            // setTimeout(remove, 3000);
+            // function remove(){
+            //     $(".load-sent li:lt(" + ne + ") img").removeClass("bold");
+            // }
+            // let ne = 1;
+            $('.latest').hide()
+            $(".user-summary div:lt(" + ne + ")").css("background-color", "#B0C9D9");
+            $(".user-summary div:lt(" + ne + ") .latest").show();
+
+            let dobs = $('.dob');
+            for (let i = 0; i < dobs.length; i++) {
+                //console.log($(dobs[i]).html());
+                $(dobs[i]).html(calculateAge($(dobs[i]).html()));
             }
+
         });
     </script>
     <script src="/static/js/checkTimeAgo.js"></script>

@@ -43,9 +43,9 @@
       {% for received in received_from_list %}
           <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4 user-summary">
 
-              <div class="well" style="border-radius: 10%">
+              <div class="well" style="border-radius: 10%; text-align: center;">
                   
-                  <p class="latest"><span class="glyphicon glyphicon-star" aria-hidden="true"></span><b>New</b><p>
+                  <p class="latest"><span class="glyphicon glyphicon-star"></span><b>New</b><p>
                  
                   <h3>{{ received.source_user.fname }}</h3>
                   
@@ -59,9 +59,9 @@
                   <p class="stamp"> {{ received.timestamp }}</p>
                   <p> Received : <span class="time-ago"></span></p>
 
-                  <button class="btn btn-primary" id="a_{{ received.source_userid }}" onclick="acceptPass({{ received.source_userid }}, 
+                  <button class="btn btn-primary" id="accept_{{ received.source_userid }}" onclick="acceptPass({{ received.source_userid }}, 
                   'accept')">Accept</button>
-                  <button class="btn btn-primary" id="p_{{ received.source_userid }}" onclick="acceptPass({{ received.source_userid }}, 
+                  <button class="btn btn-primary" id="pass_{{ received.source_userid }}" onclick="acceptPass({{ received.source_userid }}, 
                   'pass')">Pass</button> 
               </div>
 
@@ -85,14 +85,15 @@
             //we can have as many data attributes as we want, it makes it like dictionary
 
             for (let i = 0; i < s.length; i++) {
+
                 id = $(s[i]).data('id');
-                //console.log($(s[i]).html());
+
                 if ($(s[i]).html().indexOf("Pending") >= 0) {
-                    $('#a_' + id).show();  // change a_ and p_ to accept n pass
-                    $('#p_' + id).show();
+                    $('#accept_' + id).show();  
+                    $('#pass_' + id).show();
                 } else {
-                    $('#a_' + id).hide();
-                    $('#p_' + id).hide();
+                    $('#accept_' + id).hide();
+                    $('#pass_' + id).hide();
                 }
             }
         }
