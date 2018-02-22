@@ -69,6 +69,7 @@ function showUsers(users){
         </div></div>').appendTo('#render-users');
 
   }
+  $("body").removeClass("loading");
 //  $('.image').on('click',showDetails);
   //$('.image-container').on('mouseover',showbuttons).on('mouseout',hidebuttons);
   //$('.addbutton').on('click',addMovieToWatchList);
@@ -102,11 +103,11 @@ function makeFilter() {
                   'ethnicity': ethnicity,
                   'religion': religion};
 
-    console.log(filter);
     return filter;
 }
 
 function getNewMatches() {
+    $("body").addClass("loading");
     let new_filters = makeFilter();
     $.get('/potential-matches.json',new_filters, showUsers);
 }
