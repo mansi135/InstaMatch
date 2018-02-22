@@ -65,7 +65,7 @@ def calc_age(dob):
 
 
 def get_users_info(users, folder):
-    """ convert sql-alchemy objects to python objects"""
+    """ convert sql-alchemy User objects to python User objects"""
 
     matching_users = {}
 

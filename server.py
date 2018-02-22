@@ -357,8 +357,9 @@ def show_profile_page(user_id):
                   .options(db.joinedload('interests')) \
                   .options(db.joinedload('pictures')).get(user_id)
 
-    # When we make function to get each user info, may be calculate age here itself
-    user.personal.dob = user.personal.dob.strftime('%Y-%m-%d')
+    # When we make function to get each user info, may be calculate age here itself?
+    # Not possible because storing that is a pain
+    # user.personal.dob = user.personal.dob.strftime('%Y-%m-%d')
 
     # BOZO - make this loop when user has more than one picture 
     pic_url = os.path.join(app.config['UPLOAD_FOLDER'],user.pictures[0].picture_url)
@@ -485,7 +486,6 @@ def show_received_requests_and_update_target_seen():
     for new_request in new_requests:
         new_request.seen_by_target = 'seen'
     db.session.commit()
-
 
     received_from_list = RelationManager.query.filter_by(target_userid=g.user_id).order_by(desc('timestamp')).all()
     

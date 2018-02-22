@@ -13,12 +13,11 @@
 
 {% block content %}
     
-<div class="container">
+<!-- <div class="container">
     <ul class="load-received">
       {% for received in received_from_list %}
       <div class="col-lg-4">
         <li>          
-            <!-- <a href="/users/{{ received.source_userid }}" data-type="target" data-status="{{ received.status }}"> -->
             <span class="new"></span>
             <a href="/users/{{ received.source_userid }}?type='source'&status={{ received.status }}">
                 <img src="/{{ UPLOAD_FOLDER }}{{ received.source_user.pictures[0].picture_url }}" width="200" height="200"></a>
@@ -30,6 +29,7 @@
             <p> Name :{{ received.source_user.fname }} {{ received.source_user.lname }} </p>
             <p> Height : {{ received.source_user.personal.height }}cm </p>
             <p> Religion : {{ received.source_user.personal.religion.religion_name }} </p>
+            <p class="dob">Age : {{ received.source_user.personal.dob }} </p>
             <p> Ethnicity : {{ received.source_user.personal.ethnicity.ethnicity_name }} </p>
             <p> Status : <span class="status" id="status_{{ received.source_userid }}" data-id="{{ received.source_userid }}">{{ received.status }}</span> </p>
             <p class="stamp"> {{ received.timestamp }}</p>
@@ -39,6 +39,41 @@
       {% endfor %}
     </ul>
 </div>
+ -->
+
+<div class="container">
+    <h3>{{ session['fname'] }}, they are interested in you..</h3>
+
+    <div id="user-list" class="row">
+      {% for received in received_from_list %}
+          <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4 user-summary">
+
+              <div class="well">
+                  <h3>{{ received.source_user.fname }}</h3>
+                 
+                  <a href="/users/{{ received.source_userid }}?type='source'&status={{ received.status }}">
+                  <img src="/{{ UPLOAD_FOLDER }}{{ received.source_user.pictures[0].picture_url }}" width="200" height="200"></a>
+
+                  <div><span class="dob">{{ received.source_user.personal.dob }}</span>, 
+                  {{ received.source_user.contact.city }}</div>
+                 
+                  <p> Status : <span class="status" id="status_{{ received.source_userid }}" data-id="{{ received.source_userid }}">{{ received.status }}</span> </p>
+                  <p class="stamp"> {{ received.timestamp }}</p>
+                  <p> Received : <span class="time-ago"></span></p>
+
+                  <button class="btn btn-primary" id="a_{{ received.source_userid }}" onclick="acceptPass({{ received.source_userid }}, 
+                  'accept')">Accept</button>
+                  <button class="btn btn-primary" id="p_{{ received.source_userid }}" onclick="acceptPass({{ received.source_userid }}, 
+                  'pass')">Pass</button> 
+              </div>
+
+          </div>
+      {% endfor %}
+    </div>
+</div>
+
+
+
     
 {% endblock %}
 
@@ -97,7 +132,12 @@
                 $(".load-received li:lt(" + ne + ") img").removeClass("bold");
             }
 
-
+            let dobs = $('.dob');
+            for (let i = 0; i < dobs.length; i++) {
+                //console.log($(dobs[i]).html());
+                $(dobs[i]).html(calculateAge($(dobs[i]).html()));
+            }
+            
             
         });
 

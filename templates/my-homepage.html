@@ -74,7 +74,10 @@
         body.loading .cir {
             display: block;
         }
-        
+        .side-by-side {
+            display: inline-block;
+        }
+
   </style>
 {% endblock %}
 
@@ -89,7 +92,18 @@
                 <b> Filters </b>
             </div>
             <div class="col-lg-10" style="text-align: center">
-                <h3> Top Matches for {{ session['fname'] }} </h3>
+                <div class="side-by-side">
+                    <h3> Top Matches for {{ session['fname'] }} </h3>
+                </div>
+                <div class="side-by-side sorted" style="margin-left: 20em">
+                    Sort by
+                    <select name="sort">
+                        <option value="age-asc">Age: Ascending</option>
+                        <option value="distance">Distance: Closest</option>
+                        <option value="height">Height: Ascending </option>
+                        <option value="relevance">Relevance</option>
+                    </select>
+                </div>
             </div>
             
        </div>

@@ -57,6 +57,12 @@ function showUsers(users){
 
   $('#render-users').empty();
 
+    // var sorted = Object.keys(users).sort(function(a,b){return users[a].age-users[b].age});
+    
+    // for (var i = 0; i < sorted.length; i++) {
+    //     console.log(users[sorted[i]].age);
+    // }
+
   for (let user_id in users) {
     let user = users[user_id];
     // $('<div class="image-container"><img src=/' + user.pic_url + ' width="150" height="150" data-toggle="modal" data-target=".bs-example-modal-lg" class="image" id=' + user_id + '> \
