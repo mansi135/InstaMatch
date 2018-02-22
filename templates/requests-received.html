@@ -3,12 +3,7 @@
 {% block title %}Requests Received{% endblock %}
 
 {% block head %}
-    <style>
-        .bold {
-            border: 10px solid red;
-            border-radius: 10%;
-        }
-    </style>
+    
 {% endblock %}
 
 {% block content %}
@@ -48,9 +43,12 @@
       {% for received in received_from_list %}
           <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4 user-summary">
 
-              <div class="well">
-                  <h3>{{ received.source_user.fname }}</h3>
+              <div class="well" style="border-radius: 10%">
+                  
+                  <p class="latest"><span class="glyphicon glyphicon-star" aria-hidden="true"></span><b>New</b><p>
                  
+                  <h3>{{ received.source_user.fname }}</h3>
+                  
                   <a href="/users/{{ received.source_userid }}?type='source'&status={{ received.status }}">
                   <img src="/{{ UPLOAD_FOLDER }}{{ received.source_user.pictures[0].picture_url }}" width="200" height="200"></a>
 
@@ -118,19 +116,21 @@
             checkStatus(); 
             
             let ne = {{ session['new_requests'] }};
-            // var element = $(".load-received li:lt(" + ne + ") img"); 
-            
-            // if (element.length === 0) {
-            //     console.log(element);
-            //     element.addClass("bold"); 
-            //     setTimeout(remove, 3000);  
-            // }
              
-            $(".load-received li:lt(" + ne + ") img").addClass("bold");
-            setTimeout(remove, 3000);
-            function remove(){
-                $(".load-received li:lt(" + ne + ") img").removeClass("bold");
-            }
+            // $(".load-received li:lt(" + ne + ") img").addClass("bold");
+            // setTimeout(remove, 3000);
+            // function remove(){
+            //     $(".load-received li:lt(" + ne + ") img").removeClass("bold");
+            // }
+
+            $('.latest').hide()
+            $(".user-summary div:lt(" + ne + ")").css("background-color", "#B0C9D9");
+            $(".user-summary div:lt(" + ne + ") .latest").show();
+
+            //setTimeout(remove, 3000);
+            // function remove(){
+            //     $(".user-summary div:lt(" + ne + ")").removeClass("bold");
+            // }
 
             let dobs = $('.dob');
             for (let i = 0; i < dobs.length; i++) {
