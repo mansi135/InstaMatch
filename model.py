@@ -143,8 +143,8 @@ class RelationManager(db.Model):
     __tablename__ = "relations"
 
     management_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    source_userid = db.Column(db.ForeignKey('users.user_id'), nullable=False)  
-    target_userid = db.Column(db.ForeignKey('users.user_id'), nullable=False) 
+    source_userid = db.Column(db.ForeignKey('users.user_id'), nullable=False, index=True)  
+    target_userid = db.Column(db.ForeignKey('users.user_id'), nullable=False, index=True) 
     timestamp = db.Column(db.DateTime, nullable=False) 
     status = db.Column(db.String(20), nullable=False)
     seen_by_source = db.Column(db.String(20), default='NULL')
