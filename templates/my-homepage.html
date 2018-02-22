@@ -16,6 +16,7 @@
           values: [ {{ filter_criteria.min_age }} , {{ filter_criteria.max_age }} ],
           slide: function( event, ui ) {
             $( "#age" ).val( ui.values[ 0 ] + "-" + ui.values[ 1 ] );
+            //someFunc(); - terrible idea to do it here
           }
         });
         $( "#age" ).val( $( "#slider-range-age" ).slider( "values", 0 ) +

@@ -3,20 +3,7 @@ $(document).ready(function() {
 
             checkNotifications();
             
-            let age = $('#age').val()    
-            let height = $('#height').val();
-            let distance = parseInt($('#distance').val());
-            let gender = $('input[name="gender"]:checked').val();       //Get the value of checked radio-button
-            let ethnicity = $('input[name="eth"]:checked').val();
-            let religion = $('input[name="rel"]:checked').val();
-
-            //console.log(distance, height, age, gender, ethnicity, religion);
-            let filter = {'age': age,
-                          'height': height,
-                          'distance': distance,
-                          'gender': gender,
-                          'ethnicity': ethnicity,
-                          'religion': religion}
+            $("#show-ethnicities, #show-religions").hide()
 
             //Add event-listeners to various links
             $('.received').on('click', function() {
@@ -31,8 +18,8 @@ $(document).ready(function() {
                 $('#msg').html('');
             })
 
-
-            $("#show-ethnicities, #show-religions").hide()
+            ////////////////////////////////////////////////////////////
+            
 
             $('#eth_d_matter').on('click', function() {
                 $("#show-ethnicities").hide();
@@ -49,8 +36,18 @@ $(document).ready(function() {
                 $("#show-religions").show();
             })
 
-            //Do this at the end
-            $.get('/potential-matches.json',filter, showUsers);
+            ////////////////////////////////////////////////////////////
+
+           getNewMatches();
+
+            $('#slider-range-age, #slider-range-height, #slider-distance').on('mouseup', function(){
+                getNewMatches();
+            });
+
+            $('input[name=gender]').on('change', function() {
+                getNewMatches();
+            });
+
 
 });
 
@@ -81,11 +78,35 @@ function showUsers(users){
 
 function sendRequest(user_id) {
     console.log(user_id);
-    payload = {'target_userid': user_id, 'timestamp': new Date()}
+    payload = {'target_userid': user_id, 'timestamp': new Date()};
     $.post("/send-request.json", payload, showSentRequest);
 }
 
 function showSentRequest(result) {
-    $('#' + result.uid).html(result.response).attr("disabled", true)
+    $('#' + result.uid).html(result.response).attr("disabled", true);
 }
 
+function makeFilter() {
+
+    let age = $('#age').val();   
+    let height = $('#height').val();
+    let distance = parseInt($('#distance').val());
+    let gender = $('input[name="gender"]:checked').val();       //Get the value of checked radio-button
+    let ethnicity = $('input[name="eth"]:checked').val();
+    let religion = $('input[name="rel"]:checked').val();
+
+    let filter = {'age': age,
+                  'height': height,
+                  'distance': distance,
+                  'gender': gender,
+                  'ethnicity': ethnicity,
+                  'religion': religion};
+
+    console.log(filter);
+    return filter;
+}
+
+function getNewMatches() {
+    let new_filters = makeFilter();
+    $.get('/potential-matches.json',new_filters, showUsers);
+}
