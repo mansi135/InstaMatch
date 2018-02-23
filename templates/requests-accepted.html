@@ -109,10 +109,14 @@
 {% endblock %}
 
 {% block javascript %}
+    
+    <!-- earlier async defer was taking a callback=initMap(), hence when i was also calling it , there was an error. So we removed async defer tag and removed &callback=initMap. But this introduces a different error..a person who has no connections, will see an alert that zero results were returned  -->
 
-    <script async defer
-        src="https://maps.googleapis.com/maps/api/js?key={{ GOOGLE_MAPS_API_KEY }}&callback=initMap">
+    <script
+        src="https://maps.googleapis.com/maps/api/js?key={{ GOOGLE_MAPS_API_KEY }}">
     </script>
+    
+    <script src="/static/js/gmaps.js"></script>
 
     <script>
         var zips = [];
@@ -134,7 +138,7 @@
 
             initMap();
             get_geo_codes();
-            console.log(markers);
+           // console.log(markers);
 
             $('.marker').hover(
                 function() {
@@ -154,7 +158,6 @@
       </script> 
 
       
-      <script src="/static/js/gmaps.js"></script>
      
 
     <script>
