@@ -130,7 +130,6 @@ def handle_registration_form():
         #session['logged_in'] = True
 
         # return redirect('/continue-register')
-        print "here"
 
         return jsonify({'msg': "You are successfully added to the database.", 'status': "OK"})
         
@@ -150,79 +149,85 @@ def display_continue_registration_form():
 @app.route('/continue-register', methods=["POST"])
 def handle_continue_registration_form():
 
+    user_id = g.user_id
+    dob = request.form.get('dob')
+    height = request.form.get('height')
+    gender = request.form.get('gender')
+    ethnicity_id = request.form.get('ethnicity')
+    religion_id = request.form.get('religion')
+    aboutme = request.form.get('aboutme')
 
+    address = request.form.get('address')
+    city = request.form.get('city')
+    zipcode = request.form.get('zipcode')
+    phone = request.form.get('phone')
+
+    employer = request.form.get('employer')
+    occupation = request.form.get('occupation')
+    education = request.form.get('education')
+    
+    interest_ids =request.form.getlist('interests')
+
+    personal = PersonalInfo(user_id=user_id, dob=dob, height=height, gender=gender,
+                 ethnicity_id=ethnicity_id, religion_id=religion_id, aboutme=aboutme)
+    contact = ContactInfo(user_id=user_id, street_address=address, city=city, zipcode=zipcode, phone=phone)
+    professional = ProfessionalInfo(user_id=user_id, employer=employer, occupation=occupation, education=education)
+
+    
     if 'pic' not in request.files:
         flash('No picture uploaded')
         return redirect(request.url)  #request.url takes us back to requesting url, but we loose typed data ...how to save that ?
         #return redirect(url_for())
-    file = request.files.getlist('pic')
-    print file
+    files = request.files.getlist('pic')
+    print files
         # if user does not select file, browser also
         # submit a empty part without filename
         
-    if file.filename == '':
-        flash('No selected file')
-        return redirect(request.url)
-
-    if file and allowed_file(file.filename):
-        #filename = secure_filename(file.filename)  # Might not be needed
+    for file in files:
+        print file
+        if file.filename == '':
+            flash('No selected file')
+            return redirect(request.url)
 
         pic_id = db.session.query(db.func.max(Picture.picture_id)).one()[0]
 
-        if pic_id is None:
-            filename = "MyDbPics"     # remove My_pic here
-        else:
-            filename = "MyDbPics" + str(pic_id+1) + ".jpg"
+        if file and allowed_file(file.filename):
+            #filename = secure_filename(file.filename)  # Might not be needed
 
-        file_url = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-        # file_url = os.path.join(app.config['UPLOAD_FOLDER'])
+            if pic_id is None:
+                filename = "MyDbPics"     # remove My_pic here
+            else:
+                filename = "MyDbPics" + str(pic_id+1) + ".jpg"
 
-        file.save(file_url)
-        flash('Photo saved')
+            file_url = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+
+            file.save(file_url)
+
+            picture = Picture(user_id=user_id, picture_url=str(filename))
+            db.session.add(picture)
+    flash('Photo saved')
         #return redirect(url_for('zip'))  # url_for takes the name of function of route
         #return redirect(url_for('uploaded_file', filename=filename))
 
         #user_id = session.get('user_id')
-        user_id = g.user_id
-        dob = request.form.get('dob')
-        height = request.form.get('height')
-        gender = request.form.get('gender')
-        ethnicity_id = request.form.get('ethnicity')
-        religion_id = request.form.get('religion')
-        aboutme = request.form.get('aboutme')
+    
+    # picture = Picture(user_id=user_id, picture_url=str(filename))
 
-        address = request.form.get('address')
-        city = request.form.get('city')
-        zipcode = request.form.get('zipcode')
-        phone = request.form.get('phone')
+    for interest_id in interest_ids:
+        idi = UserInterest(user_id=user_id, interest_id=interest_id)
+        db.session.add(idi)
 
-        employer = request.form.get('employer')
-        occupation = request.form.get('occupation')
-        education = request.form.get('education')
-        
-        interest_ids =request.form.getlist('interests')
+    db.session.add(personal)
+    db.session.add(contact)
+    db.session.add(professional)
+    # db.session.add(picture)
 
-        personal = PersonalInfo(user_id=user_id, dob=dob, height=height, gender=gender,
-                     ethnicity_id=ethnicity_id, religion_id=religion_id, aboutme=aboutme)
-        contact = ContactInfo(user_id=user_id, street_address=address, city=city, zipcode=zipcode, phone=phone)
-        professional = ProfessionalInfo(user_id=user_id, employer=employer, occupation=occupation, education=education)
-        picture = Picture(user_id=user_id, picture_url=str(filename))
+    db.session.commit()
+    session.clear()
+    flash("ThankYou for completing the registraion. Please continue to Login")
 
-        for interest_id in interest_ids:
-            idi = UserInterest(user_id=user_id, interest_id=interest_id)
-            db.session.add(idi)
-
-        db.session.add(personal)
-        db.session.add(contact)
-        db.session.add(professional)
-        db.session.add(picture)
-
-        db.session.commit()
-        session.clear()
-        flash("ThankYou for completing the registraion. Please continue to Login")
-
-        
-        return redirect('/')
+    
+    return redirect('/')
 
 
 
