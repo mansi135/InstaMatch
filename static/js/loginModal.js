@@ -14,4 +14,23 @@ $(document).ready(function() {
                     }  
                 });
             });
+
+
+        $("#register").on("submit", function(evt) {
+            evt.preventDefault();
+
+            data = $('#register').serialize();
+            console.log(data);
+
+            $.post("/register", data,
+                function(response) {
+                    if (response.status === 'OK') {
+                        //alert(response.msg);
+                        window.location.assign('/continue-register');
+                    } else {
+                        alert(response.msg);
+                        window.location.assign("/");    // equivalent of redirect in flask is window.location
+                    }  
+                });
+        });
     });

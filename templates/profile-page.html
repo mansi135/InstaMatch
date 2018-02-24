@@ -58,7 +58,7 @@
             <h3>Interests</h3>
                 <ul>
                 {% for interest in user.interests %}
-                    <li> interest </li>
+                    <li> {{ interest.interest_name }}</li>
                 {% endfor %}
                 </ul>
         </div>
@@ -77,7 +77,6 @@
     
     $(document).ready(function() { 
 
-        console.log($('#dob').html());
         let age = calculateAge($('#dob').html()) + ' years old';  
         $('#age').html(age);
 

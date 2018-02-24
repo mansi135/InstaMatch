@@ -95,7 +95,7 @@ def welcome():
     return render_template("welcome-page.html")
 
 
-
+# Not needed since i made modal window
 @app.route('/register')
 def display_registration_form():
     """Displays registartion form"""
@@ -115,19 +115,24 @@ def handle_registration_form():
 
     user_exists = User.query.filter_by(email=email).first()
     if user_exists:
-        flash('User already exists. Please register with another email address.')
-        return redirect(request.url)
+        # flash('User already exists. Please register with another email address.')
+        # return redirect(request.url)
+        return jsonify({'msg': "User already exists. Please register with another email address.", 'status': "notOK"})
+
     else:
         new_user = User(email=email, password=password, fname=fname, lname=lname)
         db.session.add(new_user)
         db.session.commit()
         
-        flash('WELCOME! You are successfully added to the database.')
+        #flash('WELCOME! You are successfully added to the database.')
         uid = User.query.filter_by(email=email).one().user_id  # should we immediately query the userid?
         session['user_id'] = uid
         #session['logged_in'] = True
 
-        return redirect('/continue-register')
+        # return redirect('/continue-register')
+        print "here"
+
+        return jsonify({'msg': "You are successfully added to the database.", 'status': "OK"})
         
 # This route should not be visible until initial registrtion has started
 @app.route('/continue-register')
@@ -150,9 +155,11 @@ def handle_continue_registration_form():
         flash('No picture uploaded')
         return redirect(request.url)  #request.url takes us back to requesting url, but we loose typed data ...how to save that ?
         #return redirect(url_for())
-    file = request.files['pic']
+    file = request.files.getlist('pic')
+    print file
         # if user does not select file, browser also
         # submit a empty part without filename
+        
     if file.filename == '':
         flash('No selected file')
         return redirect(request.url)
@@ -338,7 +345,7 @@ def match():
 
 
     matched_users = get_users_info(matching_users, UPLOAD_FOLDER)
-    pprint (matched_users)
+
     return jsonify(matched_users)
 
     
