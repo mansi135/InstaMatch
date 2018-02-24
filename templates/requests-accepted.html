@@ -112,10 +112,7 @@
     
     <!-- earlier async defer was taking a callback=initMap(), hence when i was also calling it , there was an error. So we removed async defer tag and removed &callback=initMap. But this introduces a different error..a person who has no connections, will see an alert that zero results were returned  -->
 
-    <script
-        src="https://maps.googleapis.com/maps/api/js?key={{ GOOGLE_MAPS_API_KEY }}">
-    </script>
-    
+    <script src="https://maps.googleapis.com/maps/api/js?key={{ GOOGLE_MAPS_API_KEY }}"></script>  
     <script src="/static/js/gmaps.js"></script>
 
     <script>
@@ -129,13 +126,11 @@
         {% endfor %}
         
         var my_zip = '{{ current_user.contact.zipcode }}';
-
         var markers = [];
-
-        
-        
+   
         $(document).ready(function(){       
 
+            /// Initialize google maps
             initMap();
             get_geo_codes();
            // console.log(markers);
@@ -151,48 +146,43 @@
                 }
             );
 
+            // For showing contact-info on hover
+            $('[data-toggle="hover"]').popover({ trigger : "hover"}); 
+
+            // For modal-window show
+            $('#message-Modal').on('show.bs.modal', function (event) {
+              $('.send').attr("disabled", false);
+              $('.send').off('click');
+             
+              var button = $(event.relatedTarget); // Message Button that triggered the modal
+              var recipient = button.data('fname');
+              var to_id = button.data('userid');         
+
+              $('.send').on('click', recordMessage);
+
+            function recordMessage(evt) {
+                evt.preventDefault();
+                
+                let payload = {'text': $('#message-text').val(), 'to_id': to_id, 'timestamp': new Date()};
+                $.post("/send-message", payload, function(response) {
+                    $('.send').hide();
+                });
+             }
+
+              var modal = $(this);
+
+              modal.find('.modal-title').text('New message to ' + recipient);
+              modal.find('.modal-body input').val(recipient);
+            })
+
         });
 
       </script> 
 
-      
-     
-
-    <script>
-        $('#message-Modal').on('show.bs.modal', function (event) {
-          $('.send').attr("disabled", false);
-          $('.send').off('click');
-         
-          var button = $(event.relatedTarget); // Message Button that triggered the modal
-          var recipient = button.data('fname');
-          var to_id = button.data('userid');         
-
-          $('.send').on('click', callBck);
-
-        function callBck(evt) {
-            evt.preventDefault();
-            
-            let payload = {'text': $('#message-text').val(), 'to_id': to_id, 'timestamp': new Date()};
-            $.post("/send-message", payload, function(response) {
-                $('.send').hide();
-            });
-         }
-
-          var modal = $(this);
-
-          modal.find('.modal-title').text('New message to ' + recipient);
-          modal.find('.modal-body input').val(recipient);
-        })
-    
-    </script>
 
     <script src="/static/js/checkTimeAgo.js"></script>
 
-    <script>
-        $(document).ready(function(){
-            $('[data-toggle="hover"]').popover({ trigger : "hover"});  
-        });
-    </script>
+    
     
     
 {% endblock %}
