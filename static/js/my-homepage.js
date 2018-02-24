@@ -72,13 +72,16 @@ function showUsers(users){
 
     $('<div class="col-lg-3 user-summary"><div style="text-align: center" class="well"><h4>' + user.fname + '</h4><img src=/' + user.pic_url + ' width="150" height="150"> \
         <div>' + user.age + ', ' + user.contact.city + '</div><button class="btn btn-primary" id='+ user_id +' onclick="sendRequest(' + user_id + ')">SendRequest</button> \
-        </div></div>').appendTo('#render-users');
+         <i class="heart fa fa-heart"></i></div></div>').appendTo('#render-users');
 
   }
+
+    // Its important to attach thie event listener here, not in document.ready, otheriwse it wont dbe attached
+    $(".heart.fa").click(function() {
+        $(this).toggleClass("fa-heart fa-heart-o");
+    });
+
   $("body").removeClass("loading");
-//  $('.image').on('click',showDetails);
-  //$('.image-container').on('mouseover',showbuttons).on('mouseout',hidebuttons);
-  //$('.addbutton').on('click',addMovieToWatchList);
 
 }
 

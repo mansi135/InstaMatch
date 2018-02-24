@@ -144,12 +144,10 @@
                 function() {
                     let index = $('.marker').index(this)    // $('.marker') will give a list 
                     markers[index].setAnimation(google.maps.Animation.BOUNCE);
-                    console.log(markers[index]);
                 },
                 function() {
                     let index = $('.marker').index(this)    // $('.marker') will give a list 
                     markers[index].setAnimation(null); 
-                    console.log(markers[index]); 
                 }
             );
 
@@ -165,7 +163,7 @@
           $('.send').attr("disabled", false);
           $('.send').off('click');
          
-          var button = $(event.relatedTarget); // Button that triggered the modal
+          var button = $(event.relatedTarget); // Message Button that triggered the modal
           var recipient = button.data('fname');
           var to_id = button.data('userid');         
 

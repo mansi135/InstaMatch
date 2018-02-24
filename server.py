@@ -574,6 +574,26 @@ def show_map():
                                     UPLOAD_FOLDER=UPLOAD_FOLDER, sent_accepted=sent_accepted, 
                                     received_accepted=received_accepted, current_user=g.current_user)
 
+# Leslie's suggestion to join received/accepted
+
+# @app.route('/received')
+# def show_received():
+
+#     # ...
+#     # call helper function for received
+
+#     render_template("requests.html", info=info)
+
+# @app.route('/sent')
+# def show_sent():
+
+#     # ...
+#     # call helper function for sent
+
+#     render_template("requests.html", info=info)
+
+
+
 
 #AJAX route
 @app.route('/send-message', methods=['POST'])
@@ -625,17 +645,21 @@ def retrieve_msg_history():
     uid = request.args.get('uid')
     fname = request.args.get('fname')
 
-    history = (db.session.query(case([(Message.from_id == g.user_id, 'You')], else_=fname), Message.message)
+    # In chat style, we want to show latest at the bottom , hence order by descending
+    history = (db.session.query(case([(Message.from_id == g.user_id, 'You')], else_=fname), Message.message, Message.timestamp)
                 .filter(((Message.from_id == g.user_id) & (Message.to_id == uid)) |((Message.to_id == g.user_id) & (Message.from_id == uid)))
-                .order_by(desc(Message.timestamp)).all())
+                .order_by(Message.timestamp).all())
 
-    string = ""
+    string = []
 
-    for sender, msg in history:
-        string += "<b>" + sender + "</b>: " + msg + "<br>"
+    for sender, msg, time in history:
+        string.append(sender)
+        string.append(msg)
+        string.append(str(time))  # otherwise jsonify converts datetime to http format datetime
 
-    return jsonify({'data' : string})
-    # return string
+    # return jsonify({'data' : string})
+    
+    return jsonify(string)
 
 
 

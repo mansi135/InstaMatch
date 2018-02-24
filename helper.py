@@ -3,7 +3,7 @@ from pytz import timezone
 from datetime import datetime, date, timedelta
 
 def get_latest_messages(db, user_id):
-    """Given a user_id, return all messages to and from him to every-other user."""
+    """Given a user_id, return all messages to and from him to every-other user. Return id, message and timestamp"""
 
     QUERY = """
         WITH 

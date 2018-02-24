@@ -6,6 +6,9 @@
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <!-- <script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script> -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
     <script>
       $( function() {
 
@@ -77,6 +80,15 @@
         .side-by-side {
             display: inline-block;
         }
+        #render-users { 
+            margin-top: 10px;
+            padding: 10px;
+            background: linear-gradient(90deg, #2bc0e4 10%, #eaecc6 90%);
+        }
+        .heart {
+            font-size: 25px;
+            color:red;
+        }
 
   </style>
 {% endblock %}
@@ -89,7 +101,7 @@
             <div class="col-lg-2">
                 <br>
                 <span class="glyphicon glyphicon-filter"></span> 
-                <b> Filters </b>
+                <b> Filters </b> 
             </div>
             <div class="col-lg-10" style="text-align: center">
                 <div class="side-by-side">
@@ -176,8 +188,8 @@
           <div class="col-lg-10" id="render-users">
 
           </div> <!-- Pictures Column -->
-          <div class="cir"></div>
-        </div> <!--row-->
+            <div class="cir"></div>
+          </div> <!--row-->
     </div>
     
     
