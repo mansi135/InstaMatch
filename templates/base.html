@@ -46,11 +46,12 @@
                 
                 <ul class="nav navbar-nav navbar-right">
                   <li><a href="/my-homepage/messages" class="msg"><span class="glyphicon glyphicon-envelope"></span> Inbox<span id="msg"></span></a></li>
+                  <li><a href="#" class="msg"><span class="glyphicon glyphicon-heart"></span> My Favorites<span id="msg"></span></a></li>
                   <li class="dropdown"><a href="#"
                                           class="dropdown-toggle"
                                           data-toggle="dropdown"
                                           role="button"
-                                          aria-expanded="false">MyConnections<span id="notification"></span><span class="caret"></span></a>
+                                          aria-expanded="false">My Connections<span id="notification"></span><span class="caret"></span></a>
                                           <ul class="dropdown-menu" role="menu">
                                               <li><a href="/my-homepage/requests-sent" class="sent">Sent<span id="sent"></span></a></li>
                                               <li><a href="/my-homepage/requests-received" class="received">Received<span id="received"></span></li>
@@ -61,7 +62,7 @@
                                           class="dropdown-toggle"
                                           data-toggle="dropdown"
                                           role="button"
-                                          aria-expanded="false"><span class="glyphicon glyphicon-user"></span>MyAccount<span class="caret"></span></a>
+                                          aria-expanded="false"><span class="glyphicon glyphicon-user"></span>My Account<span class="caret"></span></a>
                                           <ul class="dropdown-menu" role="menu">
                                               <li><a href="/users/{{ session['user_id'] }}">View Profile</a></li>
                                               <li><a href="#">Edit Profile</a></li>
@@ -99,8 +100,10 @@
 
   {% block javascript %} {% endblock %}
 
-  <footer>
-    <p>Copyright @InstaMatch 2018. All rights reserved.</p>
+  <footer class="footer-copyright">
+    <div class="container-fluid">
+      <p>Copyright @InstaMatch 2018. All rights reserved.</p>
+    </div>
 </footer>
 </body>
 </html>

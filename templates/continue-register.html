@@ -27,14 +27,14 @@
                 <input type="radio" name="gender" value="O"> Other
             </label><br><br>
             <label>Ethnicity*
-                <select name="ethnicity">
+                <select name="ethnicity" required>
                     {% for ethnicity in ethnicities %}
                         <option value="{{ ethnicity.ethnicity_id }}">{{ ethnicity.ethnicity_name }}</option>
                     {% endfor %}
                 </select>
             </label><br><br>
             <label>Religion*
-                <select name="religion">
+                <select name="religion" required>
                     {% for religion in religions %}
                         <option value="{{ religion.religion_id }}">{{ religion.religion_name }}</option>
                     {% endfor %}

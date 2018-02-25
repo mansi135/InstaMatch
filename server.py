@@ -173,7 +173,7 @@ def handle_continue_registration_form():
     contact = ContactInfo(user_id=user_id, street_address=address, city=city, zipcode=zipcode, phone=phone)
     professional = ProfessionalInfo(user_id=user_id, employer=employer, occupation=occupation, education=education)
 
-    
+
     if 'pic' not in request.files:
         flash('No picture uploaded')
         return redirect(request.url)  #request.url takes us back to requesting url, but we loose typed data ...how to save that ?
@@ -376,15 +376,15 @@ def show_profile_page(user_id):
     # user.personal.dob = user.personal.dob.strftime('%Y-%m-%d')
 
     # BOZO - make this loop when user has more than one picture 
-    pic_url = os.path.join(app.config['UPLOAD_FOLDER'],user.pictures[0].picture_url)
+    #pic_url = os.path.join(app.config['UPLOAD_FOLDER'],user.pictures[0].picture_url)
 
-    return render_template("profile-page.html", user=user, pic_url=pic_url, contacttype=contact_type, status=status)
-
-
+    return render_template("profile-page.html", user=user, UPLOAD_FOLDER=UPLOAD_FOLDER, contacttype=contact_type, status=status)
 
 
 
 
+
+# not needed ?
 @app.route('/search')
 @login_required
 def search():
@@ -497,6 +497,8 @@ def show_received_requests_and_update_target_seen():
     # Update target_seen in database
     new_requests = RelationManager.query.filter_by(target_userid=g.user_id, seen_by_target='not-seen').all()
 
+    # session['new_requests'] = new_requests
+
     for new_request in new_requests:
         new_request.seen_by_target = 'seen'
     db.session.commit()
@@ -514,6 +516,8 @@ def show_sent_requests_and_update_source_seen():
     """Show sent requests"""
     
     new_responses = RelationManager.query.filter_by(source_userid=g.user_id, seen_by_source='not-seen').all()
+
+    # session['new_responses'] = new_responses
 
     for new_response in new_responses:
         new_response.seen_by_source = 'seen'
@@ -630,6 +634,8 @@ def send_message():
 def show_messages():
 
     new_messages = Message.query.filter_by(to_id=g.user_id, seen=False).all()
+
+    session['new_messages'] = new_messages
 
     for new_message in new_messages:
         new_message.seen = True

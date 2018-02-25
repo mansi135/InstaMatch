@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block title %} Page1 {% endblock %}
+
+{% block content %}
+
+<h1>checking gep-distances</h1>
+
+<ul> All zipcodes near you </ul>
+    {% for z in zipcodes %}
+      <li> {{ z }} </li>
+    {% endfor %}
+</ul>
+
+
+<DIV id="container">
+<DIV style="float:left; background-color:magenta; width:100px; height:100px; margin-top: 200px; margin-left: 100px;"> first div</DIV>
+<DIV style="float:right; background-color:green; width:100px; height:100px; margin-top: 100px; margin-left: 200px;">second div</DIV>
+</DIV>
+
+{% endblock %}
+
+
+
+
+
+
+

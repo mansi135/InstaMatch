@@ -16,7 +16,37 @@
     {% endfor %} -->
     <div class="row">
         <div id="personal">
-            <img src="/{{ pic_url }}">
+            <img src="/{{ UPLOAD_FOLDER }}{{ user.pictures[0].picture_url }}" width="200px" height="200px">
+
+            <div id="myCarousel" class="carousel slide" data-ride="carousel">
+                <!-- Indicators -->
+                <ol class="carousel-indicators">
+                    {% for pic in user.pictures %}
+                        <li data-target="#myCarousel" data-slide-to="pic.picture_url"></li>
+                    {% endfor %}
+                </ol>
+
+                <!-- Wrapper for slides -->
+                <div class="carousel-inner">
+                    {% for pic in user.pictures %}
+                      <div class="item active">
+                        <img src="/{{ UPLOAD_FOLDER }}{{ pic.picture_url }}" style="width:100%;">
+                      </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Left and right controls -->
+                <a class="left carousel-control" href="#myCarousel" data-slide="prev">
+                  <span class="glyphicon glyphicon-chevron-left"></span>
+                  <span class="sr-only">Previous</span>
+                </a>
+                <a class="right carousel-control" href="#myCarousel" data-slide="next">
+                  <span class="glyphicon glyphicon-chevron-right"></span>
+                  <span class="sr-only">Next</span>
+                </a>
+            </div>
+     
+
             <h3>Personal Info</h3>
                 <p> Gender : {{ user.personal.gender }} </p>
                 <p id="dob">Date of Birth : {{ user.personal.dob }}</p>
