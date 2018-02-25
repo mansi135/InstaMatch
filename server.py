@@ -1,7 +1,7 @@
 from flask import Flask, redirect, url_for, session, request, render_template, flash, g, jsonify, send_from_directory
 from flask_oauth import OAuth
 from flask_debugtoolbar import DebugToolbarExtension
-from jinja2 import StrictUndefined
+from jinja2 import StrictUndefined, Template
 
 from model import *
 

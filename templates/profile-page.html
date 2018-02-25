@@ -20,18 +20,28 @@
 
             <div id="myCarousel" class="carousel slide" data-ride="carousel">
                 <!-- Indicators -->
-                <ol class="carousel-indicators">
-                    {% for pic in user.pictures %}
-                        <li data-target="#myCarousel" data-slide-to="pic.picture_url"></li>
+                <ol class="carousel-indicators">                   
+                    {% for item in user.pictures %} 
+                        {% if loop.index0 == 0 %} <!-- loop.index0 is used for looping in jinja -->
+                            <li data-target="#myCarousel" data-slide-to="{{ loop.index0 }}" class="active"></li>
+                        {% else %}
+                            <li data-target="#myCarousel" data-slide-to="{{ loop.index0 }}"></li>
+                        {% endif %}
                     {% endfor %}
                 </ol>
 
                 <!-- Wrapper for slides -->
-                <div class="carousel-inner">
+                <div class="carousel-inner" role="listbox">
                     {% for pic in user.pictures %}
-                      <div class="item active">
-                        <img src="/{{ UPLOAD_FOLDER }}{{ pic.picture_url }}" style="width:100%;">
-                      </div>
+                        {% if loop.index0 == 0 %}
+                          <div class="item active">
+                            <img src="/{{ UPLOAD_FOLDER }}{{ pic.picture_url }}" style="width:100%;">
+                          </div>
+                        {% else %}
+                            <div class="item">
+                             <img src="/{{ UPLOAD_FOLDER }}{{ pic.picture_url }}" style="width:100%;">
+                            </div>
+                        {% endif %}
                     {% endfor %}
                 </div>
 

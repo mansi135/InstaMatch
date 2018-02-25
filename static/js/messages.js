@@ -36,15 +36,15 @@ function retrieveMessages() {
 function showChat(history) {
     
     $('#chat-window').empty();
-    $('#chat-window').append("<h3>Chat with " + link.data('fname') + "</h3>");
+    $('#chat-window').append("<h3>Message history with " + link.data('fname') + "</h3>");
 
     for (let i = 0; i < history.length; i += 3) {
 
         if (history[i] === 'You') {
-            $('<div class="chat-box"><p style="float: right;"><b>' + history[i] + '</b> ' + history[i+1] + '</p><p class="stamp">' + history[i+2] + '</p><p style="clear: right; float: right;"><span class="time-ago"></span></p></div>').appendTo('#chat-window');
+            $('<div class="chat-box"><p style="float: right;"><b style="color: red">' + history[i] + '</b> ' + history[i+1] + '</p><p class="stamp">' + history[i+2] + '</p><p style="clear: right; float: right;"><span class="time-ago"></span></p></div>').appendTo('#chat-window');
         }
         else {
-            $('<div class="chat-box darker"><p><b>' + history[i] + '</b> ' + history[i+1] + '</p><p class="stamp">' + history[i+2] + '</p><p><span class="time-ago"></span></p></div>').appendTo('#chat-window');
+            $('<div class="chat-box darker"><p><b style="color: red">' + history[i] + '</b> ' + history[i+1] + '</p><p class="stamp">' + history[i+2] + '</p><p><span class="time-ago"></span></p></div>').appendTo('#chat-window');
         }                   
         
     }

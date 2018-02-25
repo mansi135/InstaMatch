@@ -45,7 +45,7 @@
 <!-- This is a good case for nested containers -->
 
 <div class="row">
-    <div class="col-lg-4" id="user-summary" > 
+    <div class="col-lg-4" id="user-summary" style="padding-bottom: 10px; overflow-y: scroll; height: 700px;"> 
           {% for user, message in user_list %}
             <div style="padding: 10px; margin-left: 10px;">
               <div class="side-by-side">
@@ -65,7 +65,7 @@
           {% endfor %} 
     </div>
 
-    <div class="col-lg-6 chat-window" id="chat-window" style="background-color: pink; padding-bottom: 10px; overflow-y: scroll;">
+    <div class="col-lg-6 chat-window" id="chat-window" style="background-color: pink; padding-bottom: 10px; overflow-y: scroll; height: 700px;">
     </div>
 </div>
     
