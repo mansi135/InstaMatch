@@ -3,6 +3,54 @@
 {% block title %}User Profile{% endblock %}
 
 {% block head %}
+    <style>
+      .carousel-inner > .item > img
+       {
+          width: 70%;
+          margin: auto;
+      }
+      .modal {
+          display: none;
+          position: fixed;
+          z-index: 1;
+          padding-top: 100px;
+          left: 0;
+          top: 0;
+          width: 100%;
+          height: 100%;
+          overflow: auto;
+          background-color: black;
+        }
+        /* Modal Content */
+        .modal-content {
+          position: relative;
+          background-color: #fefefe;
+          margin: auto;
+          padding: 0;
+          width: 90%;
+          max-width: 1200px;
+        }
+
+        /* The Close Button */
+        .close {
+          color: white;
+          position: absolute;
+          top: 10px;
+          right: 600px;
+          font-size: 35px;
+          font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+          color: #999;
+          text-decoration: none;
+          cursor: pointer;
+        }
+        .cursor {
+          cursor: pointer
+        }
+      </style>  
 {% endblock %}
 
 {% block content %}
@@ -16,9 +64,10 @@
     {% endfor %} -->
     <div class="row">
         <div id="personal">
-            <img src="/{{ UPLOAD_FOLDER }}{{ user.pictures[0].picture_url }}" width="200px" height="200px">
+            <a href="#" class="profile-pic"><img src="/{{ UPLOAD_FOLDER }}{{ user.pictures[0].picture_url }}" width="200px" height="200px" ></a>
 
-            <div id="myCarousel" class="carousel slide" data-ride="carousel">
+            <div id="myCarousel" class="carousel slide modal" data-ride="carousel">
+                <span class="close cursor" onclick="closeModal()">&times;</span>
                 <!-- Indicators -->
                 <ol class="carousel-indicators">                   
                     {% for item in user.pictures %} 
@@ -31,7 +80,7 @@
                 </ol>
 
                 <!-- Wrapper for slides -->
-                <div class="carousel-inner" role="listbox">
+                <div class="carousel-inner modal-content" role="listbox">
                     {% for pic in user.pictures %}
                         {% if loop.index0 == 0 %}
                           <div class="item active">
@@ -114,11 +163,21 @@
 
 {% block javascript %}
     <script>
-    
+    function closeModal() {
+          $('#myCarousel').hide();
+        }
     $(document).ready(function() { 
+
+        $('#myCarousel').hide();
 
         let age = calculateAge($('#dob').html()) + ' years old';  
         $('#age').html(age);
+
+        $('.profile-pic').on('click', function() {
+            $('#myCarousel').show();
+        })
+
+        
 
         // if(' user_type ' !== 'self') {
         //     $('#contact-info').hide();
