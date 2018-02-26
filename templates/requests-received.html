@@ -7,44 +7,18 @@
 {% endblock %}
 
 {% block content %}
-    
-<!-- <div class="container">
-    <ul class="load-received">
-      {% for received in received_from_list %}
-      <div class="col-lg-4">
-        <li>          
-            <span class="new"></span>
-            <a href="/users/{{ received.source_userid }}?type='source'&status={{ received.status }}">
-                <img src="/{{ UPLOAD_FOLDER }}{{ received.source_user.pictures[0].picture_url }}" width="200" height="200"></a>
-            <p><button id="a_{{ received.source_userid }}" onclick="acceptPass({{ received.source_userid }}, 'accept')">Accept</button>
-            <button id="p_{{ received.source_userid }}" onclick="acceptPass({{ received.source_userid }}, 'pass')">
-            Pass</button> </p>
-            <div id="msg_{{ received.source_userid }}"></div>
-            <p> UserId :{{ received.source_userid }} </p>
-            <p> Name :{{ received.source_user.fname }} {{ received.source_user.lname }} </p>
-            <p> Height : {{ received.source_user.personal.height }}cm </p>
-            <p> Religion : {{ received.source_user.personal.religion.religion_name }} </p>
-            <p class="dob">Age : {{ received.source_user.personal.dob }} </p>
-            <p> Ethnicity : {{ received.source_user.personal.ethnicity.ethnicity_name }} </p>
-            <p> Status : <span class="status" id="status_{{ received.source_userid }}" data-id="{{ received.source_userid }}">{{ received.status }}</span> </p>
-            <p class="stamp"> {{ received.timestamp }}</p>
-            <p> Received : <span class="time-ago"></span></p>
-        </li>
-    </div>
-      {% endfor %}
-    </ul>
-</div>
- -->
+
 
 <div class="container">
     <h3>{{ session['fname'] }}, they are interested in you..</h3>
 
     <div id="user-list" class="row">
-      {% for received in received_from_list %}
+        {% for received in received_from_list %}
           <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4 user-summary">
 
               <div class="well" style="border-radius: 10%; text-align: center;">
-                  
+                    
+
                   <p class="latest"><span class="glyphicon glyphicon-star"></span><b>New</b><p>
                  
                   <h3>{{ received.source_user.fname }}</h3>
@@ -57,6 +31,7 @@
                  
                   <p> Status : <span class="status" id="status_{{ received.source_userid }}" data-id="{{ received.source_userid }}">{{ received.status }}</span> </p>
                   <p class="stamp"> {{ received.timestamp }}</p>
+                 
                   <p> Received : <span class="time-ago"></span></p>
 
                   <button class="btn btn-primary" id="accept_{{ received.source_userid }}" onclick="acceptPass({{ received.source_userid }}, 
@@ -69,10 +44,8 @@
       {% endfor %}
     </div>
 </div>
-
-
-
-    
+ 
+     
 {% endblock %}
 
 {% block javascript %} 
@@ -118,20 +91,12 @@
             
             let ne = {{ session['new_requests'] }};
              
-            // $(".load-received li:lt(" + ne + ") img").addClass("bold");
-            // setTimeout(remove, 3000);
-            // function remove(){
-            //     $(".load-received li:lt(" + ne + ") img").removeClass("bold");
-            // }
+            
 
             $('.latest').hide()
             $(".user-summary div:lt(" + ne + ")").css("background-color", "#B0C9D9");
             $(".user-summary div:lt(" + ne + ") .latest").show();
 
-            //setTimeout(remove, 3000);
-            // function remove(){
-            //     $(".user-summary div:lt(" + ne + ")").removeClass("bold");
-            // }
 
             let dobs = $('.dob');
             for (let i = 0; i < dobs.length; i++) {

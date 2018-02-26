@@ -1,0 +1,55 @@
+<div class="container">
+
+  {% if method == 'received' %}
+    <h3>{{ session['fname'] }}, they are interested in you..</h3>
+  {% elif method == 'sent' %}
+    <h3>{{ session['fname'] }}, You requested them..</h3>
+  {% endif %}
+    
+    <div id="user-list" class="row">
+      {% for received_or_sent in list_to_render %}
+          {% if method == 'received' %}
+            {% set x = received_or_sent.source_user %}
+          {% elif method == 'sent' %}
+            {% set x = received_or_sent.target_user %}
+          {% endif %}
+          
+          <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4 user-summary">
+
+              <div class="well" style="border-radius: 10%; text-align: center;">
+                    
+
+                  <p class="latest"><span class="glyphicon glyphicon-star"></span><b>New</b><p>
+                 
+                  <h3>{{ x.fname }}</h3>
+                  
+                  <a href="/users/{{ x.user_id }}?type='{{ method }}'&status={{ received_or_sent.status }}">
+                  <img src="/{{ UPLOAD_FOLDER }}{{ x.pictures[0].picture_url }}" width="200" height="200"></a>
+
+                  <div><span class="dob">{{ x.personal.dob }}</span>, 
+                  {{ x.contact.city }}</div>
+                 
+                  <p> Status : <span class="status" id="status_{{ x.user_id }}" data-id="{{ x.user_id }}">{{ received_or_sent.status }}</span> </p>
+                  <p class="stamp"> {{ received_or_sent.timestamp }}</p>
+                 
+                 {% if method == 'received' %}
+                    <p> Received : <span class="time-ago"></span></p>
+
+                    <button class="btn btn-primary" id="accept_{{ x.user_id }}" onclick="acceptPass({{ x.user_id }}, 
+                    'accept')">Accept</button>
+                    <button class="btn btn-primary" id="pass_{{ x.user_id }}" onclick="acceptPass({{ x.user_id }}, 
+                    'pass')">Pass</button> 
+                 {% endif %}
+
+                 {% if method == 'sent' %}
+                    <p> Sent : <span class="time-ago"></span></p>
+                 {% endif %}
+
+              </div>
+
+          </div>
+      {% endfor %}
+    </div>
+</div>
+
+

@@ -70,7 +70,7 @@ function showUsers(users){
     //   <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></div></div>').appendTo('#users-summary');
 
 
-    $('<div class="col-lg-3 user-summary"><div style="text-align: center" class="well"><h4>' + user.fname + '</h4><img src=/' + user.pic_url + ' width="150" height="150"> \
+    $('<div class="col-lg-3 user-summary"><div style="border-radius: 10%; text-align: center" class="well"><h4>' + user.fname + '</h4><img src=/' + user.pic_url + ' width="150" height="150"> \
         <div>' + user.age + ', ' + user.contact.city + '</div><button class="btn btn-primary" id='+ user_id +' onclick="sendRequest(' + user_id + ')">Send Request</button> \
          <i class="heart fa fa-heart-o"></i></div></div>').appendTo('#render-users');
 

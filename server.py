@@ -505,9 +505,10 @@ def show_received_requests_and_update_target_seen():
 
     received_from_list = RelationManager.query.filter_by(target_userid=g.user_id).order_by(desc('timestamp')).all()
     
-    # fix for pic loop ? May be not- coz in results I show only 1-pic
+    # fix for pic loop ? May be not- coz in results I show only 1-pic. Only when the user clicks in profile , he can see all pics
 
-    return render_template("requests-received.html", received_from_list=received_from_list, UPLOAD_FOLDER=UPLOAD_FOLDER)
+    # return render_template("requests-received.html", received_from_list=received_from_list, UPLOAD_FOLDER=UPLOAD_FOLDER)
+    return render_template("requests.html", list_to_render=received_from_list, UPLOAD_FOLDER=UPLOAD_FOLDER, method='received')
 
 
 @app.route('/my-homepage/requests-sent')
@@ -526,9 +527,9 @@ def show_sent_requests_and_update_source_seen():
 
     sent_to_list = RelationManager.query.filter_by(source_userid=g.user_id).order_by(desc('timestamp')).all()
       
-    # fix for pic loop
    
-    return render_template("requests-sent.html", sent_to_list=sent_to_list, UPLOAD_FOLDER=UPLOAD_FOLDER)
+    # return render_template("requests-sent.html", sent_to_list=sent_to_list, UPLOAD_FOLDER=UPLOAD_FOLDER)
+    return render_template("requests.html", list_to_render=sent_to_list, UPLOAD_FOLDER=UPLOAD_FOLDER, method='sent')
 
 
 # Ajax route
