@@ -156,9 +156,15 @@ def handle_continue_registration_form():
     ethnicity_id = request.form.get('ethnicity')
     religion_id = request.form.get('religion')
     aboutme = request.form.get('aboutme')
+    smoke = request.form.get('smoke')
+    drink = request.form.get('drink')
+    current_rel = request.form.get('current_rel')
+    kids = request.form.get('kids')
+
 
     address = request.form.get('address')
     city = request.form.get('city')
+    state = request.form.get('state')
     zipcode = request.form.get('zipcode')
     phone = request.form.get('phone')
 
@@ -169,8 +175,9 @@ def handle_continue_registration_form():
     interest_ids =request.form.getlist('interests')
 
     personal = PersonalInfo(user_id=user_id, dob=dob, height=height, gender=gender,
-                 ethnicity_id=ethnicity_id, religion_id=religion_id, aboutme=aboutme)
-    contact = ContactInfo(user_id=user_id, street_address=address, city=city, zipcode=zipcode, phone=phone)
+                 ethnicity_id=ethnicity_id, religion_id=religion_id, aboutme=aboutme,
+                 drink=drink, smoke=smoke, current_rel_status=current_rel, kids=kids)
+    contact = ContactInfo(user_id=user_id, street_address=address, city=city, state=state, zipcode=zipcode, phone=phone)
     professional = ProfessionalInfo(user_id=user_id, employer=employer, occupation=occupation, education=education)
 
 
@@ -359,7 +366,7 @@ def match():
 def show_profile_page(user_id):
     """Show user-profile page"""
 
-    contact_type = request.args.get('type')
+    contact_type = request.args.get('type')  # type is not needed if status is not pending
     status = request.args.get('status')
 
     if user_id == g.user_id:

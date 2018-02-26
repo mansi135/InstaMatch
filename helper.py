@@ -81,6 +81,7 @@ def get_users_info(users, folder):
                                            'about me': personal.aboutme,
                                            'contact': {'email': user.email,
                                                        'city': contact.city,
+                                                       'state': contact.state,
                                                        'zipcode': contact.zipcode,
                                                        'phone': contact.phone
                                                        },
