@@ -9,6 +9,7 @@
           width: 70%;
           margin: auto;
       }
+
       .modal {
           display: none;
           position: fixed;
@@ -24,7 +25,7 @@
         /* Modal Content */
         .modal-content {
           position: relative;
-          background-color: #fefefe;
+          background-color: grey;
           margin: auto;
           padding: 0;
           width: 90%;
@@ -54,19 +55,20 @@
 {% endblock %}
 
 {% block content %}
-<div class="container" style="text-align: center;">
-    <h1> {{ user.fname }} {{ user.lname }} </h1>
+<div class="container">
 
+  <div class="row">
 
-    <br><br>
-    <!-- {% for pic in user.pictures %}
-        <img src="/{{ pic.picture_url }}">
-    {% endfor %} -->
-    <div class="row">
-        <div id="personal">
-            <a href="#" class="profile-pic"><img src="/{{ UPLOAD_FOLDER }}{{ user.pictures[0].picture_url }}" width="200px" height="200px" ></a>
-
-            <div id="myCarousel" class="carousel slide modal" data-ride="carousel">
+    <div class="col-lg-4">
+      <br><br>
+      <div id="personal">
+        <figure>
+        <a href="#" class="profile-pic"><img src="/{{ UPLOAD_FOLDER }}{{ user.pictures[0].picture_url }}" width="250px" height="250px" ></a>
+        </figure>
+        <br>
+        <p><span class="glyphicon glyphicon-envelope"></span> {{ user.email }}</p>
+        <p><span class="glyphicon glyphicon-phone"></span> {{ user.contact.phone }}</p>
+        <div id="myCarousel" class="carousel slide modal" data-ride="carousel">
                 <span class="close cursor" onclick="closeModal()">&times;</span>
                 <!-- Indicators -->
                 <ol class="carousel-indicators">                   
@@ -84,11 +86,11 @@
                     {% for pic in user.pictures %}
                         {% if loop.index0 == 0 %}
                           <div class="item active">
-                            <img src="/{{ UPLOAD_FOLDER }}{{ pic.picture_url }}" style="width:100%;">
+                            <img src="/{{ UPLOAD_FOLDER }}{{ pic.picture_url }}" style="width:70%;">
                           </div>
                         {% else %}
                             <div class="item">
-                             <img src="/{{ UPLOAD_FOLDER }}{{ pic.picture_url }}" style="width:100%;">
+                             <img src="/{{ UPLOAD_FOLDER }}{{ pic.picture_url }}" style="width:70%;">
                             </div>
                         {% endif %}
                     {% endfor %}
@@ -104,57 +106,77 @@
                   <span class="sr-only">Next</span>
                 </a>
             </div>
-     
-
-            <h3>Personal Info</h3>
-                <p> Gender : {{ user.personal.gender }} </p>
-                <p id="dob">Date of Birth : {{ user.personal.dob }}</p>
-                <p id="age"></li>
-                <p> Height : {{ user.personal.height }} cm</p>
-                <p> About {{ user.fname }} : {{ user.personal.aboutme }} </p>
-                <p> Ethnicity : {{ user.personal.ethnicity.ethnicity_name }} </p>
-                <p> Religion : {{ user.personal.religion.religion_name }} </p>  
-        </div>
+      </div>
     </div>
 
-    <div class="row">
-        <div id="contact-info">
-            <h3>Contact Info</h3>
-            <ul>
-                <li> Address : {{ user.contact.street_address }} </li>
-                <li> City : {{ user.contact.city }} </li>
-                <li> Zipcode : {{ user.contact.zipcode }} </li>
-                <li> Phone Number : {{ user.contact.phone }} </li>
-                <li> Email : {{ user.email }}</li>
-            </ul>
-        </div>
+
+
+    <div class="col-lg-6">
+      <h2> {{ user.fname }} {{ user.lname }} </h2>
+      <p> <span id="age"></span> &#9642; {{ user.personal.gender }} from <span id="city"></span>,<span id="state"></span></p>
+      <table class="table table-hover table-striped">
+        <tr>
+          <td>Date of Birth :</td>
+          <td id="dob">{{ user.personal.dob.strftime('%Y-%m-%d') }}</td>
+        </tr>
+        <tr>
+          <td>Height :</td>
+          <td>{{ user.personal.height }} cm</td>
+        </tr>
+        <tr>
+          <td>Ethnicity :</td>
+          <td>{{ user.personal.ethnicity.ethnicity_name }}</td>
+        </tr>
+        <tr>
+          <td>Faith :</td>
+          <td>{{ user.personal.religion.religion_name }}</td>
+        </tr>
+        <tr>
+          <td>Education :</td>
+          <td>{{ user.professional.education}}</td>
+        </tr>
+        <tr>
+          <td>Employer :</td>
+          <td>{{ user.professional.employer}}</td>
+        </tr>
+      </table>
+
+      
+        
+      
     </div>
+
+  </div>  <!-- end of row 1 -->
     
-    <div class="row">
-        <div id="professional">
-            <h3>Professional Info</h3>
-            <ul>
-                <li> Education : {{ user.professional.education}} </li>
-                <li> Occupation : {{ user.professional.occupation}} </li>
-                <li> Employer : {{ user.professional.employer}} </li>
-            </ul>
-            
-        </div>
+
+
+  <div class="row">
+    <div class="col-lg-10">
+      <h3>In {{ user.fname }}'s own words</h3>
+      <p> {{ user.personal.aboutme }} </p>
     </div>
+  </div> <!-- end of row 2 -->
+   
+  <div class="row">
+      <div class="col-lg-10">
+          <h3>Interests</h3>
+              <ul>
+              {% for interest in user.interests %}
+                  <li style="display: inline;"> {{ interest.interest_name }}</li>
+              {% endfor %}
+              </ul>
+      </div>
+  </div> <!-- end of row 3 -->
+      
+   
+
+
+  
+
+    
 
     <div class="row">
-        <div id="interests">
-            <h3>Interests</h3>
-                <ul>
-                {% for interest in user.interests %}
-                    <li> {{ interest.interest_name }}</li>
-                {% endfor %}
-                </ul>
-        </div>
-    </div>
-
-    <div class="row">
-        <button>Edit</button>
+        <button id="GetStateButton">Edit</button>
     </div>
 
 </div> 
@@ -170,14 +192,36 @@
 
         $('#myCarousel').hide();
 
-        let age = calculateAge($('#dob').html()) + ' years old';  
+        let age = calculateAge($('#dob').html());  
         $('#age').html(age);
 
         $('.profile-pic').on('click', function() {
             $('#myCarousel').show();
         })
 
-        
+
+        // zippopotam.us has a REST API. Here is an example of how to get a State from a ZIP in pure JavaScript (no libraries):
+        // var getStatebutton = document.getElementById('GetStateButton');
+
+        // var getCityAndState = function() {
+        //     var zip = 95134;
+        //     if (!zip) return;
+        //     var url = 'http://api.zippopotam.us/us/' + zip;
+        //     var xhr = new XMLHttpRequest();
+
+        //     xhr.onreadystatechange = function () {
+        //         if (xhr.readyState == 4) {
+        //             var result = xhr.responseText;
+        //             console.log(result);
+        //             var zippo = JSON.parse(result);
+        //             // var resultDiv = document.getElementById('divResult');
+        //             console.log(zippo.places[0]['place name']);
+        //             console.log(zippo.places[0]['state']);
+        //         }
+        //     };
+        //     xhr.open('GET', url, true);
+        //     xhr.send(null);
+        // };
 
         // if(' user_type ' !== 'self') {
         //     $('#contact-info').hide();
@@ -194,10 +238,10 @@
         // if status === Pending
         //     show status
         //     hide contact-info
-        //     if contact_type === 'source'
+        //     if contact_type === 'received'
         //         show accept-btn
         //         show pass-btn
-        //     if contact_type === 'target'
+        //     if contact_type === 'sent'
         //         <Do nothing>
         // if status === Passed
         //     show status
