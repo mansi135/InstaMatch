@@ -71,7 +71,7 @@ function showUsers(users){
 
 
     $('<div class="col-lg-3 user-summary"><div style="border-radius: 10%; text-align: center" class="well"><h4>' + user.fname + '</h4><a href="/users/' + user_id + '?status="new"> \
-        <img src=/' + user.pic_url + ' width="150" height="150"></a><div>' + user.age + ', ' + user.contact.city + '</div> \
+        <img src=/' + user.pic_url + ' width="150" height="150"></a><div>' + user.age + ', ' + user.contact.city + '-' + user.contact.state + '</div> \
         <button class="btn btn-primary" id='+ user_id +' onclick="sendRequest(' + user_id + ')">Send Request</button> \
          <i class="heart fa fa-heart-o"></i></div></div>').appendTo('#render-users');
 

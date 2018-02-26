@@ -91,7 +91,7 @@ def get_users_info(users, folder):
 
                                                             },
                                             'pic_url': folder + picture.picture_url,
-                                            'interests': [interest for interest in user.interests]
+                                            'interests': [interest.interest_name for interest in user.interests]
 
                                             }
 

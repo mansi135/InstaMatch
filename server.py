@@ -643,24 +643,19 @@ def show_messages():
 
     new_messages = Message.query.filter_by(to_id=g.user_id, seen=False).all()
 
-    session['new_messages'] = new_messages
-
     for new_message in new_messages:
         new_message.seen = True
     db.session.commit()
 
 
     latest_messages = get_latest_messages(db, g.user_id);
+
     user_list = []
 
     for message in latest_messages:     # returns a tuple of (id, msg, timestamp)
         user_list.append((User.query.get(message[0]), message))
 
-
-    # messages_list = Message.query.filter_by(to_id=g.user_id).order_by(desc('timestamp')).all()
-
-    # fix for pic loop
-   
+     
     return render_template("messages.html", user_list=user_list, UPLOAD_FOLDER=UPLOAD_FOLDER)
 
 
@@ -684,7 +679,7 @@ def retrieve_msg_history():
         string.append(str(time))  # otherwise jsonify converts datetime to http format datetime
 
     # return jsonify({'data' : string})
-    
+    print string
     return jsonify(string)
 
 

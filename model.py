@@ -179,7 +179,6 @@ class Message(db.Model):
     timestamp = db.Column(db.DateTime, nullable=False) 
     seen = db.Column(db.Boolean, nullable=False, index=True)
 
-    
 
     from_user = db.relationship("User", backref="messages_s", 
                                    primaryjoin="Message.from_id==User.user_id") 
@@ -189,7 +188,8 @@ class Message(db.Model):
     def __repr__(self):
         """Provide helpful representation when printed"""
 
-        return "<Source_User={} Target_User={} Status={}>".format(self.source_userid, self.target_userid, self.status)
+        return "<Source_User={} Target_User={}>".format(self.from_id, self.to_id)
+
 
 
 class Favorite(db.Model):
