@@ -54,7 +54,7 @@ class PersonalInfo(db.Model):
     gender = db.Column(db.String(10), nullable=False)
     ethnicity_id = db.Column(db.Integer, db.ForeignKey('ethnicities.ethnicity_id'))
     religion_id = db.Column(db.Integer, db.ForeignKey('religions.religion_id'))
-    aboutme = db.Column(db.String(100), nullable=True) # See how to change it to min characters required
+    aboutme = db.Column(db.String(1000), nullable=True) # See how to change it to min characters required
 
 
     #many-users-to-one-ethnicity
