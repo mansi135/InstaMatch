@@ -64,31 +64,26 @@ def load_users():
     PersonalInfo.query.delete()
     ContactInfo.query.delete()
     ProfessionalInfo.query.delete()
-    #Picture.query.delete()
 
 
-    i = 1
     # Read user file and insert data
     for row in open("seed_data/user.txt"):
         row = row.rstrip()
         uid, email, password, fname, lname, dob, height, gender, ethnicity, religion,\
-        address, city, zipcode, phone, emp, occ, __, aboutme  = row.split("|")
+        drink, smoke, rel_status, want_kids \
+        address, city, state, zipcode, phone, emp, occ, edu, aboutme  = row.split("|")
 
         dob_t = datetime.strptime(dob, '%Y-%m-%d') # convert this to datetime.date , not datetime.datetime 
-
-        # user = User(user_id=uid, email=email, password=password, fname=fname, lname=lname,
-        #             dob=dob_t, height=height, gender=gender, ethnicity=ethnicity,religion=religion,
-        #             age=age, address=address, city=city, zipcode=zipcode, phone=phone,
-        #             employer=emp, aboutme=aboutme)
 
         user = User(user_id=uid, email=email, password=password, fname=fname, lname=lname)
 
         personal = PersonalInfo(user_id=uid, dob=dob_t, height=height, gender=gender, 
-                                ethnicity_id=ethnicity, religion_id=religion, aboutme=aboutme)
+                                ethnicity_id=ethnicity, religion_id=religion, aboutme=aboutme,
+                                drink=drink, smoke=smoke, current_rel_status=rel_status, kids=want_kids)
 
-        contact = ContactInfo(user_id=uid, street_address=address, city=city, zipcode=zipcode, phone=phone)
+        contact = ContactInfo(user_id=uid, street_address=address, city=city, state=state, zipcode=zipcode, phone=phone)
 
-        professional = ProfessionalInfo(user_id=uid, employer=emp, occupation=occ)
+        professional = ProfessionalInfo(user_id=uid, employer=emp, occupation=occ, education=edu)
 
 
 
@@ -102,6 +97,20 @@ def load_users():
     db.session.commit()
 
 
+def load_user_interests():
+    """Load initial interests"""
+
+    User.query.delete()
+
+    for row in open("seed_data/user_interest.txt"):
+        row = row.rstrip()
+        u_i_id, u_id, i_id  = row.split("|")
+
+        new_entry = UserInterest(user_interest_id=u_i_id, user_id=u_id, interest_id=i_id)
+        db.session.add(new_entry)
+
+    db.session.commit()
+
 
 def set_val_user_id():
     """Set value for the next user_id after seeding database"""
@@ -110,13 +119,23 @@ def set_val_user_id():
     result = db.session.query(func.max(User.user_id)).one()
     max_id = int(result[0])
 
-    # We dont need it for movies here bcoz we are not adding new movies
-    # We dont need it for ratings because we are not over-writing the PK there
-
     # Set the value for the next user_id to be max_id + 1
     query = "SELECT setval('users_user_id_seq', :new_id)"
     db.session.execute(query, {'new_id': max_id + 1})
     db.session.commit()
+
+
+def set_val_user_interest_id():
+    """Set value for the next user_id after seeding database"""
+
+    result = db.session.query(func.max(UserInterest.user_interest_id)).one()
+    max_id = int(result[0])
+
+    # Set the value for the next user_id to be max_id + 1
+    query = "SELECT setval('users_interests_user_interest_id_seq', :new_id)"
+    db.session.execute(query, {'new_id': max_id + 1})
+    db.session.commit()
+
 
 
 if __name__ == "__main__":
@@ -132,3 +151,5 @@ if __name__ == "__main__":
     load_users()
     load_pictures()
     set_val_user_id()
+    load_user_interests()
+    set_val_user_interest_id()

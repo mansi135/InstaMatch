@@ -49,12 +49,16 @@ class PersonalInfo(db.Model):
 
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), primary_key=True) #one-to-one
     #dob = db.Column(db.DateTime, nullable=False, default ="") # do this
-    dob = db.Column(db.DateTime, nullable=False)
-    height = db.Column(db.Integer, nullable=False)
-    gender = db.Column(db.String(10), nullable=False)
+    dob = db.Column(db.DateTime, nullable=False, index=True)
+    height = db.Column(db.Integer, nullable=False, index=True)
+    gender = db.Column(db.String(10), nullable=False, index=True)
     ethnicity_id = db.Column(db.Integer, db.ForeignKey('ethnicities.ethnicity_id'))
     religion_id = db.Column(db.Integer, db.ForeignKey('religions.religion_id'))
     aboutme = db.Column(db.String(1000), nullable=True) # See how to change it to min characters required
+    drink = db.Column(db.String(80), nullable=True)
+    smoke = db.Column(db.String(80), nullable=True)
+    current_rel_status = db.Column(db.String(80), nullable=True)
+    kids = db.Column(db.String(80), nullable=True)
 
 
     #many-users-to-one-ethnicity
@@ -72,6 +76,7 @@ class ContactInfo(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), primary_key=True) #one-to-one
     street_address = db.Column(db.String(80), nullable=True)
     city = db.Column(db.String(64), nullable=False)
+    state = db.Column(db.String(64), nullable=False)
     zipcode = db.Column(db.String(10), nullable=False)
     phone = db.Column(db.String(64), nullable=False)
 
@@ -168,11 +173,11 @@ class Message(db.Model):
     __tablename__ = "messages"
 
     message_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    from_id = db.Column(db.ForeignKey('users.user_id'), nullable=False)  
-    to_id = db.Column(db.ForeignKey('users.user_id'), nullable=False) 
+    from_id = db.Column(db.ForeignKey('users.user_id'), nullable=False, index=True)  
+    to_id = db.Column(db.ForeignKey('users.user_id'), nullable=False, index=True) 
     message = db.Column(db.String(1000))
     timestamp = db.Column(db.DateTime, nullable=False) 
-    seen = db.Column(db.Boolean, nullable=False)
+    seen = db.Column(db.Boolean, nullable=False, index=True)
 
     
 
