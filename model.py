@@ -191,6 +191,27 @@ class Message(db.Model):
 
         return "<Source_User={} Target_User={} Status={}>".format(self.source_userid, self.target_userid, self.status)
 
+
+class Favorite(db.Model):
+
+    __tablename__ = "favorites"
+
+    favorite_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    source_userid = db.Column(db.ForeignKey('users.user_id'), nullable=False, index=True)
+    target_userid = db.Column(db.ForeignKey('users.user_id'), nullable=False, index=True)
+    timestamp = db.Column(db.DateTime, nullable=False)
+
+    source_user = db.relationship("User", backref="favorites_s", 
+                                   primaryjoin="Favorite.source_userid==User.user_id") 
+    target_user = db.relationship("User", backref="favorites_t",
+                                   primaryjoin="Favorite.target_userid==User.user_id")
+
+    def __repr__(self):
+        """Provide helpful representation when printed"""
+
+        return "<Source_User={} Target_User={}>".format(self.source_userid, self.target_userid)
+
+
 ##############################################################################
 # Helper functions
 
