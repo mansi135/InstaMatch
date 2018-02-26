@@ -49,7 +49,7 @@ def load_pictures():
 
     Picture.query.delete()
 
-    for i in range(1,501):
+    for i in range(1,137):
         db.session.add(Picture(user_id=i, picture_url="MyDbPics{}.jpg".format(i)))
     
     db.session.commit()
@@ -67,10 +67,10 @@ def load_users():
 
 
     # Read user file and insert data
-    for row in open("seed_data/user.txt"):
+    for row in open("seed_data/user_f.txt"):
         row = row.rstrip()
         uid, email, password, fname, lname, dob, height, gender, ethnicity, religion,\
-        drink, smoke, rel_status, want_kids \
+        drink, smoke, rel_status, want_kids, \
         address, city, state, zipcode, phone, emp, occ, edu, aboutme  = row.split("|")
 
         dob_t = datetime.strptime(dob, '%Y-%m-%d') # convert this to datetime.date , not datetime.datetime 
@@ -93,6 +93,36 @@ def load_users():
         db.session.add(contact)
         db.session.add(professional)
 
+
+
+    for row in open("seed_data/user_m.txt"):
+        row = row.rstrip()
+        uid, email, password, fname, lname, dob, height, gender, ethnicity, religion,\
+        drink, smoke, rel_status, want_kids, \
+        address, city, state, zipcode, phone, emp, occ, edu, aboutme  = row.split("|")
+
+        dob_t = datetime.strptime(dob, '%Y-%m-%d') # convert this to datetime.date , not datetime.datetime 
+
+        user = User(user_id=uid, email=email, password=password, fname=fname, lname=lname)
+
+        personal = PersonalInfo(user_id=uid, dob=dob_t, height=height, gender=gender, 
+                                ethnicity_id=ethnicity, religion_id=religion, aboutme=aboutme,
+                                drink=drink, smoke=smoke, current_rel_status=rel_status, kids=want_kids)
+
+        contact = ContactInfo(user_id=uid, street_address=address, city=city, state=state, zipcode=zipcode, phone=phone)
+
+        professional = ProfessionalInfo(user_id=uid, employer=emp, occupation=occ, education=edu)
+
+
+
+        # We need to add to the session or it won't ever be stored
+        db.session.add(user)
+        db.session.add(personal)
+        db.session.add(contact)
+        db.session.add(professional)
+
+
+
     # Once we're done, we should commit our work
     db.session.commit()
 
@@ -100,7 +130,7 @@ def load_users():
 def load_user_interests():
     """Load initial interests"""
 
-    User.query.delete()
+    UserInterest.query.delete()
 
     for row in open("seed_data/user_interest.txt"):
         row = row.rstrip()
