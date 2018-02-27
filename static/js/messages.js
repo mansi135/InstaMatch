@@ -19,10 +19,11 @@ $(document).ready(function() {
             //     });
 
             $(".messages").click(function(evt) {
+                    $('.top-div').css("background-color", "transparent");
                     link = $(this);
                     to_id = $(this).data("id");
                     fname = $(this).data("fname");
-                    
+                    $(this).closest('div').parent().css("background-color", "#eee");
                     retrieveMessages();
                         
              });

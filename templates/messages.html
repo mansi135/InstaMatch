@@ -45,9 +45,9 @@
 <!-- This is a good case for nested containers -->
 
 <div class="row">
-    <div class="col-lg-4" id="user-summary" style="padding-bottom: 10px; overflow-y: scroll; height: 700px;"> 
+    <div class="col-lg-5" id="user-summary" style="padding-bottom: 10px; overflow-y: scroll; height: 600px;"> 
           {% for user, message in user_list %}
-            <div style="padding: 10px; margin-left: 10px;">
+            <div class="top-div" style="padding: 10px; margin-left: 10px;">
               <div class="side-by-side">
                 <img src="/{{ UPLOAD_FOLDER }}{{ user.pictures[0].picture_url }}" width="200" height="200">
               </div>
@@ -65,7 +65,7 @@
           {% endfor %} 
     </div>
 
-    <div class="col-lg-6 chat-window" id="chat-window" style="padding-bottom: 10px; overflow-y: scroll; height: 700px;">
+    <div class="col-lg-7 chat-window" id="chat-window" style="padding-bottom: 10px; overflow-y: scroll; height: 600px;">
     </div>
 </div>
     
