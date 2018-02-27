@@ -113,7 +113,8 @@
 
     <div class="col-lg-6">
       <h2> {{ user.fname }} {{ user.lname }} </h2>
-      <p> <span id="age"></span> &#9642; {{ user.personal.gender }} from <span id="city"></span>,<span id="state"></span></p>
+      <p> <span id="age"></span> &#9642; {{ user.personal.gender }} from {{ user.contact.city }}, {{ user.contact.state }}</p>
+
       <table class="table table-hover table-striped">
         <tr>
           <td>Date of Birth :</td>
@@ -139,10 +140,23 @@
           <td>Employer :</td>
           <td>{{ user.professional.employer}}</td>
         </tr>
-      </table>
-
-      
-        
+        <tr>
+          <td>Smokes :</td>
+          <td >{{ user.personal.smoke }}</td>
+        </tr>
+        <tr>
+          <td>Drinks :</td>
+          <td>{{ user.personal.drink }} </td>
+        </tr>
+        <tr>
+          <td>Current Relationship Status :</td>
+          <td>{{ user.personal.current_rel_status }}</td>
+        </tr>
+        <tr>
+          <td>Want kids :</td>
+          <td>{{ user.personal.kids }}</td>
+        </tr>
+      </table> 
       
     </div>
 
@@ -162,7 +176,7 @@
           <h3>Interests</h3>
               <ul>
               {% for interest in user.interests %}
-                  <li style="display: inline;"> {{ interest.interest_name }}</li>
+                  <li style="display: inline;"><span class="glyphicon glyphicon-star"></span> {{ interest.interest_name }} </li>
               {% endfor %}
               </ul>
       </div>

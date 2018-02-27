@@ -290,13 +290,13 @@ def individual_home_page():
 
     filter_criteria_for_female = {'min_age': my_age - 3,
                         'max_age': my_age + 15,
-                        'min_height': my_height + 10,
+                        'min_height': my_height,
                         'max_height': my_height + 80,
                         'gender': 'M' }
 
     filter_criteria_for_male = {'min_age': my_age - 30,
-                        'max_age': my_age + 3,
-                        'min_height': my_height - 20,
+                        'max_age': my_age + 5,
+                        'min_height': my_height - 50,
                         'max_height': my_height + 10,
                         'gender': 'F' }
 
@@ -679,7 +679,6 @@ def retrieve_msg_history():
         string.append(str(time))  # otherwise jsonify converts datetime to http format datetime
 
     # return jsonify({'data' : string})
-    print string
     return jsonify(string)
 
 

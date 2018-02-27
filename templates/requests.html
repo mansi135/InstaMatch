@@ -60,12 +60,14 @@
             if ('{{ method }}' === 'received'){
                 checkStatus(); 
                 ne = {{ session['new_requests'] }};
+                console.log(ne);
                 
             }
               
              
            if ('{{ method }}' === 'sent') {
               ne = {{ session['new_responses'] }}; 
+              console.log(ne);
             }
 
             $('.latest').hide()

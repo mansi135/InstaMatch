@@ -21,8 +21,6 @@
 
 {% block content %}
 
-    <h3>    Accepted Members</h3>
-
     <!-- One Modal Window in the entire page -->
     <div class="modal fade" id="message-Modal" tabindex="-1" role="dialog">
       <div class="modal-dialog" role="document">
@@ -47,42 +45,58 @@
       </div>
     </div>
 
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-4" style="text-align: center;">
+                <h3>Accepted Members</h3>
+            </div>
+            <div class="col-lg-6" style="text-align: center; margin-left: 50px">
+                <h3>Map View</h3>
+            </div>
+        </div>
+    </div>
+
 
     <!-- Half page for users and half page for maps -->
     <!-- <div class="row">    -->
         <!-- <div class="col-lg-6" panel panel-default> -->
-        <div class="side-by-side" style="overflow:scroll; height: 600px; width: 700px;">
-            <ul>
+        <div class="side-by-side" style="overflow:scroll; height: 600px; width: 650px;">
+            <!-- {% with method="sent", list_to_render=sent_accepted %}
+                {% include 'common-template.html' %}
+            {% endwith %} -->
               {% for sent in sent_accepted %}
-                <li> 
+                <div class="well" style="width:80%; height: 40%; margin-left: 30px; ">
+                    <div style="float: left;">
                     <a href="/users/{{ sent.target_userid }}?type='target'&status={{ sent.status }}">     
-                        <p> <img src="/{{ UPLOAD_FOLDER }}{{ sent.target_user.pictures[0].picture_url }}" width="200" height="200" class="marker"> </p></a>
-
-                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#message-Modal" data-fname="{{ sent.target_user.fname }}" data-userid="{{ sent.target_userid }}" data-type="target">Message</button>
-
-                        <p> UserId :{{ sent.target_userid }} </p>
-                        <p> Name :{{ sent.target_user.fname }} {{ sent.target_user.lname }} </p>
+                        <img src="/{{ UPLOAD_FOLDER }}{{ sent.target_user.pictures[0].picture_url }}" width="200" height="200" class="marker"></a>
+                    </div>
+                    <div class="side-by-side" style="margin-left: 20px">
+                        <h3>{{ sent.target_user.fname }}</h3>                  
+                        <div><span class="dob">{{ sent.target_user.personal.dob }}</span>, 
+                            {{ sent.target_user.contact.city }}, {{ sent.target_user.contact.state }}</div>
                         <p> Status : {{ sent.status }}</p>
                         <p class="stamp"> {{ sent.timestamp }}</p>
                         <p> Sent : <span class="time-ago"></span></p>
                         <a href="#" data-toggle="hover" 
                         data-content="
-                                Phone Number : {{ sent.target_user.contact.phone }} 
+                                Phone Number : {{ sent.target_user.contact.phone }}      
                                 Email : {{ sent.target_user.email }}">
-                        Show Contact </a>
-                </li>
+                        Show Contact </a> <br>
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#message-Modal" data-fname="{{ sent.target_user.fname }}" data-userid="{{ sent.target_userid }}" data-type="target">Message</button>
+                    </div>
+                </div>
               {% endfor %}
-            </ul>
-            <ul>
+
               {% for received in received_accepted %}
-                <li> 
+                <div class="well" style="width:80%; height: 40%; margin-left: 30px;">
+                    <div style="float: left;">
                     <a href="/users/{{ received.source_userid }}?type='source'&status={{ received.status }}">     
-                        <p> <img src="/{{ UPLOAD_FOLDER }}{{ received.source_user.pictures[0].picture_url }}" width="200" height="200" class="marker"> </p></a>
-
-                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#message-Modal" data-fname="{{ received.source_user.fname }}" data-userid="{{ received.source_userid }}" data-type="source">Message</button>
-
-                        <p> UserId :{{ received.source_userid }} </p>
-                        <p> Name :{{ received.source_user.fname }} {{ received.source_user.lname }} </p>
+                        <img src="/{{ UPLOAD_FOLDER }}{{ received.source_user.pictures[0].picture_url }}" width="200" height="200" class="marker"></a>
+                    </div>
+                    <div class="side-by-side" style="margin-left: 20px">
+                        <h3>{{ received.source_user.fname }}</h3> 
+                        <div><span class="dob">{{ received.source_user.personal.dob }}</span>, 
+                            {{ received.source_user.contact.city }}, {{ received.source_user.contact.state }}</div>
                         <p> Status : {{ received.status }}</p>
                         <p class="stamp"> {{ received.timestamp }}</p>
                         <p> Received : <span class="time-ago"></span></p>
@@ -91,17 +105,17 @@
                                 Phone Number : {{ received.source_user.contact.phone }} 
                                 Email : {{ received.source_user.email }}">
                         Show Contact </a>
-                </li>
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#message-Modal" data-fname="{{ received.source_user.fname }}" data-userid="{{ received.source_userid }}" data-type="source">Message</button>
+                    </div>
+                </div>
               {% endfor %}
-            </ul>       
         </div>
         <!-- <div class="col-lg-6"> -->
         
         <div class="side-by-side">
-            <div id="map" style="height:600px; width:650px; float: right;">
+            <div id="map" style="height:600px; width:700px; float: right;">
             </div>     
         </div>
-    <!-- </div> -->
 
 
 {% endblock %}
@@ -126,12 +140,29 @@
         var my_zip = '{{ current_user.contact.zipcode }}';
         var markers = [];
    
-        $(document).ready(function(){       
+        $(document).ready(function(){   
+
+            let dobs = $('.dob');
+            for (let i = 0; i < dobs.length; i++) {
+                $(dobs[i]).html(calculateAge($(dobs[i]).html()));
+            }    
 
             /// Initialize google maps
             initMap();
+            //for (let i = 0; i < zips.length; )
             get_geo_codes();
+           // get_geo_codes(zips.slice(0,10));
            // console.log(markers);
+          //  function wait(millis)
+          // {
+          //     var date = new Date();
+          //     var curDate = null;
+          //     do { curDate = new Date(); }
+          //     while(curDate-date < millis);
+          // }
+                   
+          // wait(10000);
+          //  get_geo_codes(zips.slice(10,13));
 
             $('.marker').hover(
                 function() {
