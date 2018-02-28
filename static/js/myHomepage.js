@@ -1,3 +1,6 @@
+var currentlyRenderedUsers;
+
+
 $(document).ready(function() {         
         
 
@@ -44,38 +47,117 @@ $(document).ready(function() {
                 getNewMatches();
             });
 
-            $('input[name=gender]').on('change', function() {
+            $('input[name="gender"]').on('change', function() {
                 getNewMatches();
             });
+
+            $('#sort').on('change', function() {
+                console.log(currentlyRenderedUsers);
+                showUsers(currentlyRenderedUsers);
+            })
 
 
 });
 
+
+function sortCriterias(criteria, users) {
+    
+    let unsorted = Object.keys(users);
+    console.log("unsorted=", unsorted);
+    let sorted;
+
+    if (criteria === 'age-asc') {
+        sorted = unsorted.sort(function(a, b) {
+            if (users[a].age > users[b].age) {
+                return 1;
+            } else if (users[a].age < users[b].age) {
+                return -1;
+            } else {
+                return 0;
+            }
+        });
+    }
+
+    else if (criteria === 'age-desc') {
+        sorted = unsorted.sort(function(a, b) {
+            if (users[a].age < users[b].age) {
+                return 1;
+            } else if (users[a].age > users[b].age) {
+                return -1;
+            } else {
+                return 0;
+            }
+        });
+    }
+
+    else if (criteria === 'height-tallest') {
+        sorted = unsorted.sort(function(a, b) {
+            if (users[a].height > users[b].height) {
+                return 1;
+            } else if (users[a].height < users[b].height) {
+                return -1;
+            } else {
+                return 0;
+            }
+        });
+    }
+
+    else if (criteria === 'height-shortest') {
+        sorted = unsorted.sort(function(a, b) {
+            if (users[a].height < users[b].height) {
+                return 1;
+            } else if (users[a].height > users[b].height) {
+                return -1;
+            } else {
+                return 0;
+            }
+        });
+    }
+
+    else if (criteria === 'relevance') {
+        sorted = unsorted;
+    }
+
+    return sorted;
+} 
 
 
 function showUsers(users){
 
   $('#render-users').empty();
 
-    // var sorted = Object.keys(users).sort(function(a,b){return users[a].age-users[b].age});
+  currentlyRenderedUsers = users;
+  console.log(currentlyRenderedUsers);
+
+  let sorted = sortCriterias($('#sort').val(), users);
+  // originallyRenderedUsers = users;
+
+    // let unsorted = Object.keys(users);
+
+    // console.log(unsorted);
+
+    // let sorted = unsorted.sort(function(a, b) {
+    //     if (users[a].age > users[b].age) {
+    //         return 1;
+    //     } else if (users[a].age < users[b].age) {
+    //         return -1;
+    //     } else {
+    //         return 0;
+    //     }
+    // });
+
+    // console.log(sorted);
     
-    // for (var i = 0; i < sorted.length; i++) {
-    //     console.log(users[sorted[i]].age);
-    // }
+  for (let i = 0; i < sorted.length; i++) {
+    let user = users[sorted[i]];
 
-  for (let user_id in users) {
-    let user = users[user_id];
-    // $('<div class="image-container"><img src=/' + user.pic_url + ' width="150" height="150" data-toggle="modal" data-target=".bs-example-modal-lg" class="image" id=' + user_id + '> \
-    //   <div class="addbutton btn btn-default" data-toggle="modal" data-target="#myModal" data-backdrop="static" data-keyboard="false" id=button_' + user_id + '> \
-    //   <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></div></div>').appendTo('#users-summary');
-
-
-    $('<div class="col-lg-3 user-summary"><div style="border-radius: 10%; text-align: center" class="well"><h4>' + user.fname + '</h4><a href="/users/' + user_id + '?status="new"> \
-        <img src=/' + user.pic_url + ' width="150" height="150"></a><div>' + user.age + ', ' + user.contact.city + '-' + user.contact.state + '</div> \
-        <button class="btn btn-primary" id='+ user_id +' onclick="sendRequest(' + user_id + ')">Send Request</button> \
-         <i class="heart fa fa-heart-o"></i></div></div>').appendTo('#render-users');
+    $('<div class="col-lg-3 user-summary"><div style="border-radius: 10%; text-align: center" class="well"><h4>' + user.fname + '</h4><a href="/users/' + sorted[i] + '?status="new"> \
+         <img src=/' + user.pic_url + ' width="150" height="150"></a><div>' + user.age + ', ' + user.contact.city + '-' + user.contact.state + '</div> \
+         <button class="btn btn-primary" id='+ sorted[i] +' onclick="sendRequest(' + sorted[i] + ')">Send Request</button> \
+          <i class="heart fa fa-heart-o"></i></div></div>').appendTo('#render-users');
 
   }
+
 
     // Its important to attach thie event listener here, not in document.ready, otheriwse it wont dbe attached
     $(".heart.fa").click(function() {

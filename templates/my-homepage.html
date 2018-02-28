@@ -109,11 +109,13 @@
                 </div>
                 <div class="side-by-side sorted" style="margin-left: 20em">
                     Sort by
-                    <select name="sort">
+                    <select id="sort" name="sort">  <!-- Notice here I did not put this dropdown inside form tag, so i cant use  'input[name="sort"]', instead give it an id--> 
                         <option value="age-asc">Age: Ascending</option>
+                        <option value="age-desc">Age: Descending</option>
                         <option value="distance">Distance: Closest</option>
-                        <option value="height">Height: Ascending </option>
-                        <option value="relevance">Relevance</option>
+                        <option value="height-tallest">Height: Tallest </option>
+                        <option value="height-shortest">Height: Shortest </option>
+                        <option value="relevance" selected>Relevance</option>
                     </select>
                 </div>
             </div>
