@@ -315,9 +315,9 @@ def facebook_register():
     gender = response['gender'][0].upper()
     email = response['email']
     pic_url = response['picture']['data']['url']
-    city = response['location']['name'].split(',')[0]
-    state = response['location']['name'].split(',')[1]
-    birthday = response['birthday']
+    # city = response['location']['name'].split(',')[0]
+    # state = response['location']['name'].split(',')[1]
+    # birthday = response['birthday']
 
 
     # session['user_id'] = 500

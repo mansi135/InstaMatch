@@ -53,8 +53,6 @@
 
       })
 
-      
-
     } else {
       // The person is not logged into your app or we are unable to tell.
       document.getElementById('status').innerHTML = 'Please log ' +
@@ -92,9 +90,9 @@
     //
     // These three cases are handled in the callback function.
 
-    FB.getLoginStatus(function(response) {
-      statusChangeCallback(response);
-    });
+    // FB.getLoginStatus(function(response) {
+    //   statusChangeCallback(response);
+    // });
 
   };
 
@@ -120,3 +118,16 @@
   }
 
 
+// This can happen on main page only
+$(document).ready(function() {
+  $("#fb-logout").on('click', function () {
+    FB.getLoginStatus(function(response) {
+      if (response.status === 'connected') {
+        FB.logout(function() {
+          //window.location.assign('/logout');
+          alert('fb-logged-out');
+        });
+      } 
+    })
+  })
+});
