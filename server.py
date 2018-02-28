@@ -4,6 +4,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 from jinja2 import StrictUndefined, Template
 
 from model import *
+from helper import *
 
 import facebook
 import requests
@@ -20,7 +21,7 @@ from sqlalchemy import desc, case
 
 import googlemaps
 
-from helper import *
+
 
 SECRET_KEY = 'development key'
 DEBUG = True
@@ -35,6 +36,10 @@ app.jinja_env.undefined = StrictUndefined
 GOOGLE_MAPS_API_KEY = os.environ['GOOGLE_MAPS_API_KEY']
 gmaps = googlemaps.Client(key=GOOGLE_MAPS_API_KEY)
 
+FACEBOOK_APP_ID = os.environ['FACEBOOK_APP_ID']
+FACEBOOK_APP_SECRET = os.environ['FACEBOOK_APP_SECRET']
+
+
 # I added the following config otherwise, everytime the redirect was giving warning
 # Dont put this in app.config in model.py (db connect) because that has sql alchemy related params only
 app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
@@ -44,9 +49,7 @@ UPLOAD_FOLDER = 'static/profile_pictures/'  #dont use /static, otherwise it will
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif']) # took out 'txt', 'pdf'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-# oauth = OAuth()
-# FACEBOOK_APP_ID = '1616471035080729'
-# FACEBOOK_APP_SECRET = 'c8361be5b9f39436dd6aa1442181fde6'
+
 
 # Note- url is the route name and url_for is the view func name . html page name is never seen directly
 #Helper functions
@@ -133,6 +136,7 @@ def handle_registration_form():
 
         return jsonify({'msg': "You are successfully added to the database.", 'status': "OK"})
         
+
 # This route should not be visible until initial registrtion has started
 @app.route('/continue-register')
 def display_continue_registration_form():
@@ -243,6 +247,7 @@ def uploaded_file(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'],filename)
 
 
+
 @app.route('/login', methods=['POST'])
 def login_check():
     """Login check"""
@@ -264,6 +269,69 @@ def login_check():
     return jsonify({'msg': "Welcome {} You are successfully logged in.".format(existing_user.fname), 'status': "OK"})
     # return redirect('/my-homepage')
 
+
+# check if he exists in db, login and => show his homepage !
+# if he does not exists => add to db , show continue register
+
+@app.route('/fb-login', methods=['POST'])
+def facebook_login():
+    """Check if the fb-email is present in my database"""
+
+    token = request.form.get('token')
+    session['token'] = token
+
+    facebook_id = request.form.get('fb_id')
+    email = request.form.get('email')
+
+    try:
+        existing_user = User.query.filter_by(email=email, password=facebook_id).one()
+        session['user_id'] = existing_user.user_id
+        session['logged_in'] = True
+        session['fname'] = existing_user.fname 
+        return "Existing_User"
+    except:
+        return "New_User"
+
+    
+@app.route('/fb-register', methods=['POST'])
+def facebook_register():
+    """Register New Facebook-User"""
+
+    token = session['token']
+    url = """https://graph.facebook.com/v2.11/me?fields=id,name,gender,email,locale,
+            updated_time,verified,friends,picture.type(large),location,hometown,birthday,timezone&access_token={}""".format(token)
+    r = requests.get(url)
+    response = r.json()
+
+    print response
+
+    # url1 = """https://graph.facebook.com/v2.11/me/picture?type=normal&access_token={}""".format(token)
+
+    # print requests.get(url1)
+
+    facebook_id = response['id']
+    fname = response['name'].split()[0]
+    lname = response['name'].split()[1]
+    gender = response['gender'][0].upper()
+    email = response['email']
+    pic_url = response['picture']['data']['url']
+    city = response['location']['name'].split(',')[0]
+    state = response['location']['name'].split(',')[1]
+    birthday = response['birthday']
+
+
+    # session['user_id'] = 500
+
+    new_user = User(email=email, password=facebook_id, fname=fname, lname=lname)
+    db.session.add(new_user)
+    db.session.commit()
+    
+    uid = User.query.filter_by(email=email).one().user_id  # should we immediately query the userid?
+    session['user_id'] = uid
+
+    return "ok"
+
+    
 
 
 @app.route('/my-homepage/')
@@ -679,6 +747,7 @@ def retrieve_msg_history():
         string.append(str(time))  # otherwise jsonify converts datetime to http format datetime
 
     # return jsonify({'data' : string})
+    print string
     return jsonify(string)
 
 

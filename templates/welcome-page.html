@@ -1,10 +1,13 @@
 <html>
 
 <head>
-    <link rel="stylesheet"
-          href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"/>
-    <link rel="stylesheet" href="/static/css/welcome-page.css">
-    <title>InstaMatch..The perfect Match..</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+  <script src="//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.11&appId=1616471035080729"></script>
+  <meta charset="UTF-8">
+  <link rel="stylesheet"
+        href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"/>
+  <link rel="stylesheet" href="/static/css/welcome-page.css">
+  <title>InstaMatch..The perfect Match..</title>
 </head>
 
 <body>
@@ -21,6 +24,13 @@
         <a href="#" data-toggle="modal" data-target="#register-modal" class="btn btn-lg btn-primary" id="register-btn">Register</a>
 
         <a href="#" data-toggle="modal" data-target=".bs-example-modal-sm" class="btn btn-lg btn-primary" id="login-btn">Login</a>
+
+        <br> <p> OR </p> <br>
+        <!-- FB login button -->
+        <div class="fb-login-button" data-width="200" data-max-rows="1" data-size="large" data-button-type="continue_with" data-show-faces="true" data-auto-logout-link="false" data-use-continue-as="true">
+          <fb:login-button scope="public_profile,email,user_friends,user_photos,user_birthday,user_work_history,user_location,user_hometown" onlogin="checkLoginState();">
+          </fb:login-button>
+        </div>
 
     </div>
 </div>
@@ -78,10 +88,15 @@
       </div>
  </div>
 
+<img id="my-pic">
+<div id="status"></div>
+
+
 
 <script src="http://code.jquery.com/jquery.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <script src="/static/js/loginModal.js"></script>
+<script src="/static/js/facebookLogin.js"></script>
 
 
 <footer>
