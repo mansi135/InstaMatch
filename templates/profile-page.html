@@ -157,6 +157,7 @@
           <td>{{ user.personal.kids }}</td>
         </tr>
       </table> 
+
       
     </div>
 
@@ -171,7 +172,23 @@
     </div>
   </div> <!-- end of row 2 -->
    
-  <div class="row">
+
+<div class="row">
+  <div class="col-lg-4">
+   <div class="panel panel-default">
+        <div class="panel-heading">{{ user.fname }}'s Interests</div>
+        <div class="panel-body">
+          <ul class="list-group">
+              {% for interest in user.interests %}
+                  <li class="list-group-item"><span class="glyphicon glyphicon-star"></span> {{ interest.interest_name }} </li>
+              {% endfor %}
+          </ul>
+        </div>
+   </div>
+  </div>
+</div>
+
+  <!-- <div class="row">
       <div class="col-lg-10">
           <h3>Interests</h3>
               <ul>
@@ -180,14 +197,9 @@
               {% endfor %}
               </ul>
       </div>
-  </div> <!-- end of row 3 -->
+  </div> --> <!-- end of row 3 -->
       
    
-
-
-  
-
-    
 
     <div class="row">
         <button id="GetStateButton">Edit</button>
