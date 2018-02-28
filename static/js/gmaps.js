@@ -14,11 +14,21 @@
 
   }
 
+ 
+
   function get_geo_codes() {
+
       for (let i = 0; i < zips.length; i++) {
           let address = zips[i];
+         // console.log('waiting...');
+         // wait(3000);
+         // console.log('resume');
+         // console.log(address);
           geocoder.geocode( { 'address': address}, function(results, status) {
-            if (status == google.maps.GeocoderStatus.OK) {
+
+          //  console.log(results);
+           // console.log(status);
+            if (status === google.maps.GeocoderStatus.OK) {
               map.setCenter(results[0].geometry.location);
               if(marker)
                   marker.setMap(null);
@@ -32,7 +42,7 @@
                markers.push(marker);  //dont push logged-in user, since its already green
            }
              else {
-              alert("Geocode was not successful for the followingbbbb reason: " + status);
+              alert("Geocode was not successful for the followingbbbghghdkjb reason: " + status);
             }
           });    
       }
