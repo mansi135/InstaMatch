@@ -63,7 +63,6 @@ $(document).ready(function() {
 function sortCriterias(criteria, users) {
     
     let unsorted = Object.keys(users);
-    console.log("unsorted=", unsorted);
     let sorted;
 
     if (criteria === 'age-asc') {
@@ -127,26 +126,8 @@ function showUsers(users){
   $('#render-users').empty();
 
   currentlyRenderedUsers = users;
-  console.log(currentlyRenderedUsers);
 
   let sorted = sortCriterias($('#sort').val(), users);
-  // originallyRenderedUsers = users;
-
-    // let unsorted = Object.keys(users);
-
-    // console.log(unsorted);
-
-    // let sorted = unsorted.sort(function(a, b) {
-    //     if (users[a].age > users[b].age) {
-    //         return 1;
-    //     } else if (users[a].age < users[b].age) {
-    //         return -1;
-    //     } else {
-    //         return 0;
-    //     }
-    // });
-
-    // console.log(sorted);
     
   for (let i = 0; i < sorted.length; i++) {
     let user = users[sorted[i]];
@@ -159,9 +140,25 @@ function showUsers(users){
   }
 
 
-    // Its important to attach thie event listener here, not in document.ready, otheriwse it wont dbe attached
+    // Its important to attach this event listener here, not in document.ready, otheriwse it wont be attached
     $(".heart.fa").click(function() {
+        
         $(this).toggleClass("fa-heart fa-heart-o");
+        let fav_person_id = $(this).closest('div').find('button').attr('id');
+        let action;
+
+        if($(this).hasClass("fa-heart")) {
+            console.log("hasit");
+            action = "fav";
+        }
+        else {
+            console.log("not-hasit");
+            action = "un-fav";
+        }
+
+        $.post('/mark-fav', {'target_id': fav_person_id, 'action': action}, function(response){
+            console.log(response);
+        })
     });
 
   $("body").removeClass("loading");

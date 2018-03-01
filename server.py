@@ -7,7 +7,7 @@ from model import *
 from helper import *
 
 import facebook
-import requests
+import requests, shutil
 import json, os
 
 from datetime import datetime, date, timedelta
@@ -282,6 +282,19 @@ def facebook_login():
 
     facebook_id = request.form.get('fb_id')
     email = request.form.get('email')
+
+    # url = """https://graph.facebook.com/v2.11/me?fields=picture.type(large)&access_token={}""".format(token)
+    # r = requests.get(url)
+    # response = r.json()
+
+    # print response
+    # a = requests.get(response['picture']['data']['url'], stream=True)
+    # if a.status_code == 200:
+    #     with open('test.jpg', 'wb') as f:
+    #         a.raw.decode_content = True
+    #         shutil.copyfileobj(a.raw, f)
+            
+
 
     try:
         existing_user = User.query.filter_by(email=email, password=facebook_id).one()
@@ -705,6 +718,7 @@ def send_message():
 
     return "OK"
 
+
 @app.route('/my-homepage/messages')
 @login_required
 def show_messages():
@@ -750,6 +764,28 @@ def retrieve_msg_history():
     print string
     return jsonify(string)
 
+
+#AJAX route
+@app.route('/mark-fav', methods=['POST'])
+@login_required
+def mark_fav_unfav():
+
+    target_id = request.form.get('target_id')
+    action = request.form.get('action')
+    # timestamp = request.form.get('timestamp')
+    timestamp = datetime.now()
+
+    if action == 'fav':
+        new_fav = Favorite(source_userid=g.user_id, target_userid=target_id, timestamp=timestamp)
+        db.session.add(new_fav)
+
+    if action == 'un-fav':
+        remove_fav = Favorite.query.filter_by(source_userid=g.user_id, target_userid=target_id).one()
+        db.session.delete(remove_fav)
+
+    db.session.commit()
+
+    return "OK"
 
 
 @app.route('/logout')
