@@ -1,4 +1,4 @@
-var link, uid, fname;
+var link, to_id, fname;
 
 $(document).ready(function() {
 
@@ -18,9 +18,15 @@ $(document).ready(function() {
             //               });
             //     });
 
+            //This is just to render initial messages
+            to_id = $('#begin').children('div').first().find('a').data('id');
+            fname = $('#begin').children('div').first().find('a').data('fname');
+            retrieveMessages();
+
+            //Attaching event-handler 
             $(".messages").click(function(evt) {
                     $('.top-div').css("background-color", "transparent");
-                    link = $(this);
+                    link = $(this);     //probably not needed remove it...
                     to_id = $(this).data("id");
                     fname = $(this).data("fname");
                     $(this).closest('div').parent().css("background-color", "#eee");
@@ -37,7 +43,8 @@ function retrieveMessages() {
 function showChat(history) {
     
     $('#chat-window').empty();
-    $('#chat-window').append("<h3>Message history with " + link.data('fname') + "</h3>");
+    // $('#chat-window').append("<h3>Message history with " + link.data('fname') + "</h3>");
+    $('#chat-window').append("<h3>Message history with " + fname + "</h3>");
 
     for (let i = 0; i < history.length; i += 3) {
 
