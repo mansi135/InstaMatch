@@ -437,7 +437,9 @@ def match():
                           .all())
 
 
-    matched_users = get_users_info(matching_users, UPLOAD_FOLDER)
+    # we pass the current user here to see if current user has favorited any of these users
+    matched_users = get_users_info(matching_users, UPLOAD_FOLDER, g.user_id)
+    # matched_users = get_users_info(matching_users, UPLOAD_FOLDER)
 
     return jsonify(matched_users)
 
@@ -766,7 +768,6 @@ def retrieve_msg_history():
         string.append(msg)
         string.append(str(time))  # otherwise jsonify converts datetime to http format datetime
 
-    # return jsonify({'data' : string})
     print string
     return jsonify(string)
 
@@ -792,6 +793,15 @@ def mark_fav_unfav():
     db.session.commit()
 
     return "OK"
+
+
+@app.route('/my-homepage/favorites', methods=['GET'])
+@login_required
+def get_favorites():
+
+    fav_list = Favorite.query.filter_by(source_userid=g.user_id).order_by(desc('timestamp')).all()
+
+    return render_template("requests.html", list_to_render=fav_list, UPLOAD_FOLDER=UPLOAD_FOLDER, method='favorite')
 
 
 @app.route('/edit-profile', methods=['POST'])
