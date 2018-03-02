@@ -364,6 +364,8 @@ def individual_home_page():
     session['new_responses'] = new_responses
     session['new_messages'] = new_messages
 
+    session['img'] = UPLOAD_FOLDER + g.current_user.pictures[0].picture_url
+
     my_age = calc_age(g.current_user.personal.dob)
     my_height = g.current_user.personal.height
     my_gender = g.current_user.personal.gender
@@ -456,6 +458,8 @@ def show_profile_page(user_id):
 
     contact_type = request.args.get('type')  # type is not needed if status is not pending
     status = request.args.get('status')
+
+    print status
 
     if user_id == g.user_id:
         status = 'self'

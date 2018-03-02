@@ -36,7 +36,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="#">InstaMatch</a>
+                <a class="navbar-brand" href="#"><b>InstaMatch</b></a>
             </div>
             <div id="navbar" class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
@@ -51,10 +51,10 @@
                                           class="dropdown-toggle"
                                           data-toggle="dropdown"
                                           role="button"
-                                          aria-expanded="false">My Connections<span id="notification"></span><span class="caret"></span></a>
+                                          aria-expanded="false"><span class="glyphicon glyphicon-user"></span> My Connections<span id="notification"></span><span class="caret"></span></a>
                                           <ul class="dropdown-menu" role="menu">
-                                              <li><a href="/my-homepage/requests-sent" class="sent">Sent<span id="sent"></span></a></li>
-                                              <li><a href="/my-homepage/requests-received" class="received">Received<span id="received"></span></li>
+                                              <li><a href="/my-homepage/requests-sent" class="sent">Sent <span class="glyphicon glyphicon-circle-arrow-right"></span><span id="sent"></span></a></li>
+                                              <li><a href="/my-homepage/requests-received" class="received">Received <span class="glyphicon glyphicon-circle-arrow-left"></span><span id="received"></span></li>
                                               <li><a href="/my-homepage/requests-accepted" class="accepted">Requests Accepted</a></li>
                                           </ul>
                   </li>
@@ -62,13 +62,13 @@
                                           class="dropdown-toggle"
                                           data-toggle="dropdown"
                                           role="button"
-                                          aria-expanded="false"><span class="glyphicon glyphicon-user"></span>My Account<span class="caret"></span></a>
+                                          aria-expanded="false"> <img src="/{{ session['img'] }}" width="30px" height="30px" style="border-radius: 50%; margin-top: 0"> {{ session['fname'] }}<span class="caret"></span></a>
                                           <ul class="dropdown-menu" role="menu">
-                                              <li><a href="/users/{{ session['user_id'] }}">View Profile</a></li>
-                                              <li><a href="#">Edit Profile</a></li>
+                                              <li><a href="/users/{{ session['user_id'] }}"><span class="glyphicon glyphicon-user"></span> My Profile</a></li>
+                                              <li><a href="#"><span class="glyphicon glyphicon-cog"></span> Settings</a></li>
+                                              <li><a href="/logout">Logout</a></li>
                                           </ul>
                   </li>
-                  <li><a href="/logout">Logout</a></li>
                 </ul>
 
             </div>
