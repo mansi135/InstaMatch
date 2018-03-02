@@ -235,7 +235,7 @@ def handle_continue_registration_form():
 
     db.session.commit()
     session.clear()
-    flash("ThankYou for completing the registraion. Please continue to Login")
+    flash("ThankYou for completing the registration. Please continue to Login")
 
     
     return redirect('/')
@@ -446,12 +446,17 @@ def match():
 @login_required
 def show_profile_page(user_id):
     """Show user-profile page"""
+    
+
+    ethnicities = Ethnicity.query.all()
+    religions = Religion.query.all()
+    interests = Interest.query.all()
 
     contact_type = request.args.get('type')  # type is not needed if status is not pending
     status = request.args.get('status')
 
     if user_id == g.user_id:
-        status = None
+        status = 'self'
 
     user = User.query.options(db.joinedload('personal')) \
                   .options(db.joinedload('contact')) \
@@ -466,7 +471,8 @@ def show_profile_page(user_id):
     # BOZO - make this loop when user has more than one picture 
     #pic_url = os.path.join(app.config['UPLOAD_FOLDER'],user.pictures[0].picture_url)
 
-    return render_template("profile-page.html", user=user, UPLOAD_FOLDER=UPLOAD_FOLDER, contacttype=contact_type, status=status)
+    return render_template("profile-page.html", user=user, UPLOAD_FOLDER=UPLOAD_FOLDER, contacttype=contact_type, status=status,
+                                                ethnicities=ethnicities, religions=religions, interests=interests)
 
 
 
@@ -782,6 +788,30 @@ def mark_fav_unfav():
     if action == 'un-fav':
         remove_fav = Favorite.query.filter_by(source_userid=g.user_id, target_userid=target_id).one()
         db.session.delete(remove_fav)
+
+    db.session.commit()
+
+    return "OK"
+
+
+@app.route('/edit-profile', methods=['POST'])
+@login_required
+def edit_user_profile():
+    """ Lets logged-in user the ability to edit his/her profile"""
+
+    # note - 'g' is not truly global
+
+    g.current_user.personal.dob = request.form.get('dob')
+    g.current_user.personal.height = request.form.get('height')
+    g.current_user.personal.ethnicity_id = request.form.get('ethnicity')
+    g.current_user.personal.religion_id = request.form.get('religion')
+    g.current_user.personal.smoke = request.form.get('smoke')
+    g.current_user.personal.drink = request.form.get('drink')
+    g.current_user.personal.current_rel_status = request.form.get('current_rel')
+    g.current_user.personal.kids = request.form.get('kids')
+    g.current_user.professional.employer = request.form.get('employer')
+    g.current_user.professional.education = request.form.get('education')
+    g.current_user.professional.occupation = request.form.get('occupation')
 
     db.session.commit()
 

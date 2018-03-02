@@ -51,6 +51,16 @@
         .cursor {
           cursor: pointer
         }
+        .on-load {
+            
+            background-color: transparent;
+            border-color: transparent;
+            -webkit-appearance:none;
+        }
+        input {
+          width: 100%;
+        }
+
       </style>  
 {% endblock %}
 
@@ -62,9 +72,12 @@
     <div class="col-lg-4">
       <br><br>
       <div id="personal">
-        <figure>
+        
+        <div class="panel panel-default">
+          <div class="panel-body" style="text-align: center;">
         <a href="#" class="profile-pic"><img src="/{{ UPLOAD_FOLDER }}{{ user.pictures[0].picture_url }}" width="250px" height="250px" ></a>
-        </figure>
+          </div>
+       </div>
         <br>
         <p><span class="glyphicon glyphicon-envelope"></span> {{ user.email }}</p>
         <p><span class="glyphicon glyphicon-phone"></span> {{ user.contact.phone }}</p>
@@ -112,53 +125,83 @@
 
 
     <div class="col-lg-6">
-      <h2> {{ user.fname }} {{ user.lname }} </h2>
+      <br>
+      <h2 data-status="{{ status }}"> {{ user.fname }} {{ user.lname }} </h2>
       <p> <span id="age"></span> &#9642; {{ user.personal.gender }} from {{ user.contact.city }}, {{ user.contact.state }}</p>
-
+      <a href="#" id="edit1" style="float: right;"><span class="glyphicon glyphicon-pencil"></span> Edit</a>
+      
+      <form action="/edit-profile", method="POST" id="edit-form">
       <table class="table table-hover table-striped">
         <tr>
           <td>Date of Birth :</td>
-          <td id="dob">{{ user.personal.dob.strftime('%Y-%m-%d') }}</td>
+          <td><input class="edit-me" type="date" name="dob" id="date-of-birth" readonly value="{{ user.personal.dob.strftime('%Y-%m-%d') }}"></td>
         </tr>
         <tr>
           <td>Height :</td>
-          <td>{{ user.personal.height }} cm</td>
+          <td><input class="edit-me" type="number" name="height" readonly value="{{ user.personal.height }}" style="width : 50px">cm</td>
         </tr>
         <tr>
           <td>Ethnicity :</td>
-          <td>{{ user.personal.ethnicity.ethnicity_name }}</td>
+          <td>
+              <select class="edit-me" name="ethnicity" disabled="true" id="eth">
+                    {% for ethnicity in ethnicities %}
+                      {% if user.personal.ethnicity.ethnicity_name == ethnicity.ethnicity_name %}
+                        <option value="{{ ethnicity.ethnicity_id }}" selected>{{ ethnicity.ethnicity_name }}</option>
+                      {% else %}
+                        <option value="{{ ethnicity.ethnicity_id }}">{{ ethnicity.ethnicity_name }}</option>
+                      {% endif %}
+                    {% endfor %}
+              </select>
+          </td>              
         </tr>
         <tr>
           <td>Faith :</td>
-          <td>{{ user.personal.religion.religion_name }}</td>
+          <td>
+              <select class="edit-me" name="religion" disabled="true">
+                    {% for religion in religions %}
+                      {% if user.personal.religion.religion_name == religion.religion_name %}
+                        <option value="{{ religion.religion_id }}" selected>{{ religion.religion_name }}</option>
+                      {% else %}
+                        <option value="{{ religion.religion_id }}">{{ religion.religion_name }}</option>
+                      {% endif %}
+                    {% endfor %}
+              </select>
+          </td>
         </tr>
         <tr>
           <td>Education :</td>
-          <td>{{ user.professional.education}}</td>
+          <td><input class="edit-me" type="text" name="education" readonly value="{{ user.professional.education}}"></td>
         </tr>
         <tr>
           <td>Employer :</td>
-          <td>{{ user.professional.employer}}</td>
+          <td><input class="edit-me" type="text" name="employer" readonly value="{{ user.professional.employer}}"></td>
+        </tr>
+        <tr>
+          <td>Occupation :</td>
+          <td><input class="edit-me" type="text" name="occupation" readonly value="{{ user.professional.occupation}}"></td>
         </tr>
         <tr>
           <td>Smokes :</td>
-          <td >{{ user.personal.smoke }}</td>
+          <td><input class="edit-me" type="text" name="smoke" readonly value="{{ user.personal.smoke}}"></td>
         </tr>
         <tr>
           <td>Drinks :</td>
-          <td>{{ user.personal.drink }} </td>
+          <td><input class="edit-me" type="text" name="drink" readonly value="{{ user.personal.drink}}"></td>
         </tr>
         <tr>
           <td>Current Relationship Status :</td>
-          <td>{{ user.personal.current_rel_status }}</td>
+          <td><input class="edit-me" type="text" name="current_rel" readonly value="{{ user.personal.current_rel_status}}"></td>
         </tr>
         <tr>
           <td>Want kids :</td>
-          <td>{{ user.personal.kids }}</td>
+          <td><input class="edit-me" type="text" name="kids" readonly value="{{ user.personal.kids}}"></td>
         </tr>
       </table> 
+    </form>
 
-      
+      <button id="save" class="btn btn-default btn-xs" style="float: right;">Save</button>
+      <button id="cancel" class="btn btn-default btn-xs" style="float: right;">Cancel</button>
+      <img id="tick" src="/static/images/green.svg" style="float: right;" width="50px" height="40px">
     </div>
 
   </div>  <!-- end of row 1 -->
@@ -186,24 +229,9 @@
         </div>
    </div>
   </div>
-</div>
+</div>  <!-- end of row 3 -->
 
-  <!-- <div class="row">
-      <div class="col-lg-10">
-          <h3>Interests</h3>
-              <ul>
-              {% for interest in user.interests %}
-                  <li style="display: inline;"><span class="glyphicon glyphicon-star"></span> {{ interest.interest_name }} </li>
-              {% endfor %}
-              </ul>
-      </div>
-  </div> --> <!-- end of row 3 -->
-      
    
-
-    <div class="row">
-        <button id="GetStateButton">Edit</button>
-    </div>
 
 </div> 
 
@@ -211,43 +239,60 @@
 
 {% block javascript %}
     <script>
+    
     function closeModal() {
           $('#myCarousel').hide();
         }
+
     $(document).ready(function() { 
 
-        $('#myCarousel').hide();
-
-        let age = calculateAge($('#dob').html());  
+        let age = calculateAge($('#date-of-birth').val());  
         $('#age').html(age);
+
+        ///// for - pics /////////////////////////////////
+        $('#myCarousel').hide();
 
         $('.profile-pic').on('click', function() {
             $('#myCarousel').show();
-        })
+        });
 
 
-        // zippopotam.us has a REST API. Here is an example of how to get a State from a ZIP in pure JavaScript (no libraries):
-        // var getStatebutton = document.getElementById('GetStateButton');
+        /////////// for editing //////////////////////////
+        $('.edit-me').addClass("on-load");   // give all fields a common class
+        $('#save, #cancel, #tick').hide();
+        
 
-        // var getCityAndState = function() {
-        //     var zip = 95134;
-        //     if (!zip) return;
-        //     var url = 'http://api.zippopotam.us/us/' + zip;
-        //     var xhr = new XMLHttpRequest();
+        /// Do if status is self
+        // if status is not self - edit1.hide()
+        if ($('h2').data('status') === 'self') {
 
-        //     xhr.onreadystatechange = function () {
-        //         if (xhr.readyState == 4) {
-        //             var result = xhr.responseText;
-        //             console.log(result);
-        //             var zippo = JSON.parse(result);
-        //             // var resultDiv = document.getElementById('divResult');
-        //             console.log(zippo.places[0]['place name']);
-        //             console.log(zippo.places[0]['state']);
-        //         }
-        //     };
-        //     xhr.open('GET', url, true);
-        //     xhr.send(null);
-        // };
+          $('#edit1').on('click', function() {
+            
+            $('.edit-me').removeClass("on-load");
+            $('select').removeAttr("disabled");
+            $('input').removeAttr("readonly");
+            $('#date-of-birth').focus();
+            $('#save, #cancel').show();
+            $('#tick').hide();
+          })
+
+          $('#save').on('click', function() {
+            data = $('#edit-form').serialize();
+            $('#age').html(calculateAge($('#date-of-birth').val()));
+            console.log(data);
+            $.post('/edit-profile', data, function(response) {
+              console.log(response);
+              $('.edit-me').addClass("on-load");
+              $('select').attr("disabled","true");
+              $('input').attr("readonly","true");
+              $('#save, #cancel').hide();
+              $('#tick').show();
+            })
+          })
+
+        } else {
+          $('#edit1').hide();
+        }
 
         // if(' user_type ' !== 'self') {
         //     $('#contact-info').hide();
