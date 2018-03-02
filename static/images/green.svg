@@ -1,0 +1,16 @@
+<?xml version="1.0"?><svg width="640" height="480" xmlns="http://www.w3.org/2000/svg">
+ <title>green light tick mark</title>
+ <metadata id="metadata7">image/svg+xml</metadata>
+ <defs>
+  <clipPath clipPathUnits="userSpaceOnUse" id="clipPath2440">
+   <path d="m114.666107,142.226669c0,12.529846 -9.303925,22.69899 -20.767708,22.69899c-11.463776,0 -20.767723,-10.169144 -20.767723,-22.69899c0,-12.529846 9.303947,-22.698997 20.767723,-22.698997c11.463783,0 20.767708,10.169151 20.767708,22.698997z" id="path2442" stroke-dashoffset="0" stroke-miterlimit="4" marker-end="none" marker-mid="none" marker-start="none" stroke-linejoin="round" stroke-linecap="round" stroke-width="4" fill-rule="nonzero" fill="#ffcc00"/>
+  </clipPath>
+  <clipPath clipPathUnits="userSpaceOnUse" id="clipPath2504">
+   <path id="path2506" d="m115.666847,150.100052a20.767717,22.699011 0 1 1 -41.535431,0a20.767717,22.699011 0 1 1 41.535431,0z" stroke-dashoffset="0" stroke-miterlimit="4" marker-end="none" marker-mid="none" marker-start="none" stroke-linejoin="round" stroke-linecap="round" stroke-width="4" fill-rule="nonzero" fill="#808080" opacity="0.71"/>
+  </clipPath>
+ </defs>
+ <g>
+  <title>Layer 1</title>
+  <path d="m282.085938,218.406647l18.291931,46.153778l123.156403,-167.657089l45.568573,-4.903336c-54.956757,62.006592 -105.620941,135.196533 -150.513123,206.496552c-39.407257,62.588531 -37.174774,13.623901 -85.589722,-58.628113l49.085938,-21.461792z" id="path2159" stroke-width="1px" fill-rule="evenodd" fill="#2ad62a"/>
+ </g>
+</svg>
