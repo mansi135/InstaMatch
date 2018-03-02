@@ -34,17 +34,6 @@ def get_zip_near_me(myzip, miles):
 
 
 
-#def some_function_for_timestamp():
-
-    # Getting PST time-stamp, will be used later
-        #ca = timezone('US/Pacific')
-
-        #print datetime.now(ca).strftime('%Y-%m-%d %H:%M:%S')
-        #print str(datetime.now(ca))
-
-        # Select * from Users where zip_code IN (19125,19081,19107.........);
-
-
 def get_dob_range_from_age(min_age, max_age):
     """Get min and max dobs for DB query"""
 
@@ -64,36 +53,40 @@ def calc_age(dob):
     # dob_t = datetime.strptime(dob, '%Y-%m-%d')
 
 
-def get_users_info(users, folder):
+def get_users_info(users, folder, current_user):
     """ convert sql-alchemy User objects to python User objects"""
 
     matching_users = {}
 
     for user, personal, contact, picture in users:
+        fav = False
+        if user.favorites_t:
+          fav = True if current_user in [obj.source_userid for obj in user.favorites_t] else False
+          
         matching_users[user.user_id] = {'fname': user.fname, 
-                                          'lname': user.lname,
-                                           'dob': personal.dob,
-                                           'age': calc_age(personal.dob),
-                                           'height': personal.height,
-                                           'gender': personal.gender,
-                                           'ethnicity': personal.ethnicity.ethnicity_name,
-                                           'religion': personal.religion.religion_name,
-                                           'about me': personal.aboutme,
-                                           'contact': {'email': user.email,
-                                                       'city': contact.city,
-                                                       'state': contact.state,
-                                                       'zipcode': contact.zipcode,
-                                                       'phone': contact.phone
-                                                       },
-                                            'professional': { 'employer': user.professional.employer,
-                                                              'occupation': user.professional.occupation,
-                                                              'education': user.professional.education,
+                                        'lname': user.lname,
+                                         'dob': personal.dob,
+                                         'age': calc_age(personal.dob),
+                                         'height': personal.height,
+                                         'gender': personal.gender,
+                                         'ethnicity': personal.ethnicity.ethnicity_name,
+                                         'religion': personal.religion.religion_name,
+                                         'about me': personal.aboutme,
+                                         'contact': {'email': user.email,
+                                                     'city': contact.city,
+                                                     'state': contact.state,
+                                                     'zipcode': contact.zipcode,
+                                                     'phone': contact.phone
+                                                     },
+                                          'professional': { 'employer': user.professional.employer,
+                                                            'occupation': user.professional.occupation,
+                                                            'education': user.professional.education,
 
-                                                            },
-                                            'pic_url': folder + picture.picture_url,
-                                            'interests': [interest.interest_name for interest in user.interests]
-
-                                            }
+                                                          },
+                                          'pic_url': folder + picture.picture_url,
+                                          'interests': [interest.interest_name for interest in user.interests],
+                                          'fav': fav
+                                        }
 
     return matching_users;
 
