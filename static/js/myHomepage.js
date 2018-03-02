@@ -152,7 +152,9 @@ function showUsers(users){
         favClass = "fa-heart-o";
     }
 
-    $('<div class="col-lg-3 user-summary"><div style="border-radius: 10%; text-align: center" class="well"><h4>' + user.fname + '</h4><a href="/users/' + sorted[i] + '?status="new"> \
+    let noon = "new"; //this was giving a funny error when i put it directly into string ..hence i gave it funny name
+
+    $('<div class="col-lg-3 user-summary"><div style="border-radius: 10%; text-align: center" class="well"><h4>' + user.fname + '</h4><a href="/users/' + sorted[i] + '?status=' + noon + '"> \
          <img src=/' + user.pic_url + ' width="150" height="150"></a><div>' + user.age + ', ' + user.contact.city + '-' + user.contact.state + '</div> \
          <button class="btn btn-primary" id='+ sorted[i] +' onclick="sendRequest(' + sorted[i] + ')">Send Request</button> \
           <i class="heart fa ' + favClass + '"></i></div></div>').appendTo('#render-users');
