@@ -10,7 +10,7 @@
       {% for received_or_sent in list_to_render %}
           {% if method == 'received' %}
             {% set x = received_or_sent.source_user %}
-          {% elif method == 'sent' %}
+          {% elif method == 'sent' or method == 'favorite' %}
             {% set x = received_or_sent.target_user %}
           {% endif %}
           
@@ -23,14 +23,24 @@
                  
                   <h3>{{ x.fname }}</h3>
                   
-                  <a href="/users/{{ x.user_id }}?type='{{ method }}'&status={{ received_or_sent.status }}">
-                  <img src="/{{ UPLOAD_FOLDER }}{{ x.pictures[0].picture_url }}" width="200" height="200"></a>
+                  {% if method == 'sent' or method == 'received' %}
+                    <a href="/users/{{ x.user_id }}?type='{{ method }}'&status={{ received_or_sent.status }}">
+                    <img src="/{{ UPLOAD_FOLDER }}{{ x.pictures[0].picture_url }}" width="200" height="200"></a>
+                  {% endif %}
+
+                  {% if method == 'favorite' %}
+                    <a href="/users/{{ x.user_id }}?type='{{ method }}'&status="new">
+                    <img src="/{{ UPLOAD_FOLDER }}{{ x.pictures[0].picture_url }}" width="200" height="200"></a>
+                  {% endif %}
 
                   <div><span class="dob">{{ x.personal.dob }}</span>, 
                   {{ x.contact.city }}, {{ x.contact.state }}</div>
                  
-                  <p> Status : <span class="status" id="status_{{ x.user_id }}" data-id="{{ x.user_id }}">{{ received_or_sent.status }}</span> </p>
-                  <p class="stamp"> {{ received_or_sent.timestamp }}</p>
+                 {% if method == 'sent' or method == 'received' %}
+                    <p> Status : <span class="status" id="status_{{ x.user_id }}" data-id="{{ x.user_id }}">{{ received_or_sent.status }}</span> </p>
+
+                    <p class="stamp"> {{ received_or_sent.timestamp }}</p>
+                  {% endif %}
                  
                  {% if method == 'received' %}
                     <p> Received : <span class="time-ago"></span></p>

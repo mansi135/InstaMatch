@@ -117,6 +117,19 @@ function sortCriterias(criteria, users) {
         sorted = unsorted;
     }
 
+    else if (criteria === 'favorited') {
+        // sorted = unsorted.filter(function(id) {
+        //     return users[id].fav === true;
+        // })
+        sorted = unsorted.sort(function(a, b) {
+            if (users[a].fav === true) {
+                return -1;
+            } else {
+                return +1;
+            }
+        })
+    }
+
     return sorted;
 } 
 
@@ -130,12 +143,19 @@ function showUsers(users){
   let sorted = sortCriterias($('#sort').val(), users);
     
   for (let i = 0; i < sorted.length; i++) {
+    
     let user = users[sorted[i]];
+    let fav;
+    if (user.fav === true){         // jsonify converted python True to JS true
+        favClass = "fa-heart";      // if the user is already favorited , then initial with this class
+    } else {
+        favClass = "fa-heart-o";
+    }
 
     $('<div class="col-lg-3 user-summary"><div style="border-radius: 10%; text-align: center" class="well"><h4>' + user.fname + '</h4><a href="/users/' + sorted[i] + '?status="new"> \
          <img src=/' + user.pic_url + ' width="150" height="150"></a><div>' + user.age + ', ' + user.contact.city + '-' + user.contact.state + '</div> \
          <button class="btn btn-primary" id='+ sorted[i] +' onclick="sendRequest(' + sorted[i] + ')">Send Request</button> \
-          <i class="heart fa fa-heart-o"></i></div></div>').appendTo('#render-users');
+          <i class="heart fa ' + favClass + '"></i></div></div>').appendTo('#render-users');
 
   }
 
@@ -147,13 +167,17 @@ function showUsers(users){
         let fav_person_id = $(this).closest('div').find('button').attr('id');
         let action;
 
+
         if($(this).hasClass("fa-heart")) {
             console.log("hasit");
             action = "fav";
+            // we need this because if user makes somebody fav and we sort-by-fav then currentlyRenderedUsers still have old fav property
+            currentlyRenderedUsers[fav_person_id].fav = true;   
         }
         else {
             console.log("not-hasit");
             action = "un-fav";
+            currentlyRenderedUsers[fav_person_id].fav = false;
         }
 
         $.post('/mark-fav', {'target_id': fav_person_id, 'action': action}, function(response){
