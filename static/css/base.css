@@ -6,10 +6,17 @@
 
 .navbar-default .navbar-brand {
   color: #151515;
+  margin-top: 6px;
 }
 
 .navbar-default .navbar-nav>li>a {
   color: white;
+}
+
+@media (min-width: 768px) { 
+  .navbar-nav > li > a{
+    line-height: 30px; 
+  }
 }
 
 footer {
