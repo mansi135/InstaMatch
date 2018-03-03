@@ -19,9 +19,15 @@ $(document).ready(function() {
             //     });
 
             //This is just to render initial messages
-            to_id = $('#begin').children('div').first().find('a').data('id');
-            fname = $('#begin').children('div').first().find('a').data('fname');
-            retrieveMessages();
+            let first_message = $('#begin > div').children('div').first()
+
+            if (first_message.length !== 0) {
+                to_id = first_message.find('a').data('id');
+                fname = first_message.find('a').data('fname');
+                first_message.css("background-color", "#eee");
+                retrieveMessages();
+            }
+            
 
             //Attaching event-handler 
             $(".messages").click(function(evt) {
