@@ -283,6 +283,8 @@ def facebook_login():
     facebook_id = request.form.get('fb_id')
     email = request.form.get('email')
 
+
+    # This is a working code for getting bytes of facebook photo : do it later
     # url = """https://graph.facebook.com/v2.11/me?fields=picture.type(large)&access_token={}""".format(token)
     # r = requests.get(url)
     # response = r.json()
@@ -412,7 +414,6 @@ def match():
     max_dob, min_dob = get_dob_range_from_age(min_age, max_age)
 
     z = get_zip_near_me(g.current_user.contact.zipcode, distance)
-
 
     received_ids = db.session.query(RelationManager.source_userid).filter_by(target_userid=g.user_id).all()
     sent_ids = db.session.query(RelationManager.target_userid).filter_by(source_userid=g.user_id).all()
@@ -838,7 +839,7 @@ def logout():
 
     #del session['user_id']
     session.clear()
-    flash("You were logged out.")
+    #flash("You were logged out.")
 
     return redirect("/")
 
