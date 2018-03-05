@@ -53,17 +53,18 @@
             $('#status_' + result.uid).html(result.status)
         }
 
+
+
         $(document).ready(function() {
 
             let ne ;
 
-            if ('{{ method }}' === 'received'){
+            if ('{{ method }}' === 'received') {
                 checkStatus(); 
                 ne = {{ session['new_requests'] }};
                 console.log(ne);
                 
-            }
-              
+            } 
              
            if ('{{ method }}' === 'sent') {
               ne = {{ session['new_responses'] }}; 
@@ -79,8 +80,15 @@
             for (let i = 0; i < dobs.length; i++) {
                 $(dobs[i]).html(calculateAge($(dobs[i]).html()));
             }
-            
-            
+
+            $('.heart').on('click', function() {
+                $(this).closest('div').fadeOut();
+                $.post('/mark-fav', {'target_id': $(this).data('id'), 'action': 'un-fav'}, function(response){
+                    console.log(response);
+
+                });
+            });
+
         });
 
     </script>

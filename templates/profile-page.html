@@ -86,6 +86,9 @@
           <p><span class="glyphicon glyphicon-envelope"></span> {{ user.email }}</p>
           <p><span class="glyphicon glyphicon-phone"></span> {{ user.contact.phone }}</p>
         </div>
+        <div id="status" style="text-align: center;">
+          <p> <strong>Status</strong> : {{ status }} </p>
+        </div>
         <div id="myCarousel" class="carousel slide modal" data-ride="carousel">
                 <span class="close cursor" onclick="closeModal()">&times;</span>
                 <!-- Indicators -->
@@ -285,6 +288,7 @@
         // if status is not self - edit1.hide()
         if ($('h2').data('status') === 'self') {
 
+          $('#status').hide();
           $('#edit1').on('click', function() {
             
             $('.edit-me').removeClass("on-load");

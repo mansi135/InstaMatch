@@ -50,7 +50,7 @@ function showChat(history) {
     
     $('#chat-window').empty();
     // $('#chat-window').append("<h3>Message history with " + link.data('fname') + "</h3>");
-    $('#chat-window').append("<h3>Message history with " + fname + "</h3>");
+    $('#chat-window').append("<h3>Chat history with " + fname + "</h3>");
 
     for (let i = 0; i < history.length; i += 3) {
 

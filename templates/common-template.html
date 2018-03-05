@@ -14,14 +14,14 @@
             {% set x = received_or_sent.target_user %}
           {% endif %}
           
-          <div class="col-lg-4 user-summary">
+          <div class="col-lg-3 user-summary">
 
               <div class="well" style="border-radius: 10%; text-align: center;">
                     
 
                   <p class="latest"><span class="glyphicon glyphicon-star"></span><b>New</b><p>
                  
-                  <h3>{{ x.fname }}</h3>
+                  <h4>{{ x.fname }}</h4>
                   
                   {% if method == 'sent' or method == 'received' %}
                     <a href="/users/{{ x.user_id }}?type='{{ method }}'&status={{ received_or_sent.status }}">
@@ -29,9 +29,11 @@
                   {% endif %}
 
                   {% if method == 'favorite' %}
-                    <a href="/users/{{ x.user_id }}?type='{{ method }}'&status="new">
+                    <a href="/users/{{ x.user_id }}?type='{{ method }}'&status=New">
                     <img src="/{{ UPLOAD_FOLDER }}{{ x.pictures[0].picture_url }}" width="200" height="200"></a>
+                    <i class="heart fa fa-heart" style="font-size: 25px; color: red" data-id="{{ x.user_id }}"></i>
                   {% endif %}
+
 
                   <div><span class="dob">{{ x.personal.dob }}</span>, 
                   {{ x.contact.city.title() }}, {{ x.contact.state }}</div>
