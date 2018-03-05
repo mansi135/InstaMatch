@@ -65,7 +65,7 @@
                 {% include 'common-template.html' %}
             {% endwith %} -->
               {% for sent in sent_accepted %}
-                <div class="well" style="width:80%; height: 40%; margin-left: 30px; ">
+                <div class="well" style="width:80%; height: 41%; margin-left: 30px; ">
                     <div style="float: left;">
                     <a href="/users/{{ sent.target_userid }}?type='target'&status={{ sent.status }}">     
                         <img src="/{{ UPLOAD_FOLDER }}{{ sent.target_user.pictures[0].picture_url }}" width="200" height="200" class="marker"></a>
@@ -124,8 +124,10 @@
     
     <!-- earlier async defer was taking a callback=initMap(), hence when i was also calling it , there was an error. So we removed async defer tag and removed &callback=initMap. But this introduces a different error..a person who has no connections, will see an alert that zero results were returned  -->
 
-    <script src="https://maps.googleapis.com/maps/api/js?key={{ GOOGLE_MAPS_API_KEY }}"></script>  
+    <!-- add libraies=geometry to calculate distance between two lat longs -->
+    <script src="https://maps.googleapis.com/maps/api/js?key={{ GOOGLE_MAPS_API_KEY }}&libraries=geometry"></script>  
     <script src="/static/js/gmaps.js"></script>
+
 
     <script>
         var zips = [];
@@ -139,6 +141,8 @@
         
         var my_zip = '{{ current_user.contact.zipcode }}';
         var markers = [];
+        var lat_lng = [];
+        var my_lat_lng;
    
         $(document).ready(function(){   
 
@@ -168,10 +172,13 @@
                 function() {
                     let index = $('.marker').index(this)    // $('.marker') will give a list 
                     markers[index].setAnimation(google.maps.Animation.BOUNCE);
+                    $(this).closest('div').append('<p id="miles"><b>' + (google.maps.geometry.spherical.computeDistanceBetween(lat_lng[index], my_lat_lng)/1000).toFixed(1) + 'miles away</b></p>');
+
                 },
                 function() {
                     let index = $('.marker').index(this)    // $('.marker') will give a list 
                     markers[index].setAnimation(null); 
+                    $('#miles').remove();
                 }
             );
 

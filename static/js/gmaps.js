@@ -40,6 +40,7 @@
                       map: map
               });
                markers.push(marker);  //dont push logged-in user, since its already green
+               lat_lng.push(results[0].geometry.location);  // for calculating distance
            }
              else {
               alert("Geocode was not successful for the followingbbbghghdkjb reason: " + status);
@@ -61,6 +62,7 @@
                       map: map,
                       icon: 'http://maps.google.com/mapfiles/ms/icons/green-dot.png'
               });
+               my_lat_lng = results[0].geometry.location;  // for calculating distance
            }
              else {
               alert("Geocode was not successful for the following reason: " + status);
