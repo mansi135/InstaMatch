@@ -141,9 +141,13 @@ def handle_registration_form():
 def display_continue_registration_form():
     """Complete Registration"""
 
+    # It should not extend from base ...
     ethnicities = Ethnicity.query.all()
     religions = Religion.query.all()
     interests = Interest.query.all()
+
+    session['img'] = None # Initially there will be no session , so just make it null (its a hacky way!!)
+    session['fname'] = None
     return render_template("continue-register.html", ethnicities=ethnicities, 
                                         religions=religions, interests=interests)
 
@@ -414,7 +418,7 @@ def match():
 
     max_dob, min_dob = get_dob_range_from_age(min_age, max_age)
 
-    # z = get_zip_near_me(g.current_user.contact.zipcode, distance) 
+    z = get_zip_near_me(g.current_user.contact.zipcode, distance) 
 
     received_ids = db.session.query(RelationManager.source_userid).filter_by(target_userid=g.user_id).all()
     sent_ids = db.session.query(RelationManager.target_userid).filter_by(source_userid=g.user_id).all()
@@ -440,7 +444,7 @@ def match():
                                    .join(ContactInfo)
                                    .join(Picture)
                                    .join(PersonalInfo)
-                                   .filter( #ContactInfo.zipcode.in_(z),    
+                                   .filter( ContactInfo.zipcode.in_(z),    
                                             User.user_id != g.user_id,
                                             ~User.user_id.in_(sent_ids),
                                             ~User.user_id.in_(received_ids))
@@ -783,7 +787,6 @@ def retrieve_msg_history():
         string.append(msg)
         string.append(str(time))  # otherwise jsonify converts datetime to http format datetime
 
-    print string
     return jsonify(string)
 
 

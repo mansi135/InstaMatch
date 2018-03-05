@@ -39,9 +39,9 @@
         $( "#slider-distance" ).slider({
           min: 0,
           max: 1000,
-          values: [ 500 ],
+          values: [ 50 ],
           slide: function( event, ui ) {
-            $( "#distance" ).val( ui.values[ 0 ] );
+            $( "#distance" ).val( ui.values[ 0 ] + " miles") ;
           }
         });
         $( "#distance" ).val( $( "#slider-distance" ).slider( "values", 0 ) + " miles");
