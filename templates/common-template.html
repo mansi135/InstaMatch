@@ -34,7 +34,7 @@
                   {% endif %}
 
                   <div><span class="dob">{{ x.personal.dob }}</span>, 
-                  {{ x.contact.city }}, {{ x.contact.state }}</div>
+                  {{ x.contact.city.title() }}, {{ x.contact.state }}</div>
                  
                  {% if method == 'sent' or method == 'received' %}
                     <p> Status : <span class="status" id="status_{{ x.user_id }}" data-id="{{ x.user_id }}">{{ received_or_sent.status }}</span> </p>

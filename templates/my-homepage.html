@@ -53,13 +53,14 @@
         .ui-slider .ui-slider-handle {
 
             cursor: default;
-            height: 1.2em;
+            height: 1em;
             position: absolute;
             width: 1.2em;
             z-index: 2;
         }
         .ui-slider {
             width : 200px;
+            height: 8px;
         }
         .cir {
             display:    none;
@@ -125,31 +126,28 @@
          <div class="col-lg-2" id="filters"> 
             <!-- <form action="/search" id="search-form"> -->
             <form action="/potential-matches.json" id="search-form">
-                <p>
+              
                   <label for="age">Age Range:</label>
                   <input type="text" id="age" name="age" readonly style="border:0; color:#f6931f; font-weight:bold;">
-                </p> 
-                <div id="slider-range-age"></div>
-                <br>
-                <p>
+                  <div id="slider-range-age"></div>
+                <br><br>
+              
                   <label for="height">Height Range in cm:</label>
                   <input type="text" id="height" name="height" readonly style="border:0; color:#f6931f; font-weight:bold;">
-                </p>
-                <div id="slider-range-height"></div>    
-                <br>
-                <p>
+                  <div id="slider-range-height"></div>    
+                <br><br>
+                
                   <label for="distance">Distance from me:</label>
                   <input type="text" id="distance" name="distance" readonly style="border:0; color:#f6931f; font-weight:bold;">
-                </p>
-                <div id="slider-distance"></div>    
-
-                <p>
+                  <div id="slider-distance"></div>    
+                <br><br>
+                
                 <label>Gender<br>
                     <input type="radio" id="male" name="gender" value="M" checked> Male<br>
                     <input type="radio" id="female" name="gender" value="F"> Female<br>
                     <input type="radio" id="other" name="gender" value="O"> Other
                 </label><br><br>
-                </p>
+                
     
                 <p>
                 <label>Ethnicity<br>
