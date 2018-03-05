@@ -6,7 +6,7 @@ from jinja2 import StrictUndefined, Template
 from model import *
 from helper import *
 
-import facebook
+import facebook, googlemaps
 import requests, shutil
 import json, os
 
@@ -19,7 +19,6 @@ import relations
 
 from sqlalchemy import desc, case
 
-import googlemaps
 
 
 
@@ -396,6 +395,8 @@ def individual_home_page():
 
 
 
+
+
 @app.route('/potential-matches.json')
 @login_required
 def match():
@@ -413,32 +414,43 @@ def match():
 
     max_dob, min_dob = get_dob_range_from_age(min_age, max_age)
 
-    z = get_zip_near_me(g.current_user.contact.zipcode, distance)
+    # z = get_zip_near_me(g.current_user.contact.zipcode, distance) 
 
     received_ids = db.session.query(RelationManager.source_userid).filter_by(target_userid=g.user_id).all()
     sent_ids = db.session.query(RelationManager.target_userid).filter_by(source_userid=g.user_id).all()
     
     #, db.func.concat(UPLOAD_FOLDER,Picture.picture_url)
+    # A potentially harmless bug here ? Since User can have many pictures, we get repeated output with differnt pics
+    # in helper function, this causes overwriting the same userid info till the last pic is reached
+    # Hence we see differnt picture in home-page and differnt pic in profile page
+
+    # Fix - Change the query to make Pictures as a list of all pictures...using groupby
+    #db.func.array_agg(Picture.picture_url)
+    # But then we cant use db.joinedload since grou_by errors, then we have to join all tables...we can do that ..
+    # But somehow i was getting error with joining Favorite table
     matching_users = (db.session.query(User, PersonalInfo, ContactInfo, Picture)
                                    # .options(db.joinedload('personal'))
                                    # .options(db.joinedload('contact')) 
-                                   .options(db.joinedload('professional')) 
-                                   .options(db.joinedload('interests')) 
+                                  .options(db.joinedload('professional'))        
+                                  .options(db.joinedload('interests'))           
+                                  .options(db.joinedload('favorites_t'))
                                   # .options(db.joinedload('ethnicity'))
                                   # .options(db.joinedload('religion'))
                                    # .options(db.joinedload('pictures'))
                                    .join(ContactInfo)
                                    .join(Picture)
                                    .join(PersonalInfo)
-                                   .filter(ContactInfo.zipcode.in_(z), 
+                                   .filter( #ContactInfo.zipcode.in_(z),    
                                             User.user_id != g.user_id,
                                             ~User.user_id.in_(sent_ids),
                                             ~User.user_id.in_(received_ids))
                                    .filter(PersonalInfo.height > min_height, PersonalInfo.height < max_height,
                                             PersonalInfo.dob > min_dob, PersonalInfo.dob < max_dob,
                                             PersonalInfo.gender == gender)
+                                   # .group_by(User, PersonalInfo, ContactInfo) # commented for demonstration purpose only
                           .all())
 
+   
 
     # we pass the current user here to see if current user has favorited any of these users
     matched_users = get_users_info(matching_users, UPLOAD_FOLDER, g.user_id)
@@ -459,8 +471,6 @@ def show_profile_page(user_id):
 
     contact_type = request.args.get('type')  # type is not needed if status is not pending
     status = request.args.get('status')
-
-    print status
 
     if user_id == g.user_id:
         status = 'self'

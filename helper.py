@@ -73,7 +73,7 @@ def get_users_info(users, folder, current_user):
                                          'religion': personal.religion.religion_name,
                                          'about me': personal.aboutme,
                                          'contact': {'email': user.email,
-                                                     'city': contact.city,
+                                                     'city': contact.city.title(),
                                                      'state': contact.state,
                                                      'zipcode': contact.zipcode,
                                                      'phone': contact.phone
@@ -83,13 +83,12 @@ def get_users_info(users, folder, current_user):
                                                             'education': user.professional.education,
 
                                                           },
-                                          'pic_url': folder + picture.picture_url,
+                                          # 'pic_url': folder + picture[0],     # commented for demonstration purpose only
+                                          'pic_url': folder + picture.picture_url,    # This way there was repitition 3 times
                                           'interests': [interest.interest_name for interest in user.interests],
                                           'fav': fav
                                         }
 
     return matching_users;
-
-
 
 

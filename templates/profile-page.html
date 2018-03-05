@@ -78,7 +78,7 @@
         
         <div class="panel panel-default">
           <div class="panel-body" style="text-align: center;">
-        <a href="#" class="profile-pic"><img src="/{{ UPLOAD_FOLDER }}{{ user.pictures[0].picture_url }}" width="250px" height="250px" ></a>
+        <a href="#" class="profile-pic"><img src="/{{ UPLOAD_FOLDER }}{{ user.pictures[-1].picture_url }}" width="250px" height="250px" ></a>
           </div>
        </div>
         <br>
@@ -132,7 +132,7 @@
     <div class="col-lg-6">
       
       <h2 data-status="{{ status }}"> {{ user.fname }} {{ user.lname }} </h2>
-      <p> <span id="age"></span> &#9642; {{ user.personal.gender }} from {{ user.contact.city }}, {{ user.contact.state }}</p>
+      <p> <span id="age"></span> &#9642; {{ user.personal.gender }} from {{ user.contact.city.title() }}, {{ user.contact.state }}</p>
       <a href="#" id="edit1" style="float: right;"><span class="glyphicon glyphicon-pencil"></span> Edit</a>
       
       <form action="/edit-profile", method="POST" id="edit-form">
