@@ -38,6 +38,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
+                <a class="navbar-brand" href="#"><img src="https://www.soulmatesunlimited.com/images/sylized_hearts_pc_1600_clr_1663-copy.gif" width="25px" height="25px"></a>
                 <a class="navbar-brand" href="#"><b>InstaMatch</b></a>
             </div>
             <div id="navbar" class="navbar-collapse collapse">
@@ -64,7 +65,7 @@
                                           class="dropdown-toggle"
                                           data-toggle="dropdown"
                                           role="button"
-                                          aria-expanded="false"> <img src="/{{ session['img'] }}" width="30px" height="30px" style="border-radius: 50%; margin-top: 0"> {{ session['fname'] }}<span class="caret"></span></a>
+                                          aria-expanded="false"> <img src="/{{ session['img'] }}" width="30px" height="30px" style="border-radius: 50%; margin-top: 0"> <b>{{ session['fname'] }}</b><span class="caret"></span></a>
                                           <ul class="dropdown-menu" role="menu">
                                               <li><a href="/users/{{ session['user_id'] }}"><span class="glyphicon glyphicon-user"></span> My Profile</a></li>
                                               <li><a href="#"><span class="glyphicon glyphicon-cog"></span> Settings</a></li>
@@ -100,11 +101,10 @@
   </script>
 
   {% block javascript %} {% endblock %}
-
   <footer class="footer-copyright">
     <div class="container-fluid">
-      <p>Copyright @InstaMatch 2018. All rights reserved.</p>
+      <p>Copyright: © 2018 InstaMatch . All rights reserved.</p>
     </div>
-</footer>
+  </footer>
 </body>
 </html>

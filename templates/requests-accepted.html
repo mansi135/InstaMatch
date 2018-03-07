@@ -64,29 +64,7 @@
             <!-- {% with method="sent", list_to_render=sent_accepted %}
                 {% include 'common-template.html' %}
             {% endwith %} -->
-              {% for sent in sent_accepted %}
-                <div class="well" style="width:80%; height: 41%; margin-left: 30px; ">
-                    <div style="float: left;">
-                    <a href="/users/{{ sent.target_userid }}?type='target'&status={{ sent.status }}">     
-                        <img src="/{{ UPLOAD_FOLDER }}{{ sent.target_user.pictures[0].picture_url }}" width="200" height="200" class="marker"></a>
-                    </div>
-                    <div class="side-by-side" style="margin-left: 20px">
-                        <h3>{{ sent.target_user.fname }}</h3>                  
-                        <div><span class="dob">{{ sent.target_user.personal.dob }}</span>, 
-                            {{ sent.target_user.contact.city }}, {{ sent.target_user.contact.state }}</div>
-                        <p> Status : {{ sent.status }}</p>
-                        <p class="stamp"> {{ sent.timestamp }}</p>
-                        <p> Accepted : <span class="time-ago"></span></p>
-                        <a href="#" data-toggle="hover" 
-                        data-content="
-                                Phone Number : {{ sent.target_user.contact.phone }}      
-                                Email : {{ sent.target_user.email }}">
-                        Show Contact </a> <br>
-                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#message-Modal" data-fname="{{ sent.target_user.fname }}" data-userid="{{ sent.target_userid }}" data-type="target">Message</button>
-                    </div>
-                </div>
-              {% endfor %}
-
+              
               {% for received in received_accepted %}
                 <div class="well" style="width:80%; height: 40%; margin-left: 30px;">
                     <div style="float: left;">
@@ -109,11 +87,34 @@
                     </div>
                 </div>
               {% endfor %}
+
+              {% for sent in sent_accepted %}
+                <div class="well" style="width:80%; height: 41%; margin-left: 30px; ">
+                    <div style="float: left;">
+                    <a href="/users/{{ sent.target_userid }}?type='target'&status={{ sent.status }}">     
+                        <img src="/{{ UPLOAD_FOLDER }}{{ sent.target_user.pictures[0].picture_url }}" width="200" height="200" class="marker"></a>
+                    </div>
+                    <div class="side-by-side" style="margin-left: 20px">
+                        <h3>{{ sent.target_user.fname }}</h3>                  
+                        <div><span class="dob">{{ sent.target_user.personal.dob }}</span>, 
+                            {{ sent.target_user.contact.city }}, {{ sent.target_user.contact.state }}</div>
+                        <p> Status : {{ sent.status }}</p>
+                        <p class="stamp"> {{ sent.timestamp }}</p>
+                        <p> Accepted : <span class="time-ago"></span></p>
+                        <a href="#" data-toggle="hover" 
+                        data-content="
+                                Phone Number : {{ sent.target_user.contact.phone }}      
+                                Email : {{ sent.target_user.email }}">
+                        Show Contact </a> <br>
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#message-Modal" data-fname="{{ sent.target_user.fname }}" data-userid="{{ sent.target_userid }}" data-type="target">Message</button>
+                    </div>
+                </div>
+              {% endfor %}
         </div>
         <!-- <div class="col-lg-6"> -->
         
         <div class="side-by-side">
-            <div id="map" style="height:600px; width:700px; float: right;">
+            <div id="map" style="height:600px; width:750px; float: right;">
             </div>     
         </div>
 
@@ -131,12 +132,13 @@
 
     <script>
         var zips = [];
-        {% for a in sent_accepted %}
-            zips.push( '{{ a.target_user.contact.zipcode }}' );
-        {% endfor %}
-
+        
         {% for a in received_accepted %}
             zips.push( '{{ a.source_user.contact.zipcode }}' );
+        {% endfor %}
+
+        {% for a in sent_accepted %}
+            zips.push( '{{ a.target_user.contact.zipcode }}' );
         {% endfor %}
         
         var my_zip = '{{ current_user.contact.zipcode }}';
@@ -172,7 +174,7 @@
                 function() {
                     let index = $('.marker').index(this)    // $('.marker') will give a list 
                     markers[index].setAnimation(google.maps.Animation.BOUNCE);
-                    $(this).closest('div').append('<p id="miles"><b>' + (google.maps.geometry.spherical.computeDistanceBetween(lat_lng[index], my_lat_lng)/1000).toFixed(1) + 'miles away</b></p>');
+                    $(this).closest('div').append('<p id="miles" style="color: red"><b>' + (google.maps.geometry.spherical.computeDistanceBetween(lat_lng[index], my_lat_lng)/1000).toFixed(1) + 'miles away</b></p>');
 
                 },
                 function() {
