@@ -45,7 +45,7 @@
 <!-- This is a good case for nested containers -->
 
 <div class="row" id="begin">
-    <div class="col-lg-5" id="user-summary" style="padding-bottom: 10px; overflow-y: scroll; height: 600px;"> 
+    <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5" id="user-summary" style="padding-bottom: 10px; overflow-y: scroll; height: 600px;"> 
           {% for user, message in user_list %}
             <div class="top-div" style="padding: 10px; margin-left: 10px;">
               <div class="side-by-side">
@@ -65,10 +65,17 @@
           {% endfor %} 
     </div>
 
-    <div class="col-lg-7 chat-window" id="chat-window" style="padding-bottom: 10px; overflow-y: scroll; height: 600px;">
+    <div class="col-xs-7 col-sm-7 col-md-7 col-lg-7 chat-window" id="chat-window" style="padding-bottom: 10px; overflow-y: scroll; height: 600px;">
     </div>
 </div>
     
+<div class="row">
+    <div class="input-group col-lg-7 col-lg-offset-5 col-md-offset-5 col-sm-offset-5 col-xs-offset-5">
+      <input type="text" class="form-control" placeholder="Message" id="message-text"><span class="input-group-btn"><button class="btn btn-primary send" type="button">Send</button></span>
+    </div>
+</div>
+
+
 {% endblock %}
 
 {% block javascript %} 

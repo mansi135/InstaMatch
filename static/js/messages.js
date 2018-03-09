@@ -36,9 +36,15 @@ $(document).ready(function() {
                     to_id = $(this).data("id");
                     fname = $(this).data("fname");
                     $(this).closest('div').parent().css("background-color", "#eee");
-                    retrieveMessages();
+                    //retrieveMessages();   
+                   // setInterval(function(){console.log('aha');}, 3000);
+                    setInterval(retrieveMessages, 2000);    //this will render periodically , but on click of somebody
                         
              });
+
+            $('.send').on('click', recordMessage);
+
+
 });
 
 function retrieveMessages() {
@@ -66,10 +72,11 @@ function showChat(history) {
     $('.stamp').hide();
     checkTimeAgo();
 
-    $('<footer><div class="input-group"><input type="text" class="form-control" placeholder="Message" id="message-text"><span class="input-group-btn"><button class="btn btn-primary send" type="button">Send</button></span></div></footer>').appendTo('#chat-window');
+  //ver-1  $('<footer><div class="input-group"><input type="text" class="form-control" placeholder="Message" id="message-text"><span class="input-group-btn"><button class="btn btn-primary send" type="button">Send</button></span></div></footer>').appendTo('#chat-window');
 
     // Attach this event listener here - it wont be attached inside document.ready
-    $('.send').on('click', recordMessage);
+  //ver-1  $('.send').on('click', recordMessage);
+  $('#chat-window').scrollTop = $('#chat-window').scrollHeight ;
    
 }
 
@@ -77,6 +84,9 @@ function recordMessage(evt) {
     
     let payload = {'text': $('#message-text').val(), 'to_id': to_id, 'timestamp': new Date()};
     $.post("/send-message", payload, function(response) {
-        retrieveMessages();
+    //ver-1    retrieveMessages();
+       let myMessage = $('<div class="chat-box"><p style="float: right;"><b style="color: red">You</b> ' + $('#message-text').val() + '</p><p style="clear: right; float: right;"><span class="time-ago">' + jQuery.timeago(new Date()) + '</span></p></div>');     
+       $('#chat-window').append(myMessage);
+       $('#message-text').val('');
     });
  }
