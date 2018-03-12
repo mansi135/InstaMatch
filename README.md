@@ -10,23 +10,11 @@ InstaMatch is a rich dating/networking web-app for like minded-singles providing
 
 ## <a name="technologiesused"></a>Technologies Used
 
-* Python
-* JavaScript/jQuery
-* AJAX
-* JSON
-* Flask
-* PostgreSQL
-* SQLAlchemy
-* Jinja
-* HTML/CSS
-* Bootstrap
-* Selenium
-* UnitTests
-
 * Back-End/Server: Python, Flask based server 
 * Database & ORM: PostgreSQL, Flask SQLAlchemy
-* Front-End/Client: AJAX, Javascript, Jinja template, JQuery, JQuery UI library
-* Styling: Bootstrap, HTML/CSS
+* Front-End/Client: AJAX, Javascript, JSON, Jinja template, jQuery, jQuery UI library
+* Styling: Bootstrap, HTML-5/CSS
+* Testing: Selenium, Unittests, Integration Tests
 
 
 ## <a name="apis"></a>APIs Used
